@@ -1,13 +1,20 @@
 #include "osm_object.h"
 using namespace ns_osm;
-// ==================== Static members ====================
+
+/*================================================================*/
+/*                        Static members                          */
+/*================================================================*/
+
 //QHash<long long, Osm_Object*>	Osm_Object::s_all_nodes_ptrs;
 //QHash<long long, Osm_Object*>	Osm_Object::s_all_relations_ptrs;
 //QHash<long long, Osm_Object*>	Osm_Object::s_all_ways_ptrs;
 long long						Osm_Object::s_osm_id_bound(-1);
 long long						Osm_Object::s_inner_id_bound(0xFFFFFFFFFFFFFFFF);
 
-// =============== Constructors, destructors =================
+/*================================================================*/
+/*                  Constructors, destructors                     */
+/*================================================================*/
+
 Osm_Object::Osm_Object() :
     OSM_ID(s_osm_id_bound--),
 	INNER_ID(s_inner_id_bound++),
@@ -57,7 +64,10 @@ Osm_Object::~Osm_Object() {
 	//unreg_osm_object(this);
 }
 
-// ==================== Private methods ======================
+/*================================================================*/
+/*                       Private methods                          */
+/*================================================================*/
+
 
 //void Osm_Object::reg_osm_object(Osm_Object* object) {
 //	QHash<long long, Osm_Object*>& hash = get_working_hash(object->get_type());
@@ -90,8 +100,14 @@ void Osm_Object::remove_parent(Osm_Object* ptr_parent) {
 	mn_parents--;
 }
 
+/*================================================================*/
+/*                                                                */
+/*                      Protected methods                         */
+/*                                                                */
+/*================================================================*/
 
-// ==================== Protected methods ====================
+
+
 //QHash<long long, Osm_Object*>& Osm_Object::get_working_hash(const Osm_Object::Type object_type) {
 //	switch (object_type) {
 //	case Type::NODE:
@@ -150,8 +166,13 @@ unsigned Osm_Object::count_children() const {
 	return mn_children;
 }
 
+/*================================================================*/
+/*                                                                */
+/*                        Public methods                          */
+/*                                                                */
+/*================================================================*/
 
-// ==================== Public methods ====================
+
 QString Osm_Object::get_attr_value(const QString& key) const {
 	return m_attrmap[key];
 }
