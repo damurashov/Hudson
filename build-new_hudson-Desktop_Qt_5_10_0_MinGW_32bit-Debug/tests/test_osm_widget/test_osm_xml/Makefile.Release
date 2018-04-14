@@ -396,6 +396,8 @@ release/test_osm_xml.moc: D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/Q
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \
+		../../../../new_hudson/osm_elements/osm_map.h \
+		../../../../new_hudson/osm_widget/osm_message.h \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtWidgets/QtWidgets \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtWidgets/QtWidgetsDepends \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtGui/QtGui \
@@ -938,6 +940,8 @@ release/test_osm_xml.o: ../../../../new_hudson/tests/test_osm_widget/test_osm_xm
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \
+		../../../../new_hudson/osm_elements/osm_map.h \
+		../../../../new_hudson/osm_widget/osm_message.h \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtWidgets/QtWidgets \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtWidgets/QtWidgetsDepends \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtGui/QtGui \

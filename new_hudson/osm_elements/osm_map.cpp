@@ -114,6 +114,10 @@ void Osm_Map::fit_bounding_rect() {
 	handle_lon_180();
 }
 
+QRectF Osm_Map::get_bound() const {
+	return m_bounding_rect;
+}
+
 Osm_Node* Osm_Map::get_node(long long id) {
 	node_iterator it = m_nodes_hash.find(id);
 	if (it == nend() || it.key() != id) {

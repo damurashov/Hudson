@@ -125,9 +125,9 @@ void Xml_Handler::load_ways_from_xml(const QDomNode &node) {
 								if (dom_element.tagName() == Osm_Xml::TAG) {
 									p_way->set_tag(dom_element.attribute(Osm_Xml::K, ""), dom_element.attribute(Osm_Xml::V, ""));
 
-									/* Fill nodes by references */
+									/* Push referenced nodes into the way */
 								} else if (dom_element.tagName() == Osm_Xml::ND) {
-									p_way->push_node(m_nodes_hash[dom_element.attribute(Osm_Xml::REF, "").toLongLong()]);
+									p_way->push_node(m_map.get_node(dom_element.attribute(Osm_Xml::REF, "").toLongLong()));
 								}
 							}
 						}
@@ -194,9 +194,9 @@ void Xml_Handler::load_relations_from_xml(const QDomNode &node) {
 									ref = dom_element.attribute(Osm_Xml::REF, "").toLongLong();
 									attr_type = dom_element.attribute(Osm_Xml::TYPE);
 									if (attr_type == Osm_Xml::NODE) {
-										p_rel->add(m_nodes_hash[ref], dom_element.attribute(Osm_Xml::ROLE));
+										p_rel->add(m_map.get_node(ref), dom_element.attribute(Osm_Xml::ROLE));
 									} else if (attr_type == Osm_Xml::WAY) {
-										p_rel->add(m_ways_hash[ref], dom_element.attribute(Osm_Xml::ROLE));
+										p_rel->add(m_map.get_way(ref), dom_element.attribute(Osm_Xml::ROLE));
 									} else if (attr_type == Osm_Xml::RELATION) {
 										pending_relations.push_front(Pending_Relation());
 										Pending_Relation& r_pr = pending_relations.front();
@@ -221,7 +221,7 @@ void Xml_Handler::load_relations_from_xml(const QDomNode &node) {
 
 	/* Handle pending relations */
 	for (it_pr = pending_relations.begin(); it_pr != pending_relations.end(); ++it_pr) {
-		it_pr->p_master->add(m_relations_hash[it_pr->slave_id], it_pr->slave_role);
+		it_pr->p_master->add(m_map.get_relation(it_pr->slave_id), it_pr->slave_role);
 	}
 }
 

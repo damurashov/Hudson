@@ -294,6 +294,7 @@ release/test_osm_node.moc: ../../../../new_hudson/osm_elements/osm_elements.h \
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \
+		../../../../new_hudson/osm_elements/osm_map.h \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/QtTest \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/QtTestDepends \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/qbenchmark.h \
@@ -603,6 +604,7 @@ release/test_osm_node.o: ../../../../new_hudson/tests/tests_osm_elements/test_os
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \
+		../../../../new_hudson/osm_elements/osm_map.h \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/QtTest \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/QtTestDepends \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/qbenchmark.h \

@@ -36,6 +36,7 @@ public:
 	void									remove					(ns_osm::Osm_Relation*);
 	void									clear					();
 	void									fit_bounding_rect		();
+	QRectF									get_bound				() const;
 	ns_osm::Osm_Node*						get_node				(long long id_node);
 	ns_osm::Osm_Way*						get_way					(long long id_way);
 	ns_osm::Osm_Relation*					get_relation			(long long id_relation);
