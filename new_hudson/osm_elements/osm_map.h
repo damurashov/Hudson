@@ -14,6 +14,8 @@ private:
 	QRectF									m_bounding_rect;
 
 	void									handle_lon_180			();
+	                                        Osm_Map					(const Osm_Map&) = delete;
+	Osm_Map&								operator=				(const Osm_Map&) = delete;
 public:
 	typedef QHash<long long, ns_osm::Osm_Node*>::iterator			node_iterator;
 	typedef QHash<long long, ns_osm::Osm_Way*>::iterator			way_iterator;
@@ -23,6 +25,7 @@ public:
 	typedef QHash<long long, ns_osm::Osm_Relation*>::const_iterator	crelation_iterator;
 
 	int										count_parents			() const;
+	void									set_bound				(const QRectF&);
 	void									adopt					();
 	void									orphan					();
 	void									add						(ns_osm::Osm_Node*);
@@ -42,7 +45,7 @@ public:
 	cnode_iterator							cnend					() const;
 	way_iterator							wbegin					();
 	way_iterator							wend					();
-	cway_iterator							сwbegin					() const;
+	cway_iterator							cwbegin					();
 	cway_iterator							cwend					() const;
 	relation_iterator						rbegin					();
 	relation_iterator						rend					();

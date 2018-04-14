@@ -12,6 +12,10 @@ Osm_Map::Osm_Map() : mn_parents(0) {}
 /*                        Public methods                          */
 /*================================================================*/
 
+void Osm_Map::set_bound(const QRectF& bound) {
+	m_bounding_rect = bound;
+}
+
 int Osm_Map::count_parents() const {
 	return mn_parents;
 }
@@ -54,7 +58,7 @@ void Osm_Map::remove(Osm_Way* p_way) {
 
 void Osm_Map::remove(Osm_Relation* p_rel) {
 	m_relations_hash.remove(p_rel->get_id());
-	delete p_relation;
+	delete p_rel;
 }
 
 void Osm_Map::clear() {
@@ -158,7 +162,7 @@ Osm_Map::way_iterator Osm_Map::wend() {
 	return m_ways_hash.end();
 }
 
-Osm_Map::cway_iterator Osm_Map::сwbegin() const {
+Osm_Map::cway_iterator Osm_Map::cwbegin() {
 	return m_ways_hash.cbegin();
 }
 

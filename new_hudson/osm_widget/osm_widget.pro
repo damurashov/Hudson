@@ -18,7 +18,8 @@ LIBS += -L$$PWD/../intermediate_libs/ -losm_elements
 SOURCES += \
     osm_widget.cpp \
     osm_xml.cpp \
-    xml_handler.cpp
+    xml_handler.cpp \
+    osm_message.cpp
     #item_node.cpp \
     #item_edge.cpp \
 
@@ -27,4 +28,5 @@ HEADERS += \
     osm_xml.h \
     #item_node.h \
     #item_edge.h \
-    xml_handler.h
+    xml_handler.h \
+    osm_message.h
