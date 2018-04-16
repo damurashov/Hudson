@@ -7,24 +7,25 @@
 
 namespace ns_osm {
 
-class Osm_Relation : public Osm_Object {
+class Osm_Relation : public Osm_Object, public Osm_Subscriber {
 private:
 	unsigned short							mn_nodes;
 	unsigned short							mn_ways;
 	unsigned short							mn_relations;
-	//unsigned short							m_size;
 	QHash<long long, QString>				m_roles_hash;
 	QList<Osm_Node*>						m_nodes_list;
 	QList<Osm_Way*>							m_ways_list;
 	QList<Osm_Relation*>					m_relations_list;
-
-	void									handle_child_del	(Osm_Object* ptr_child) override;
-protected:
-	//virtual const Osm_Object::Type	get_type		() const;
 public:
-	void									add					(Osm_Object*, const QString& role = "");
-	void									remove				(Osm_Object*);
-	bool									has_object			(Osm_Object*) const;
+	void									add					(Osm_Node*, const QString& role = "");
+	void									add					(Osm_Way*, const QString& role = "");
+	void									add					(Osm_Relation*, const QString& role = "");
+	void									remove				(Osm_Node*);
+	void									remove				(Osm_Way*);
+	void									remove				(Osm_Relation*);
+	bool									has					(Osm_Node*) const;
+	bool									has					(Osm_Way*) const;
+	bool									has					(Osm_Relation*) const;
 	void									set_role			(Osm_Object*, const QString& role);
 	unsigned								get_size			() const;
 	const QString							get_role			(Osm_Object*) const;
@@ -34,6 +35,11 @@ public:
 	unsigned short							count_nodes			() const;
 	unsigned short							count_ways			() const;
 	unsigned short							count_relations		() const;
+	virtual void							handle_event_delete	(const Osm_Node&) override;
+	virtual void							handle_event_delete	(const Osm_Way&) override;
+	virtual void							handle_event_delete	(const Osm_Relation&) override;
+	virtual void							handle_event_delete	(const Osm_Object&) override;
+	virtual void							handle_event_update	(const Osm_Object&) override;
 											Osm_Relation		(const QString& id);
 											Osm_Relation		();
 	virtual									~Osm_Relation		();

@@ -7,7 +7,7 @@
 
 class Osm_Widget : public QWidget {
 private:
-	Osm_Map*			mp_map;
+	ns_osm::Osm_Map*	mp_map;
 	ns_osm::Xml_Handler	m_xml_handler;
 public:
 	Osm_Map&			get_map					();

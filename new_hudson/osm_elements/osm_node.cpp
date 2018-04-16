@@ -1,4 +1,4 @@
-#include "osm_node.h"
+#include "osm_node.h".h"
 using namespace ns_osm;
 // ===================== Constructors, destructors =====================
 Osm_Node::Osm_Node() : Osm_Object(Osm_Object::Type::NODE) {
@@ -18,7 +18,6 @@ Osm_Node::Osm_Node(const QString &id,
 Osm_Node::Osm_Node(const QString &latitude, const QString &longitude):
 	Osm_Object(Osm_Object::Type::NODE)
 {
-	//reg_osm_object(this);
 	set_attr("lat", latitude);
 	set_attr("lon", longitude);
 	m_lat = latitude.toDouble();
@@ -28,7 +27,6 @@ Osm_Node::Osm_Node(const QString &latitude, const QString &longitude):
 Osm_Node::Osm_Node(const double& latitude, const double& longitude) :
 	Osm_Object(Osm_Object::Type::NODE)
 {
-	//reg_osm_object(this);
 	m_lat = latitude;
 	m_lon = longitude;
 	set_attr("lat", QString(QString::number(m_lat)));
@@ -36,7 +34,7 @@ Osm_Node::Osm_Node(const double& latitude, const double& longitude) :
 }
 
 Osm_Node::~Osm_Node() {
-	//unreg_osm_object(this);
+	emit_delete();
 }
 
 // ========================= Private methods =========================
@@ -56,11 +54,19 @@ double Osm_Node::get_lon() const {
 void Osm_Node::set_lat(const double &latitude) {
 	m_lat = latitude;
 	set_attr(QString("lat"), QString(QString::number(m_lat)));
+	emit_update();
 }
 
 void Osm_Node::set_lon(const double &longitude) {
 	m_lon = longitude;
 	set_attr(QString("lon"), QString(QString::number(m_lon)));
+	emit_update();
 }
 
-
+void Osm_Node::set_lat_lon(const double &latitude, const double &longitude) {
+	m_lat = latitude;
+	m_lon = longitude;
+	set_attr(QString("lat"), QString(QString::number(m_lat)));
+	set_attr(QString("lon"), QString(QString::number(m_lon)));
+	emit_update();
+}

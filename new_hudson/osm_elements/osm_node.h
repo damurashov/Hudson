@@ -10,13 +10,13 @@ private:
 	double		m_lat;
 	double		m_lon;
 
-	void		handle_child_del(Osm_Object* child) override;
 	            Osm_Node		();
 public:
 	double		get_lat			() const;
 	double		get_lon			() const;
 	void		set_lat			(const double& latitude);
 	void		set_lon			(const double& longitude);
+	void		set_lat_lon		(const double& latitude, const double& longitude);
 	            Osm_Node		(const QString& latitude,
 				                 const QString& longitude);
 				Osm_Node		(const QString& id,

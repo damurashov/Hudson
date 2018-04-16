@@ -1,47 +1,36 @@
 #include "osm_way.h"
 using namespace ns_osm;
-//======================= Constructors, destructors ==================
+
+/*================================================================*/
+/*                  Constructors, destructors                     */
+/*================================================================*/
+
+
 Osm_Way::Osm_Way() : Osm_Object(Osm_Object::Type::WAY) {
 	m_size = 0;
-	//reg_osm_object(this);
 }
 
 Osm_Way::Osm_Way(const QString &id) : Osm_Object(id, Osm_Object::Type::WAY) {
 	m_size = 0;
-	//reg_osm_object(this);
 }
 
 Osm_Way::~Osm_Way() {
-	QList<Osm_Node*>::iterator it;
-
-	// Remove all orphaned nodes.
+	emit_delete();
+	/* Remove all orphaned nodes */
+//	QList<Osm_Node*>::iterator it;
 //	for (it = m_nodes.begin(); it != m_nodes.end(); ++it) {
-//		if ((reinterpret_cast<Osm_Way*>(*it)->count_children()) == 1) {
+//		if (reinterpret_cast<Osm_Way*>(*it)->count_parents() == 1) {
 //			delete *it;
+//			it = m_nodes.begin();
 //		}
 //	}
-	for (it = m_nodes.begin(); it != m_nodes.end(); ++it) {
-		if (reinterpret_cast<Osm_Way*>(*it)->count_parents() == 1) {
-			delete *it;
-			it = m_nodes.begin();
-		}
-	}
 }
 
-//======================= Private methods ========================
-void Osm_Way::handle_child_del(Osm_Object* ptr_child) {
-	int			ndel;
-	Osm_Node*	ptr_node = static_cast<Osm_Node*>(ptr_child);
-	bool		f_stay_closed = (is_closed() && (ptr_node == m_nodes.back()));
 
-	ndel = m_nodes.removeAll(ptr_node);
-	m_size -= ndel;
-	if (f_stay_closed && (get_size() >= 3)) {
-		push_node(m_nodes.back());
-	}
-}
+/*================================================================*/
+/*                        Public methods                          */
+/*================================================================*/
 
-//======================= Public methods ========================
 
 unsigned Osm_Way::get_size() const {
 	return m_size;
@@ -63,7 +52,8 @@ bool Osm_Way::push_node(Osm_Node* ptr_node) {
 		}
 		m_nodes.push_back(ptr_node);
 		m_size++;
-		reg_child(ptr_node);
+		subscribe(*ptr_node);
+		emit_update();
 		return true;
 	}
 	return false;
@@ -87,8 +77,8 @@ bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
 		if (f_is_found) {
 			it++;
 			m_nodes.insert(it, node_ptr);
-			m_size++;
-			reg_child(node_ptr);
+			subscribe(*ptr_node);
+			emit_update();
 			return true;
 		}
 	}
@@ -99,7 +89,7 @@ bool Osm_Way::has_node(Osm_Node* ptr_node) const {
 	if (ptr_node == nullptr) {
 		return false;
 	}
-	return get_children().contains(reinterpret_cast<Osm_Way*>(ptr_node)->get_inner_id());
+	return m_nodes.lastIndexOf(ptr_node) != -1;
 }
 
 bool Osm_Way::is_closed() const {
@@ -115,4 +105,21 @@ bool Osm_Way::is_empty() const {
 
 const QList<Osm_Node*>& Osm_Way::get_nodes_list() const {
 	return m_nodes;
+}
+
+void Osm_Way::handle_event_delete(const Osm_Node& node) override {
+	bool f_stay_closed = (is_closed() && (node.get_id() = m_nodes.back()->get_id()));
+
+	m_size -= m_nodes.removeAll(&node);
+	if (f_stay_closed && get_size() >= 3) {
+		push_node(m_nodes.back());
+	}
+}
+
+void Osm_Way::handle_event_delete(const Osm_Object&) override {
+	emit_update();
+}
+
+void Osm_Way::handle_event_update(const Osm_Object&) override {
+	emit_update();
 }

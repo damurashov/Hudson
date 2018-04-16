@@ -6,13 +6,11 @@
 
 namespace ns_osm {
 
-class Osm_Way : public Osm_Object {
+class Osm_Way : public Osm_Object, public Osm_Subscriber {
 private:
 	static const unsigned short				CAPACITY = 2000;
 	unsigned								m_size;
 	QList<Osm_Node*>						m_nodes;
-
-	void									handle_child_del	(Osm_Object* ptr_child) override;
 public:
 	unsigned								get_size			() const;
 	unsigned short							get_capacity		() const;
@@ -24,6 +22,9 @@ public:
 	bool									is_closed			() const;
 	bool									is_empty			() const;
 	const QList<Osm_Node*>&					get_nodes_list		() const;
+	virtual void							handle_event_delete	(const Osm_Node&) override;
+	virtual void							handle_event_update	(const Osm_Object&) override;
+	virtual void							handle_event_delete	(const Osm_Object&) override;
 											Osm_Way				(const QString& id);
 											Osm_Way				();
 	virtual									~Osm_Way			();

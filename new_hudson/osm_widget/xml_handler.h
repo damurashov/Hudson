@@ -24,7 +24,7 @@ private:
 protected:
 	struct Osm_Xml;
 
-	Osm_Map&				m_map;
+	ns_osm::Osm_Map&		m_map;
 
 	void					load_bound_from_xml		(const QDomNode& node);
 	void					load_nodes_from_xml		(const QDomNode& node);

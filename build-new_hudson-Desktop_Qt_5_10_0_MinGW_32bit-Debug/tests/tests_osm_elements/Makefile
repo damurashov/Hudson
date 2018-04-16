@@ -30,7 +30,8 @@ SUBTARGETS    =  \
 		sub-test_osm_way \
 		sub-test_osm_relation \
 		sub-test_referential_integrity \
-		sub-test_osm_object
+		sub-test_osm_object \
+		sub-test_osm_map
 
 
 sub-test_osm_node-qmake_all:  FORCE
@@ -158,6 +159,31 @@ sub-test_osm_object-install_subtargets: FORCE
 sub-test_osm_object-uninstall_subtargets: FORCE
 	@if not exist test_osm_object\ mkdir test_osm_object\ & if not exist test_osm_object\ exit 1
 	cd test_osm_object\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_object\test_osm_object.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile uninstall
+sub-test_osm_map-qmake_all:  FORCE
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
+	cd test_osm_map\ && $(MAKE) -f Makefile qmake_all
+sub-test_osm_map: FORCE
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile
+sub-test_osm_map-make_first: FORCE
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile 
+sub-test_osm_map-all: FORCE
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile all
+sub-test_osm_map-clean: FORCE
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile clean
+sub-test_osm_map-distclean: FORCE
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile distclean
+sub-test_osm_map-install_subtargets: FORCE
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile install
+sub-test_osm_map-uninstall_subtargets: FORCE
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile uninstall
 
 Makefile: ../../../new_hudson/tests/tests_osm_elements/tests_osm_elements.pro D:/Program_Files/Qt/5.10.0/mingw53_32/mkspecs/win32-g++/qmake.conf D:/Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/spec_pre.prf \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/mkspecs/qdevice.pri \
@@ -503,15 +529,15 @@ D:/Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/lex.prf:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ..\..\..\new_hudson\tests\tests_osm_elements\tests_osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 
-qmake_all: sub-test_osm_node-qmake_all sub-test_osm_way-qmake_all sub-test_osm_relation-qmake_all sub-test_referential_integrity-qmake_all sub-test_osm_object-qmake_all FORCE
+qmake_all: sub-test_osm_node-qmake_all sub-test_osm_way-qmake_all sub-test_osm_relation-qmake_all sub-test_referential_integrity-qmake_all sub-test_osm_object-qmake_all sub-test_osm_map-qmake_all FORCE
 
-make_first: sub-test_osm_node-make_first sub-test_osm_way-make_first sub-test_osm_relation-make_first sub-test_referential_integrity-make_first sub-test_osm_object-make_first  FORCE
-all: sub-test_osm_node-all sub-test_osm_way-all sub-test_osm_relation-all sub-test_referential_integrity-all sub-test_osm_object-all  FORCE
-clean: sub-test_osm_node-clean sub-test_osm_way-clean sub-test_osm_relation-clean sub-test_referential_integrity-clean sub-test_osm_object-clean  FORCE
-distclean: sub-test_osm_node-distclean sub-test_osm_way-distclean sub-test_osm_relation-distclean sub-test_referential_integrity-distclean sub-test_osm_object-distclean  FORCE
+make_first: sub-test_osm_node-make_first sub-test_osm_way-make_first sub-test_osm_relation-make_first sub-test_referential_integrity-make_first sub-test_osm_object-make_first sub-test_osm_map-make_first  FORCE
+all: sub-test_osm_node-all sub-test_osm_way-all sub-test_osm_relation-all sub-test_referential_integrity-all sub-test_osm_object-all sub-test_osm_map-all  FORCE
+clean: sub-test_osm_node-clean sub-test_osm_way-clean sub-test_osm_relation-clean sub-test_referential_integrity-clean sub-test_osm_object-clean sub-test_osm_map-clean  FORCE
+distclean: sub-test_osm_node-distclean sub-test_osm_way-distclean sub-test_osm_relation-distclean sub-test_referential_integrity-distclean sub-test_osm_object-distclean sub-test_osm_map-distclean  FORCE
 	-$(DEL_FILE) Makefile
-install_subtargets: sub-test_osm_node-install_subtargets sub-test_osm_way-install_subtargets sub-test_osm_relation-install_subtargets sub-test_referential_integrity-install_subtargets sub-test_osm_object-install_subtargets FORCE
-uninstall_subtargets: sub-test_osm_node-uninstall_subtargets sub-test_osm_way-uninstall_subtargets sub-test_osm_relation-uninstall_subtargets sub-test_referential_integrity-uninstall_subtargets sub-test_osm_object-uninstall_subtargets FORCE
+install_subtargets: sub-test_osm_node-install_subtargets sub-test_osm_way-install_subtargets sub-test_osm_relation-install_subtargets sub-test_referential_integrity-install_subtargets sub-test_osm_object-install_subtargets sub-test_osm_map-install_subtargets FORCE
+uninstall_subtargets: sub-test_osm_node-uninstall_subtargets sub-test_osm_way-uninstall_subtargets sub-test_osm_relation-uninstall_subtargets sub-test_referential_integrity-uninstall_subtargets sub-test_osm_object-uninstall_subtargets sub-test_osm_map-uninstall_subtargets FORCE
 
 sub-test_osm_node-debug:
 	@if not exist test_osm_node\ mkdir test_osm_node\ & if not exist test_osm_node\ exit 1
@@ -528,7 +554,10 @@ sub-test_referential_integrity-debug:
 sub-test_osm_object-debug:
 	@if not exist test_osm_object\ mkdir test_osm_object\ & if not exist test_osm_object\ exit 1
 	cd test_osm_object\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_object\test_osm_object.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile debug
-debug: sub-test_osm_node-debug sub-test_osm_way-debug sub-test_osm_relation-debug sub-test_referential_integrity-debug sub-test_osm_object-debug
+sub-test_osm_map-debug:
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile debug
+debug: sub-test_osm_node-debug sub-test_osm_way-debug sub-test_osm_relation-debug sub-test_referential_integrity-debug sub-test_osm_object-debug sub-test_osm_map-debug
 
 sub-test_osm_node-release:
 	@if not exist test_osm_node\ mkdir test_osm_node\ & if not exist test_osm_node\ exit 1
@@ -545,7 +574,10 @@ sub-test_referential_integrity-release:
 sub-test_osm_object-release:
 	@if not exist test_osm_object\ mkdir test_osm_object\ & if not exist test_osm_object\ exit 1
 	cd test_osm_object\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_object\test_osm_object.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile release
-release: sub-test_osm_node-release sub-test_osm_way-release sub-test_osm_relation-release sub-test_referential_integrity-release sub-test_osm_object-release
+sub-test_osm_map-release:
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile release
+release: sub-test_osm_node-release sub-test_osm_way-release sub-test_osm_relation-release sub-test_referential_integrity-release sub-test_osm_object-release sub-test_osm_map-release
 
 sub-test_osm_node-check:
 	@if not exist test_osm_node\ mkdir test_osm_node\ & if not exist test_osm_node\ exit 1
@@ -562,7 +594,10 @@ sub-test_referential_integrity-check:
 sub-test_osm_object-check:
 	@if not exist test_osm_object\ mkdir test_osm_object\ & if not exist test_osm_object\ exit 1
 	cd test_osm_object\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_object\test_osm_object.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile check
-check: sub-test_osm_node-check sub-test_osm_way-check sub-test_osm_relation-check sub-test_referential_integrity-check sub-test_osm_object-check
+sub-test_osm_map-check:
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile check
+check: sub-test_osm_node-check sub-test_osm_way-check sub-test_osm_relation-check sub-test_referential_integrity-check sub-test_osm_object-check sub-test_osm_map-check
 
 sub-test_osm_node-benchmark:
 	@if not exist test_osm_node\ mkdir test_osm_node\ & if not exist test_osm_node\ exit 1
@@ -579,7 +614,10 @@ sub-test_referential_integrity-benchmark:
 sub-test_osm_object-benchmark:
 	@if not exist test_osm_object\ mkdir test_osm_object\ & if not exist test_osm_object\ exit 1
 	cd test_osm_object\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_object\test_osm_object.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile benchmark
-benchmark: sub-test_osm_node-benchmark sub-test_osm_way-benchmark sub-test_osm_relation-benchmark sub-test_referential_integrity-benchmark sub-test_osm_object-benchmark
+sub-test_osm_map-benchmark:
+	@if not exist test_osm_map\ mkdir test_osm_map\ & if not exist test_osm_map\ exit 1
+	cd test_osm_map\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests_osm_elements\test_osm_map\test_osm_map.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile benchmark
+benchmark: sub-test_osm_node-benchmark sub-test_osm_way-benchmark sub-test_osm_relation-benchmark sub-test_referential_integrity-benchmark sub-test_osm_object-benchmark sub-test_osm_map-benchmark
 install:install_subtargets  FORCE
 
 uninstall: uninstall_subtargets FORCE

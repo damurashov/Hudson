@@ -1,9 +1,9 @@
 #ifndef OSM_MAP_H
 #define OSM_MAP_H
 
-#include "osm_node.h"
-#include "osm_way.h"
-#include "osm_relation.h"
+#include "osm_object.h"
+
+namespace ns_osm {
 
 class Osm_Map {
 private:
@@ -54,5 +54,7 @@ public:
 	crelation_iterator						crend					() const;
 	                                        Osm_Map();
 };
+
+}
 
 #endif // OSM_MAP_H
