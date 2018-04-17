@@ -18,20 +18,21 @@ private:
 	QList<Osm_Object*>	m_sources;
 protected:
 	void				unsubscribe			();
-	void				unsubscribe			(Osm_Object&);
 	void				subscribe			(Osm_Object&);
 public:
-	void				remove_source		(const Osm_Object&);
-	virtual void		handle_event_update	(const Osm_Node& source);
-	virtual void		handle_event_update	(const Osm_Way& source);
-	virtual void		handle_event_update	(const Osm_Relation& source);
-	virtual void		handle_event_update	(const Osm_Object& source);
-	virtual void		handle_event_delete	(const Osm_Node& source);
-	virtual void		handle_event_delete	(const Osm_Way& source);
-	virtual void		handle_event_delete	(const Osm_Relation& source);
-	virtual void		handle_event_delete	(const Osm_Object& source);
-	                    Osm_Subscriber		(const Osm_Subscriber&) = delete;
-	Osm_Subscriber		operator=			(const Osm_Subscriber&) = delete;
+	void				unsubscribe			(Osm_Object&);
+	//void				remove_source		(const Osm_Object&);
+	virtual void		handle_event_update	(Osm_Way& source);
+	virtual void		handle_event_update	(Osm_Node& source);
+	virtual void		handle_event_update	(Osm_Relation& source);
+	virtual void		handle_event_update	(Osm_Object& source);
+	virtual void		handle_event_delete	(Osm_Node& source);
+	virtual void		handle_event_delete	(Osm_Way& source);
+	virtual void		handle_event_delete	(Osm_Relation& source);
+	virtual void		handle_event_delete	(Osm_Object& source);
+	                    Osm_Subscriber		();
+	                    Osm_Subscriber		(Osm_Subscriber&) = delete;
+	Osm_Subscriber		operator=			(Osm_Subscriber&) = delete;
 	virtual				~Osm_Subscriber		();
 };
 }

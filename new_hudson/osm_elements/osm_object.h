@@ -36,7 +36,7 @@ protected:
 	                                Osm_Object			(const Type);
 									Osm_Object			(const QString& id, const Type);
 									Osm_Object			(const Osm_Object&) = delete;
-	Osm_Object&						operator=			() = delete;
+	Osm_Object&						operator=			(const Osm_Object&) = delete;
 public:
 	void							add_subscriber		(Osm_Subscriber&);
 	void							remove_subscriber	(Osm_Subscriber&);

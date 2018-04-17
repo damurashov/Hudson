@@ -71,19 +71,19 @@ long long Osm_Object::get_inner_id() const {
 
 void Osm_Object::emit_delete() {
 	for (auto it = m_subscribers.begin(); it != m_subscribers.end(); ++it) {
-		it->remove_source(*this);
+		(*it)->unsubscribe(*this);
 		switch (get_type()) {
 		case Type::NODE:
-			it->handle_event_delete(*static_cast<Osm_Node*>(this));
+			(*it)->handle_event_delete(*static_cast<Osm_Node*>(this));
 			break;
 		case Type::WAY:
-			it->handle_event_delete(*static_cast<Osm_Way*>(this));
+			(*it)->handle_event_delete(*static_cast<Osm_Way*>(this));
 			break;
 		case Type::RELATION:
-			it->handle_event_delete(*static_cast<Osm_Relation*>(this));
+			(*it)->handle_event_delete(*static_cast<Osm_Relation*>(this));
 			break;
 		}
-		it->handle_event_delete(*static_cast<Osm_Object*>(this));
+		(*it)->handle_event_delete(*static_cast<Osm_Object*>(this));
 	}
 }
 
@@ -91,16 +91,16 @@ void Osm_Object::emit_update() {
 	for (auto it = m_subscribers.begin(); it != m_subscribers.end(); ++it) {
 		switch (get_type()) {
 		case Type::NODE:
-			it->handle_event_update(*static_cast<Osm_Node*>(this));
+			(*it)->handle_event_update(*static_cast<Osm_Node*>(this));
 			break;
 		case Type::WAY:
-			it->handle_event_update(*static_cast<Osm_Way*>(this));
+			(*it)->handle_event_update(*static_cast<Osm_Way*>(this));
 			break;
 		case Type::RELATION:
-			it->handle_event_update(*static_cast<Osm_Relation*>(this));
+			(*it)->handle_event_update(*static_cast<Osm_Relation*>(this));
 			break;
 		}
-		it->handle_event_update(*static_cast<Osm_Object*>(this));
+		(*it)->handle_event_update(*static_cast<Osm_Object*>(this));
 	}
 }
 

@@ -1,6 +1,7 @@
 #ifndef OSM_WAY_H
 #define OSM_WAY_H
 
+#include "osm_subscriber.h"
 #include "osm_object.h"
 #include "osm_node.h"
 
@@ -22,11 +23,13 @@ public:
 	bool									is_closed			() const;
 	bool									is_empty			() const;
 	const QList<Osm_Node*>&					get_nodes_list		() const;
-	virtual void							handle_event_delete	(const Osm_Node&) override;
-	virtual void							handle_event_update	(const Osm_Object&) override;
-	virtual void							handle_event_delete	(const Osm_Object&) override;
+	virtual void							handle_event_delete	(Osm_Node&) override;
+	virtual void							handle_event_update	(Osm_Object&) override;
+	virtual void							handle_event_delete	(Osm_Object&) override;
 											Osm_Way				(const QString& id);
 											Osm_Way				();
+											Osm_Way				(const Osm_Way&) = delete;
+	Osm_Way&								operator=			(const Osm_Way&) = delete;
 	virtual									~Osm_Way			();
 };
 

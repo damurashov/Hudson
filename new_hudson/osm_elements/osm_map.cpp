@@ -31,44 +31,53 @@ void Osm_Map::orphan() {
 void Osm_Map::add(Osm_Node* p_node) {
 	if (p_node != nullptr) {
 		m_nodes_hash[p_node->get_id()] = p_node;
+		subscribe(*p_node);
 	}
 }
 
 void Osm_Map::add(Osm_Way* p_way) {
 	if (p_way != nullptr) {
 		m_ways_hash[p_way->get_id()] = p_way;
+		subscribe(*p_way);
 	}
 }
 
 void Osm_Map::add(Osm_Relation* p_rel) {
 	if (p_rel != nullptr) {
 		m_relations_hash[p_rel->get_id()] = p_rel;
+		subscribe(*p_rel);
 	}
 }
 
 void Osm_Map::remove(Osm_Node* p_node) {
 	m_nodes_hash.remove(p_node->get_id());
+	unsubscribe(*p_node);
 	delete p_node;
 }
 
 void Osm_Map::remove(Osm_Way* p_way) {
 	m_ways_hash.remove(p_way->get_id());
+	unsubscribe(*p_way);
 	delete p_way;
 }
 
 void Osm_Map::remove(Osm_Relation* p_rel) {
 	m_relations_hash.remove(p_rel->get_id());
+	unsubscribe(*p_rel);
 	delete p_rel;
 }
 
 void Osm_Map::clear() {
 	for (auto it = nbegin(); it != nend(); ++it) {
+		unsubscribe(**it);
 		delete *it;
 	}
 	for (auto it = wbegin(); it != wend(); ++it) {
+		unsubscribe(**it);
 		delete *it;
 	}
 	for (auto it = rbegin(); it != rend(); ++it) {
+		unsubscribe(**it);
 		delete *it;
 	}
 	m_nodes_hash.clear();

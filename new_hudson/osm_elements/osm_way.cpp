@@ -77,7 +77,7 @@ bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
 		if (f_is_found) {
 			it++;
 			m_nodes.insert(it, node_ptr);
-			subscribe(*ptr_node);
+			subscribe(*node_ptr);
 			emit_update();
 			return true;
 		}
@@ -107,8 +107,8 @@ const QList<Osm_Node*>& Osm_Way::get_nodes_list() const {
 	return m_nodes;
 }
 
-void Osm_Way::handle_event_delete(const Osm_Node& node) override {
-	bool f_stay_closed = (is_closed() && (node.get_id() = m_nodes.back()->get_id()));
+void Osm_Way::handle_event_delete(Osm_Node& node) {
+	bool f_stay_closed = (is_closed() && (node.get_id() == m_nodes.back()->get_id()));
 
 	m_size -= m_nodes.removeAll(&node);
 	if (f_stay_closed && get_size() >= 3) {
@@ -116,10 +116,10 @@ void Osm_Way::handle_event_delete(const Osm_Node& node) override {
 	}
 }
 
-void Osm_Way::handle_event_delete(const Osm_Object&) override {
+void Osm_Way::handle_event_delete(Osm_Object&) {
 	emit_update();
 }
 
-void Osm_Way::handle_event_update(const Osm_Object&) override {
+void Osm_Way::handle_event_update(Osm_Object&) {
 	emit_update();
 }

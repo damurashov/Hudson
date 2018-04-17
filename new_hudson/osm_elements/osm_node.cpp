@@ -1,4 +1,4 @@
-#include "osm_node.h".h"
+#include "osm_node.h"
 using namespace ns_osm;
 // ===================== Constructors, destructors =====================
 Osm_Node::Osm_Node() : Osm_Object(Osm_Object::Type::NODE) {
@@ -35,10 +35,6 @@ Osm_Node::Osm_Node(const double& latitude, const double& longitude) :
 
 Osm_Node::~Osm_Node() {
 	emit_delete();
-}
-
-// ========================= Private methods =========================
-void Osm_Node::handle_child_del(Osm_Object* child) {
 }
 
 // =========================== Public methods ===========================

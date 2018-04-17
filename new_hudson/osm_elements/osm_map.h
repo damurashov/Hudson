@@ -2,10 +2,13 @@
 #define OSM_MAP_H
 
 #include "osm_object.h"
+#include "osm_node.h"
+#include "osm_way.h"
+#include "osm_relation.h"
 
 namespace ns_osm {
 
-class Osm_Map {
+class Osm_Map : public Osm_Subscriber {
 private:
 	int										mn_parents;
 	QHash<long long, ns_osm::Osm_Node*>		m_nodes_hash;
@@ -52,7 +55,7 @@ public:
 	relation_iterator						rend					();
 	crelation_iterator						crbegin					() const;
 	crelation_iterator						crend					() const;
-	                                        Osm_Map();
+	                                        Osm_Map					();
 };
 
 }
