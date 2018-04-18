@@ -22,6 +22,7 @@ private:
 	QMap<QString, QString>			m_attrmap;
 	QMap<QString, QString>			m_tagmap;
 	QList<Osm_Subscriber*>			m_subscribers;
+	int								mn_subscribers;
 	bool							f_is_valid;
 
 	                                Osm_Object			();
@@ -40,6 +41,7 @@ protected:
 public:
 	void							add_subscriber		(Osm_Subscriber&);
 	void							remove_subscriber	(Osm_Subscriber&);
+	int								count_subscribers	() const;
 	QString							get_attr_value		(const QString& key) const;
 	QString							get_tag_value		(const QString& key) const;
 	const QMap<QString, QString>&	get_tag_map			() const;

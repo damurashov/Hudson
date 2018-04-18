@@ -33,11 +33,11 @@ public:
 	unsigned short							count_nodes			() const;
 	unsigned short							count_ways			() const;
 	unsigned short							count_relations		() const;
-	virtual void							handle_event_delete	(Osm_Node&) override;
-	virtual void							handle_event_delete	(Osm_Way&) override;
-	virtual void							handle_event_delete	(Osm_Relation&) override;
-	virtual void							handle_event_delete	(Osm_Object&) override;
-	virtual void							handle_event_update	(Osm_Object&) override;
+	void									handle_event_delete	(Osm_Node&) override;
+	void									handle_event_delete	(Osm_Way&) override;
+	void									handle_event_delete	(Osm_Relation&) override;
+	void									handle_event_delete	(Osm_Object&) override;
+	void									handle_event_update	(Osm_Object&) override;
 	                                        Osm_Relation		(const QString& id);
 											Osm_Relation		();
 	virtual									~Osm_Relation		();

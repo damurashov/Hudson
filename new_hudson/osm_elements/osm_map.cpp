@@ -6,11 +6,27 @@ using namespace ns_osm;
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
-Osm_Map::Osm_Map() : mn_parents(0) {}
+Osm_Map::Osm_Map() {
+	mn_parents = 0;
+	f_destruct_physically = true;
+	f_remove_orphaned_nodes = true;
+}
+
+Osm_Map::~Osm_Map() {
+	clear();
+}
 
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
+
+void Osm_Map::set_remove_physically(bool f) {
+	f_destruct_physically = f;
+}
+
+void Osm_Map::set_remove_orphaned_nodes(bool f) {
+	f_remove_orphaned_nodes = f;
+}
 
 void Osm_Map::set_bound(const QRectF& bound) {
 	m_bounding_rect = bound;
@@ -52,33 +68,45 @@ void Osm_Map::add(Osm_Relation* p_rel) {
 void Osm_Map::remove(Osm_Node* p_node) {
 	m_nodes_hash.remove(p_node->get_id());
 	unsubscribe(*p_node);
-	delete p_node;
+	if (f_destruct_physically) {
+		delete p_node;
+	}
 }
 
 void Osm_Map::remove(Osm_Way* p_way) {
 	m_ways_hash.remove(p_way->get_id());
 	unsubscribe(*p_way);
-	delete p_way;
+	if (f_destruct_physically) {
+		delete p_way;
+	}
 }
 
 void Osm_Map::remove(Osm_Relation* p_rel) {
 	m_relations_hash.remove(p_rel->get_id());
 	unsubscribe(*p_rel);
-	delete p_rel;
+	if (f_destruct_physically) {
+		delete p_rel;
+	}
 }
 
 void Osm_Map::clear() {
 	for (auto it = nbegin(); it != nend(); ++it) {
 		unsubscribe(**it);
-		delete *it;
+		if (f_destruct_physically) {
+			delete *it;
+		}
 	}
 	for (auto it = wbegin(); it != wend(); ++it) {
 		unsubscribe(**it);
-		delete *it;
+		if (f_destruct_physically) {
+			delete *it;
+		}
 	}
 	for (auto it = rbegin(); it != rend(); ++it) {
 		unsubscribe(**it);
-		delete *it;
+		if (f_destruct_physically) {
+			delete *it;
+		}
 	}
 	m_nodes_hash.clear();
 	m_ways_hash.clear();
@@ -100,7 +128,7 @@ void Osm_Map::fit_bounding_rect() {
 	if (!m_nodes_hash.isEmpty()) {
 		for (auto it = nbegin(); it !=nend(); ++it) {
 			temp_lat = it.value()->get_lat();
-			temp_lat = it.value()->get_lon();
+			temp_lon = it.value()->get_lon();
 
 			if (temp_lat < minlat) {
 				minlat = temp_lat;
@@ -197,6 +225,28 @@ Osm_Map::crelation_iterator Osm_Map::crbegin() const {
 
 Osm_Map::crelation_iterator Osm_Map::crend() const {
 	return m_relations_hash.cend();
+}
+
+void Osm_Map::handle_event_delete(Osm_Node& node) {
+	m_nodes_hash.remove(node.get_id());
+}
+
+void Osm_Map::handle_event_delete(Osm_Way& way) {
+	m_ways_hash.remove(way.get_id());
+
+	/* Remove orphaned nodes */
+	if (!f_remove_orphaned_nodes) {
+		return;
+	}
+	for (auto it = nbegin(); it != nend(); ++it) {
+		if ((*it)->count_subscribers() == 0) {
+			remove(*it);
+		}
+	}
+}
+
+void Osm_Map::handle_event_delete(Osm_Relation& rel) {
+	m_relations_hash.remove(rel.get_id());
 }
 
 /*================================================================*/

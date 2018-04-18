@@ -17,13 +17,6 @@ Osm_Way::Osm_Way(const QString &id) : Osm_Object(id, Osm_Object::Type::WAY) {
 Osm_Way::~Osm_Way() {
 	emit_delete();
 	/* Remove all orphaned nodes */
-//	QList<Osm_Node*>::iterator it;
-//	for (it = m_nodes.begin(); it != m_nodes.end(); ++it) {
-//		if (reinterpret_cast<Osm_Way*>(*it)->count_parents() == 1) {
-//			delete *it;
-//			it = m_nodes.begin();
-//		}
-//	}
 }
 
 
@@ -78,6 +71,7 @@ bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
 			it++;
 			m_nodes.insert(it, node_ptr);
 			subscribe(*node_ptr);
+			m_size++;
 			emit_update();
 			return true;
 		}

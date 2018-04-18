@@ -8,6 +8,7 @@ private slots:
 	void add() {
 		Osm_Relation relation;
 		Osm_Way* p_way = new Osm_Way;
+		Osm_Way* p_way2;
 		Osm_Node* p_node = new Osm_Node(QString::number(12.2), QString::number(43.12));
 
 		relation.add(p_way);
@@ -17,7 +18,7 @@ private slots:
 		QCOMPARE(1, relation.count_ways());
 
 		relation.add(p_node);
-		relation.add(nullptr);
+		relation.add(p_way2);
 		QCOMPARE(2, relation.get_size());
 		QCOMPARE(1, relation.count_nodes());
 	}
@@ -25,6 +26,7 @@ private slots:
 	void remove() {
 		Osm_Relation relation;
 		Osm_Way* p_way = new Osm_Way;
+		Osm_Way* p_way2;
 		Osm_Node* p_node = new Osm_Node(1.1, 1.1);
 
 		relation.add(p_way);
@@ -32,13 +34,13 @@ private slots:
 		QCOMPARE(2, relation.get_size());
 
 		relation.remove(p_way);
-		relation.remove(nullptr);
+		relation.remove(p_way2);
 		QCOMPARE(1, relation.get_size());
 		delete p_node;
 		QCOMPARE(0, relation.get_size());
 	}
 
-	void has_object() {
+	void has() {
 		Osm_Relation relation;
 		Osm_Way* p_way = new Osm_Way;
 		Osm_Node* p_node = new Osm_Node(1.1, 1.1);
@@ -47,18 +49,18 @@ private slots:
 		relation.add(p_way);
 		relation.add(p_node);
 		relation.add(p_node_2);
-		QCOMPARE(true, relation.has_object(p_way));
-		QCOMPARE(true, relation.has_object(p_node));
-		QCOMPARE(true, relation.has_object(p_node_2));
+		QCOMPARE(true, relation.has(p_way));
+		QCOMPARE(true, relation.has(p_node));
+		QCOMPARE(true, relation.has(p_node_2));
 
 		relation.remove(p_way);
 		delete p_node_2;
-		QCOMPARE(false, relation.has_object(p_way));
-		QCOMPARE(false, relation.has_object(p_node_2));
-		QCOMPARE(true, relation.has_object(p_node));
+		QCOMPARE(false, relation.has(p_way));
+		QCOMPARE(false, relation.has(p_node_2));
+		QCOMPARE(true, relation.has(p_node));
 
 		delete p_node;
-		QCOMPARE(false, relation.has_object(p_node));
+		QCOMPARE(false, relation.has(p_node));
 	}
 
 	void set_role() {
@@ -229,7 +231,9 @@ private slots:
 		rel.add(p_node);
 		QCOMPARE(true, rel.is_valid());
 
-		rel.add(nullptr);
+		delete p_node;
+		p_node = nullptr;
+		rel.add(p_node);
 		QCOMPARE(false, rel.is_valid());
 	}
 };

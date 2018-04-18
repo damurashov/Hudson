@@ -11,7 +11,7 @@ MAKEFILE      = Makefile.Release
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DUNICODE -D_UNICODE -DQT_QML_DEBUG -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_TESTLIB_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR="\"D:/TemporaryFiles/Hudson/build-new_hudson-Desktop_Qt_5_10_0_MinGW_32bit-Debug/tests/tests_osm_elements/test_osm_way\""
+DEFINES       = -Dprivate=public -Dprotected=public -DQT_QML_DEBUG -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_TESTLIB_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR="\"D:/TemporaryFiles/Hudson/build-new_hudson-Desktop_Qt_5_10_0_MinGW_32bit-Debug/tests/tests_osm_elements/test_osm_way\""
 CFLAGS        = -fno-keep-inline-dllexport -O2 -Wextra -Wall -W $(DEFINES)
 CXXFLAGS      = -fno-keep-inline-dllexport -O2 -std=gnu++11 -Wextra -Wall -W -fexceptions -mthreads $(DEFINES)
 INCPATH       = -I..\..\..\..\new_hudson\tests\tests_osm_elements\test_osm_way -I. -I..\..\..\..\new_hudson\osm_elements -ID:\Program_Files\Qt\5.10.0\mingw53_32\include -ID:\Program_Files\Qt\5.10.0\mingw53_32\include\QtGui -ID:\Program_Files\Qt\5.10.0\mingw53_32\include\QtANGLE -ID:\Program_Files\Qt\5.10.0\mingw53_32\include\QtTest -ID:\Program_Files\Qt\5.10.0\mingw53_32\include\QtCore -Irelease -ID:\Program_Files\Qt\5.10.0\mingw53_32\mkspecs\win32-g++ 
@@ -391,6 +391,7 @@ release/test_osm_way.moc: D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/Q
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/qttestversion.h \
 		../../../../new_hudson/osm_elements/osm_elements.h \
 		../../../../new_hudson/osm_elements/osm_object.h \
+		../../../../new_hudson/osm_elements/osm_subscriber.h \
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \
@@ -701,6 +702,7 @@ release/test_osm_way.o: ../../../../new_hudson/tests/tests_osm_elements/test_osm
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/qttestversion.h \
 		../../../../new_hudson/osm_elements/osm_elements.h \
 		../../../../new_hudson/osm_elements/osm_object.h \
+		../../../../new_hudson/osm_elements/osm_subscriber.h \
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \

@@ -6,8 +6,6 @@ TARGET = osm_elements
 
 CONFIG += c++11 \
     staticlib\
-    #create_prl\
-    #link_prl
 
 DESTDIR = $$PWD/../intermediate_libs/
 

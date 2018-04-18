@@ -21,7 +21,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_Test_Osm_Relation_t {
     QByteArrayData data[15];
-    char stringdata0[149];
+    char stringdata0[142];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,20 +34,20 @@ QT_MOC_LITERAL(0, 0, 17), // "Test_Osm_Relation"
 QT_MOC_LITERAL(1, 18, 3), // "add"
 QT_MOC_LITERAL(2, 22, 0), // ""
 QT_MOC_LITERAL(3, 23, 6), // "remove"
-QT_MOC_LITERAL(4, 30, 10), // "has_object"
-QT_MOC_LITERAL(5, 41, 8), // "set_role"
-QT_MOC_LITERAL(6, 50, 8), // "get_size"
-QT_MOC_LITERAL(7, 59, 8), // "get_role"
-QT_MOC_LITERAL(8, 68, 9), // "get_nodes"
-QT_MOC_LITERAL(9, 78, 8), // "get_ways"
-QT_MOC_LITERAL(10, 87, 13), // "get_relations"
-QT_MOC_LITERAL(11, 101, 11), // "count_nodes"
-QT_MOC_LITERAL(12, 113, 10), // "count_ways"
-QT_MOC_LITERAL(13, 124, 15), // "count_relations"
-QT_MOC_LITERAL(14, 140, 8) // "is_valid"
+QT_MOC_LITERAL(4, 30, 3), // "has"
+QT_MOC_LITERAL(5, 34, 8), // "set_role"
+QT_MOC_LITERAL(6, 43, 8), // "get_size"
+QT_MOC_LITERAL(7, 52, 8), // "get_role"
+QT_MOC_LITERAL(8, 61, 9), // "get_nodes"
+QT_MOC_LITERAL(9, 71, 8), // "get_ways"
+QT_MOC_LITERAL(10, 80, 13), // "get_relations"
+QT_MOC_LITERAL(11, 94, 11), // "count_nodes"
+QT_MOC_LITERAL(12, 106, 10), // "count_ways"
+QT_MOC_LITERAL(13, 117, 15), // "count_relations"
+QT_MOC_LITERAL(14, 133, 8) // "is_valid"
 
     },
-    "Test_Osm_Relation\0add\0\0remove\0has_object\0"
+    "Test_Osm_Relation\0add\0\0remove\0has\0"
     "set_role\0get_size\0get_role\0get_nodes\0"
     "get_ways\0get_relations\0count_nodes\0"
     "count_ways\0count_relations\0is_valid"
@@ -108,7 +108,7 @@ void Test_Osm_Relation::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         switch (_id) {
         case 0: _t->add(); break;
         case 1: _t->remove(); break;
-        case 2: _t->has_object(); break;
+        case 2: _t->has(); break;
         case 3: _t->set_role(); break;
         case 4: _t->get_size(); break;
         case 5: _t->get_role(); break;

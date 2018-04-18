@@ -20,23 +20,25 @@ Osm_Subscriber::~Osm_Subscriber() {
 /*                      Protected methods                         */
 /*================================================================*/
 
-void Osm_Subscriber::unsubscribe(Osm_Object& source) {
-	source.remove_subscriber(*this);
-}
 
 void Osm_Subscriber::subscribe(Osm_Object& object) {
 	object.add_subscriber(*this);
 	m_sources.push_back(&object);
 }
 
-/*================================================================*/
-/*                        Public methods                          */
-/*================================================================*/
-
 void Osm_Subscriber::unsubscribe() {
 	for (auto it = m_sources.begin(); it != m_sources.end(); ++it) {
 		(*it)->remove_subscriber(*this);
 	}
+	m_sources.clear();
+}
+/*================================================================*/
+/*                        Public methods                          */
+/*================================================================*/
+
+void Osm_Subscriber::unsubscribe(Osm_Object& source) {
+	source.remove_subscriber(*this);
+	m_sources.removeOne(&source);
 }
 
 //void Osm_Subscriber::remove_source(const Osm_Object& source) {

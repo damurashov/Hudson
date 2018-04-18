@@ -1,5 +1,8 @@
 QT += testlib core
 
+DEFINES = private=public\
+    protected=public
+
 TEMPLATE = app
 
 CONFIG += c++11

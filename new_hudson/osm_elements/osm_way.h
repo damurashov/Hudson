@@ -23,9 +23,9 @@ public:
 	bool									is_closed			() const;
 	bool									is_empty			() const;
 	const QList<Osm_Node*>&					get_nodes_list		() const;
-	virtual void							handle_event_delete	(Osm_Node&) override;
-	virtual void							handle_event_update	(Osm_Object&) override;
-	virtual void							handle_event_delete	(Osm_Object&) override;
+	void									handle_event_delete	(Osm_Node&) override;
+	void									handle_event_update	(Osm_Object&) override;
+	void									handle_event_delete	(Osm_Object&) override;
 											Osm_Way				(const QString& id);
 											Osm_Way				();
 											Osm_Way				(const Osm_Way&) = delete;

@@ -317,6 +317,7 @@ debug/osm_widget.o: ../../new_hudson/osm_widget/osm_widget.cpp ../../new_hudson/
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qwineventnotifier.h \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qxmlstream.h \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qtcoreversion.h \
+		../../new_hudson/osm_elements/osm_subscriber.h \
 		../../new_hudson/osm_elements/osm_node.h \
 		../../new_hudson/osm_elements/osm_way.h \
 		../../new_hudson/osm_elements/osm_relation.h \
@@ -792,6 +793,7 @@ debug/osm_xml.o: ../../new_hudson/osm_widget/osm_xml.cpp ../../new_hudson/osm_wi
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qwineventnotifier.h \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qxmlstream.h \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qtcoreversion.h \
+		../../new_hudson/osm_elements/osm_subscriber.h \
 		../../new_hudson/osm_elements/osm_node.h \
 		../../new_hudson/osm_elements/osm_way.h \
 		../../new_hudson/osm_elements/osm_relation.h \
@@ -1267,6 +1269,7 @@ debug/xml_handler.o: ../../new_hudson/osm_widget/xml_handler.cpp ../../new_hudso
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qwineventnotifier.h \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qxmlstream.h \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qtcoreversion.h \
+		../../new_hudson/osm_elements/osm_subscriber.h \
 		../../new_hudson/osm_elements/osm_node.h \
 		../../new_hudson/osm_elements/osm_way.h \
 		../../new_hudson/osm_elements/osm_relation.h \

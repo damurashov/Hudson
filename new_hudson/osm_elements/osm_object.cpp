@@ -23,6 +23,7 @@ Osm_Object::Osm_Object() :
 {
 	f_is_valid = true;
 	m_attrmap[QString("id")] = QString::number(OSM_ID);
+	mn_subscribers = 0;
 	//reg_osm_object(this);
 }
 
@@ -33,6 +34,7 @@ Osm_Object::Osm_Object(const Osm_Object::Type type) :
 {
 	f_is_valid = true;
 	m_attrmap[QString("id")] = QString::number(OSM_ID);
+	mn_subscribers = 0;
 	//reg_osm_object(this);
 }
 
@@ -47,6 +49,7 @@ Osm_Object::Osm_Object(const QString &id, const Osm_Object::Type type):
 	if (s_osm_id_bound >= OSM_ID) {
 		s_osm_id_bound = (OSM_ID - 1);
 	}
+	mn_subscribers = 0;
 }
 
 Osm_Object::~Osm_Object() {
@@ -111,11 +114,18 @@ void Osm_Object::emit_update() {
 void Osm_Object::add_subscriber(Osm_Subscriber& subscriber) {
 	if (m_subscribers.indexOf(&subscriber) == -1) {
 		m_subscribers.push_back(&subscriber);
+		mn_subscribers++;
 	}
 }
 
 void Osm_Object::remove_subscriber(Osm_Subscriber& subscriber) {
-	m_subscribers.removeAll(&subscriber);
+	//m_subscribers.remove(&subscriber);
+	m_subscribers.removeOne(&subscriber);
+	mn_subscribers--;
+}
+
+int Osm_Object::count_subscribers() const {
+	return mn_subscribers;
 }
 
 QString Osm_Object::get_attr_value(const QString& key) const {
