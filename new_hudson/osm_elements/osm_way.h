@@ -19,7 +19,7 @@ public:
 	bool									insert_node_between	(Osm_Node* ptr_node,
 																 Osm_Node* ptr_target_1,
 																 Osm_Node* ptr_target_2);
-	bool									has_node			(Osm_Node*) const;
+	bool									has					(Osm_Node*) const;
 	bool									is_closed			() const;
 	bool									is_empty			() const;
 	const QList<Osm_Node*>&					get_nodes_list		() const;

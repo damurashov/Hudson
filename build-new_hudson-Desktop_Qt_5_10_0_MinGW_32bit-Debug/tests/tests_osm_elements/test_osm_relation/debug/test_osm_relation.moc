@@ -20,8 +20,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_Test_Osm_Relation_t {
-    QByteArrayData data[15];
-    char stringdata0[142];
+    QByteArrayData data[7];
+    char stringdata0[97];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,22 +35,12 @@ QT_MOC_LITERAL(1, 18, 3), // "add"
 QT_MOC_LITERAL(2, 22, 0), // ""
 QT_MOC_LITERAL(3, 23, 6), // "remove"
 QT_MOC_LITERAL(4, 30, 3), // "has"
-QT_MOC_LITERAL(5, 34, 8), // "set_role"
-QT_MOC_LITERAL(6, 43, 8), // "get_size"
-QT_MOC_LITERAL(7, 52, 8), // "get_role"
-QT_MOC_LITERAL(8, 61, 9), // "get_nodes"
-QT_MOC_LITERAL(9, 71, 8), // "get_ways"
-QT_MOC_LITERAL(10, 80, 13), // "get_relations"
-QT_MOC_LITERAL(11, 94, 11), // "count_nodes"
-QT_MOC_LITERAL(12, 106, 10), // "count_ways"
-QT_MOC_LITERAL(13, 117, 15), // "count_relations"
-QT_MOC_LITERAL(14, 133, 8) // "is_valid"
+QT_MOC_LITERAL(5, 34, 8), // "get_role"
+QT_MOC_LITERAL(6, 43, 53) // "count_nodes___count_ways___co..."
 
     },
     "Test_Osm_Relation\0add\0\0remove\0has\0"
-    "set_role\0get_size\0get_role\0get_nodes\0"
-    "get_ways\0get_relations\0count_nodes\0"
-    "count_ways\0count_relations\0is_valid"
+    "get_role\0count_nodes___count_ways___count_relations___get_size"
 };
 #undef QT_MOC_LITERAL
 
@@ -60,7 +50,7 @@ static const uint qt_meta_data_Test_Osm_Relation[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      13,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -68,29 +58,13 @@ static const uint qt_meta_data_Test_Osm_Relation[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   79,    2, 0x08 /* Private */,
-       3,    0,   80,    2, 0x08 /* Private */,
-       4,    0,   81,    2, 0x08 /* Private */,
-       5,    0,   82,    2, 0x08 /* Private */,
-       6,    0,   83,    2, 0x08 /* Private */,
-       7,    0,   84,    2, 0x08 /* Private */,
-       8,    0,   85,    2, 0x08 /* Private */,
-       9,    0,   86,    2, 0x08 /* Private */,
-      10,    0,   87,    2, 0x08 /* Private */,
-      11,    0,   88,    2, 0x08 /* Private */,
-      12,    0,   89,    2, 0x08 /* Private */,
-      13,    0,   90,    2, 0x08 /* Private */,
-      14,    0,   91,    2, 0x08 /* Private */,
+       1,    0,   39,    2, 0x08 /* Private */,
+       3,    0,   40,    2, 0x08 /* Private */,
+       4,    0,   41,    2, 0x08 /* Private */,
+       5,    0,   42,    2, 0x08 /* Private */,
+       6,    0,   43,    2, 0x08 /* Private */,
 
  // slots: parameters
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -109,16 +83,8 @@ void Test_Osm_Relation::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         case 0: _t->add(); break;
         case 1: _t->remove(); break;
         case 2: _t->has(); break;
-        case 3: _t->set_role(); break;
-        case 4: _t->get_size(); break;
-        case 5: _t->get_role(); break;
-        case 6: _t->get_nodes(); break;
-        case 7: _t->get_ways(); break;
-        case 8: _t->get_relations(); break;
-        case 9: _t->count_nodes(); break;
-        case 10: _t->count_ways(); break;
-        case 11: _t->count_relations(); break;
-        case 12: _t->is_valid(); break;
+        case 3: _t->get_role(); break;
+        case 4: _t->count_nodes___count_ways___count_relations___get_size(); break;
         default: ;
         }
     }
@@ -150,13 +116,13 @@ int Test_Osm_Relation::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 13)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 5;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 13)
+        if (_id < 5)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 13;
+        _id -= 5;
     }
     return _id;
 }

@@ -212,7 +212,7 @@ Makefile: ../../new_hudson/osm_widget/osm_widget.pro ../../../../Program_Files/Q
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/qt_config.prf \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/win32-g++/qmake.conf \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/spec_post.prf \
-		../.qmake.stash \
+		.qmake.stash \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/exclusive_builds.prf \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/toolchain.prf \
 		../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/default_pre.prf \
@@ -392,7 +392,7 @@ Makefile: ../../new_hudson/osm_widget/osm_widget.pro ../../../../Program_Files/Q
 ../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/qt_config.prf:
 ../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/win32-g++/qmake.conf:
 ../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/spec_post.prf:
-../.qmake.stash:
+.qmake.stash:
 ../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/exclusive_builds.prf:
 ../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/toolchain.prf:
 ../../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/default_pre.prf:
@@ -430,6 +430,7 @@ all: debug-all release-all  FORCE
 clean: debug-clean release-clean  FORCE
 distclean: debug-distclean release-distclean  FORCE
 	-$(DEL_FILE) Makefile
+	-$(DEL_FILE) .qmake.stash
 
 debug-mocclean:
 	$(MAKE) -f $(MAKEFILE).Debug mocclean

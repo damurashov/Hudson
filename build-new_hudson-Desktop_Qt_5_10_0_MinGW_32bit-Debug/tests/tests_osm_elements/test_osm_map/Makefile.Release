@@ -391,6 +391,7 @@ release/test_osm_map.moc: D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/Q
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/qttestversion.h \
 		../../../../new_hudson/osm_elements/osm_elements.h \
 		../../../../new_hudson/osm_elements/osm_object.h \
+		../../../../new_hudson/osm_elements/osm_subscriber.h \
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \
@@ -701,6 +702,7 @@ release/test_osm_map.o: ../../../../new_hudson/tests/tests_osm_elements/test_osm
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/qttestversion.h \
 		../../../../new_hudson/osm_elements/osm_elements.h \
 		../../../../new_hudson/osm_elements/osm_object.h \
+		../../../../new_hudson/osm_elements/osm_subscriber.h \
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \

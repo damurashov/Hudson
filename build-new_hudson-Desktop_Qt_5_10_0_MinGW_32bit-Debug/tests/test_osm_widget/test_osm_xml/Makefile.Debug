@@ -393,6 +393,7 @@ debug/test_osm_xml.moc: D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtTest/QtT
 		../../../../new_hudson/osm_widget/xml_handler.h \
 		../../../../new_hudson/osm_elements/osm_elements.h \
 		../../../../new_hudson/osm_elements/osm_object.h \
+		../../../../new_hudson/osm_elements/osm_subscriber.h \
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \
@@ -937,6 +938,7 @@ debug/test_osm_xml.o: ../../../../new_hudson/tests/test_osm_widget/test_osm_xml/
 		../../../../new_hudson/osm_widget/xml_handler.h \
 		../../../../new_hudson/osm_elements/osm_elements.h \
 		../../../../new_hudson/osm_elements/osm_object.h \
+		../../../../new_hudson/osm_elements/osm_subscriber.h \
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \

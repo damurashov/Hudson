@@ -38,39 +38,21 @@ sub-osm_elements-qmake_all:  FORCE
 sub-osm_elements: FORCE
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile
-sub-osm_elements-make_first-ordered: FORCE
-	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
-	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile 
 sub-osm_elements-make_first: FORCE
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile 
-sub-osm_elements-all-ordered: FORCE
-	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
-	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile all
 sub-osm_elements-all: FORCE
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile all
-sub-osm_elements-clean-ordered: FORCE
-	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
-	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile clean
 sub-osm_elements-clean: FORCE
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile clean
-sub-osm_elements-distclean-ordered: FORCE
-	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
-	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile distclean
 sub-osm_elements-distclean: FORCE
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile distclean
-sub-osm_elements-install_subtargets-ordered: FORCE
-	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
-	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile install
 sub-osm_elements-install_subtargets: FORCE
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile install
-sub-osm_elements-uninstall_subtargets-ordered: FORCE
-	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
-	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile uninstall
 sub-osm_elements-uninstall_subtargets: FORCE
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile uninstall
@@ -78,85 +60,49 @@ sub-tests-qmake_all: sub-osm_elements-qmake_all FORCE
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 	cd tests\ && $(MAKE) -f Makefile qmake_all
-sub-tests: sub-osm_widget FORCE
+sub-tests: sub-osm_elements FORCE
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile
-sub-tests-make_first-ordered: sub-osm_elements-make_first-ordered  FORCE
+sub-tests-make_first: sub-osm_elements-make_first FORCE
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile 
-sub-tests-make_first: sub-osm_widget-make_first FORCE
-	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
-	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile 
-sub-tests-all-ordered: sub-osm_elements-all-ordered  FORCE
+sub-tests-all: sub-osm_elements-all FORCE
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile all
-sub-tests-all: sub-osm_widget-all FORCE
-	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
-	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile all
-sub-tests-clean-ordered: sub-osm_elements-clean-ordered  FORCE
+sub-tests-clean: sub-osm_elements-clean FORCE
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile clean
-sub-tests-clean: sub-osm_widget-clean FORCE
-	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
-	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile clean
-sub-tests-distclean-ordered: sub-osm_elements-distclean-ordered  FORCE
+sub-tests-distclean: sub-osm_elements-distclean FORCE
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile distclean
-sub-tests-distclean: sub-osm_widget-distclean FORCE
-	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
-	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile distclean
-sub-tests-install_subtargets-ordered: sub-osm_elements-install_subtargets-ordered  FORCE
+sub-tests-install_subtargets: sub-osm_elements-install_subtargets FORCE
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile install
-sub-tests-install_subtargets: sub-osm_widget-install_subtargets FORCE
-	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
-	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile install
-sub-tests-uninstall_subtargets-ordered: sub-osm_elements-uninstall_subtargets-ordered  FORCE
+sub-tests-uninstall_subtargets: sub-osm_elements-uninstall_subtargets FORCE
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile uninstall
-sub-tests-uninstall_subtargets: sub-osm_widget-uninstall_subtargets FORCE
-	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
-	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile uninstall
-sub-osm_widget-qmake_all: sub-tests-qmake_all FORCE
+sub-osm_widget-qmake_all: sub-osm_elements-qmake_all FORCE
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 	cd osm_widget\ && $(MAKE) -f Makefile qmake_all
 sub-osm_widget: sub-osm_elements FORCE
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile
-sub-osm_widget-make_first-ordered: sub-tests-make_first-ordered  FORCE
-	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
-	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile 
 sub-osm_widget-make_first: sub-osm_elements-make_first FORCE
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile 
-sub-osm_widget-all-ordered: sub-tests-all-ordered  FORCE
-	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
-	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile all
 sub-osm_widget-all: sub-osm_elements-all FORCE
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile all
-sub-osm_widget-clean-ordered: sub-tests-clean-ordered  FORCE
-	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
-	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile clean
 sub-osm_widget-clean: sub-osm_elements-clean FORCE
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile clean
-sub-osm_widget-distclean-ordered: sub-tests-distclean-ordered  FORCE
-	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
-	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile distclean
 sub-osm_widget-distclean: sub-osm_elements-distclean FORCE
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile distclean
-sub-osm_widget-install_subtargets-ordered: sub-tests-install_subtargets-ordered  FORCE
-	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
-	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile install
 sub-osm_widget-install_subtargets: sub-osm_elements-install_subtargets FORCE
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile install
-sub-osm_widget-uninstall_subtargets-ordered: sub-tests-uninstall_subtargets-ordered  FORCE
-	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
-	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile uninstall
 sub-osm_widget-uninstall_subtargets: sub-osm_elements-uninstall_subtargets FORCE
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile uninstall
@@ -312,7 +258,6 @@ Makefile: ../new_hudson/new_hudson.pro ../../../Program_Files/Qt/5.10.0/mingw53_
 		../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/qt_config.prf \
 		../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/win32-g++/qmake.conf \
 		../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/exclusive_builds.prf \
 		../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/toolchain.prf \
 		../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/default_pre.prf \
@@ -483,7 +428,6 @@ Makefile: ../new_hudson/new_hudson.pro ../../../Program_Files/Qt/5.10.0/mingw53_
 ../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/qt_config.prf:
 ../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/win32-g++/qmake.conf:
 ../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/spec_post.prf:
-.qmake.stash:
 ../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/exclusive_builds.prf:
 ../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/toolchain.prf:
 ../../../Program_Files/Qt/5.10.0/mingw53_32/mkspecs/features/default_pre.prf:
@@ -507,58 +451,58 @@ qmake: FORCE
 
 qmake_all: sub-osm_elements-qmake_all sub-tests-qmake_all sub-osm_widget-qmake_all FORCE
 
-make_first: sub-osm_elements-make_first-ordered sub-tests-make_first-ordered sub-osm_widget-make_first-ordered  FORCE
-all: sub-osm_elements-all-ordered sub-tests-all-ordered sub-osm_widget-all-ordered  FORCE
-clean: sub-osm_elements-clean-ordered sub-tests-clean-ordered sub-osm_widget-clean-ordered  FORCE
-distclean: sub-osm_elements-distclean-ordered sub-tests-distclean-ordered sub-osm_widget-distclean-ordered  FORCE
+make_first: sub-osm_elements-make_first sub-tests-make_first sub-osm_widget-make_first  FORCE
+all: sub-osm_elements-all sub-tests-all sub-osm_widget-all  FORCE
+clean: sub-osm_elements-clean sub-tests-clean sub-osm_widget-clean  FORCE
+distclean: sub-osm_elements-distclean sub-tests-distclean sub-osm_widget-distclean  FORCE
 	-$(DEL_FILE) Makefile
 	-$(DEL_FILE) .qmake.stash
-install_subtargets: sub-osm_elements-install_subtargets-ordered sub-tests-install_subtargets-ordered sub-osm_widget-install_subtargets-ordered FORCE
-uninstall_subtargets: sub-osm_elements-uninstall_subtargets-ordered sub-tests-uninstall_subtargets-ordered sub-osm_widget-uninstall_subtargets-ordered FORCE
+install_subtargets: sub-osm_elements-install_subtargets sub-tests-install_subtargets sub-osm_widget-install_subtargets FORCE
+uninstall_subtargets: sub-osm_elements-uninstall_subtargets sub-tests-uninstall_subtargets sub-osm_widget-uninstall_subtargets FORCE
 
-sub-osm_elements-debug_ordered:
+sub-osm_elements-debug:
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile debug
-sub-tests-debug_ordered: sub-osm_elements-debug_ordered 
+sub-tests-debug: sub-osm_elements-debug
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile debug
-sub-osm_widget-debug_ordered: sub-tests-debug_ordered 
+sub-osm_widget-debug: sub-osm_elements-debug
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile debug
-debug: sub-osm_elements-debug_ordered sub-tests-debug_ordered sub-osm_widget-debug_ordered
+debug: sub-osm_elements-debug sub-tests-debug sub-osm_widget-debug
 
-sub-osm_elements-release_ordered:
+sub-osm_elements-release:
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile release
-sub-tests-release_ordered: sub-osm_elements-release_ordered 
+sub-tests-release: sub-osm_elements-release
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile release
-sub-osm_widget-release_ordered: sub-tests-release_ordered 
+sub-osm_widget-release: sub-osm_elements-release
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile release
-release: sub-osm_elements-release_ordered sub-tests-release_ordered sub-osm_widget-release_ordered
+release: sub-osm_elements-release sub-tests-release sub-osm_widget-release
 
-sub-osm_elements-check_ordered:
+sub-osm_elements-check:
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile check
-sub-tests-check_ordered: sub-osm_elements-check_ordered 
+sub-tests-check: sub-osm_elements-check
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile check
-sub-osm_widget-check_ordered: sub-tests-check_ordered 
+sub-osm_widget-check: sub-osm_elements-check
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile check
-check: sub-osm_elements-check_ordered sub-tests-check_ordered sub-osm_widget-check_ordered
+check: sub-osm_elements-check sub-tests-check sub-osm_widget-check
 
-sub-osm_elements-benchmark_ordered:
+sub-osm_elements-benchmark:
 	@if not exist osm_elements\ mkdir osm_elements\ & if not exist osm_elements\ exit 1
 	cd osm_elements\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_elements\osm_elements.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile benchmark
-sub-tests-benchmark_ordered: sub-osm_elements-benchmark_ordered 
+sub-tests-benchmark: sub-osm_elements-benchmark
 	@if not exist tests\ mkdir tests\ & if not exist tests\ exit 1
 	cd tests\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\tests\tests.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile benchmark
-sub-osm_widget-benchmark_ordered: sub-tests-benchmark_ordered 
+sub-osm_widget-benchmark: sub-osm_elements-benchmark
 	@if not exist osm_widget\ mkdir osm_widget\ & if not exist osm_widget\ exit 1
 	cd osm_widget\ && ( if not exist Makefile $(QMAKE) -o Makefile D:\TemporaryFiles\Hudson\new_hudson\osm_widget\osm_widget.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug" ) && $(MAKE) -f Makefile benchmark
-benchmark: sub-osm_elements-benchmark_ordered sub-tests-benchmark_ordered sub-osm_widget-benchmark_ordered
+benchmark: sub-osm_elements-benchmark sub-tests-benchmark sub-osm_widget-benchmark
 install:install_subtargets  FORCE
 
 uninstall: uninstall_subtargets FORCE

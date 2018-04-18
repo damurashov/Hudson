@@ -30,8 +30,6 @@ private slots:
 		id = p_node->get_id();
 		map.remove(p_node);
 		QCOMPARE(nullptr, map.get_node(id));
-		QEXPECT_FAIL("", "", Continue);
-		QCOMPARE(id, p_node->get_id());
 	}
 
 	void get_way() {
@@ -47,8 +45,6 @@ private slots:
 		id = p_way1->get_id();
 		map.remove(p_way1);
 		QCOMPARE(nullptr, map.get_way(id));
-		QEXPECT_FAIL("","", Continue);
-		QCOMPARE(id, p_way1->get_id());
 	}
 
 	void get_relation() {
@@ -65,8 +61,6 @@ private slots:
 		id = p_rel1->get_id();
 		map.remove(p_rel1);
 		QCOMPARE(nullptr, map.get_relation(id));
-		QEXPECT_FAIL("","",Continue);
-		QCOMPARE(id, p_rel1->get_id());
 	}
 
 	void node_iterator() {

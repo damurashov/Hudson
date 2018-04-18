@@ -291,6 +291,7 @@ debug/test_osm_object.moc: ../../../../new_hudson/osm_elements/osm_elements.h \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qwineventnotifier.h \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qxmlstream.h \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qtcoreversion.h \
+		../../../../new_hudson/osm_elements/osm_subscriber.h \
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \
@@ -601,6 +602,7 @@ debug/test_osm_object.o: ../../../../new_hudson/tests/tests_osm_elements/test_os
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qwineventnotifier.h \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qxmlstream.h \
 		D:/Program_Files/Qt/5.10.0/mingw53_32/include/QtCore/qtcoreversion.h \
+		../../../../new_hudson/osm_elements/osm_subscriber.h \
 		../../../../new_hudson/osm_elements/osm_node.h \
 		../../../../new_hudson/osm_elements/osm_way.h \
 		../../../../new_hudson/osm_elements/osm_relation.h \

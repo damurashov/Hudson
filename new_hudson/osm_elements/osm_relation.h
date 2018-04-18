@@ -23,7 +23,9 @@ public:
 	void									remove				(Osm_Node*);
 	void									remove				(Osm_Way*);
 	void									remove				(Osm_Relation*);
-	bool									has					(Osm_Object*) const;
+	bool									has					(Osm_Node*) const;
+	bool									has					(Osm_Way*) const;
+	bool									has					(Osm_Relation*) const;
 	void									set_role			(Osm_Object*, const QString& role);
 	unsigned								get_size			() const;
 	const QString							get_role			(Osm_Object*) const;

@@ -55,7 +55,7 @@ bool Osm_Way::push_node(Osm_Node* ptr_node) {
 bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
                                   Osm_Node* target_ptr_1,
                                   Osm_Node* target_ptr_2){
-	if (!has_node(node_ptr)
+	if (!has(node_ptr)
 	&& node_ptr != nullptr
 	&& target_ptr_1 != nullptr
 	&& target_ptr_2 != nullptr) {
@@ -79,7 +79,7 @@ bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
 	return false;
 }
 
-bool Osm_Way::has_node(Osm_Node* ptr_node) const {
+bool Osm_Way::has(Osm_Node* ptr_node) const {
 	if (ptr_node == nullptr) {
 		return false;
 	}
@@ -106,7 +106,7 @@ void Osm_Way::handle_event_delete(Osm_Node& node) {
 
 	m_size -= m_nodes.removeAll(&node);
 	if (f_stay_closed && get_size() >= 3) {
-		push_node(m_nodes.back());
+		push_node(m_nodes.front());
 	}
 }
 
