@@ -10,7 +10,7 @@ namespace ns_osm {
 
 class Osm_Map : public Osm_Subscriber {
 private:
-	int										mn_parents; 
+	int										mn_parents;
 	QHash<long long, ns_osm::Osm_Node*>		m_nodes_hash;
 	QHash<long long, ns_osm::Osm_Way*>		m_ways_hash;
 	QHash<long long, ns_osm::Osm_Relation*> m_relations_hash;
