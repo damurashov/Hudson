@@ -40,6 +40,9 @@ void Osm_Relation::add(Osm_Node* ptr_node, const QString &role) {
 	}
 
 	subscribe(*ptr_node);
+	if (!(ptr_node->is_valid())) {
+		set_valid(false);
+	}
 	m_nodes_list.push_back(ptr_node);
 	mn_nodes++;
 	set_role(ptr_node, role);
@@ -57,6 +60,9 @@ void Osm_Relation::add(Osm_Way* ptr_way, const QString &role) {
 	}
 
 	subscribe(*ptr_way);
+	if (!(ptr_way->is_valid())) {
+		set_valid(false);
+	}
 	m_ways_list.push_back(ptr_way);
 	mn_ways++;
 	set_role(ptr_way, role);
@@ -64,7 +70,7 @@ void Osm_Relation::add(Osm_Way* ptr_way, const QString &role) {
 }
 
 void Osm_Relation::add(Osm_Relation* ptr_rel, const QString& role) {
-	if (ptr_rel == nullptr) {
+	if (ptr_rel == nullptr || ptr_rel == this) {
 		set_valid(false);
 		return;
 	} else if (has(ptr_rel)) {
@@ -72,6 +78,9 @@ void Osm_Relation::add(Osm_Relation* ptr_rel, const QString& role) {
 	}
 
 	subscribe(*ptr_rel);
+	if (!(ptr_rel->is_valid())) {
+		set_valid(false);
+	}
 	m_relations_list.push_back(ptr_rel);
 	mn_relations++;
 	set_role(ptr_rel, role);

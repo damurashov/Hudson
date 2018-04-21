@@ -279,6 +279,49 @@ private slots:
 		delete p_rel;
 		QCOMPARE(sub.last(), RELATION_UPDATE);
 	}
+
+	/*================================================================*/
+	/*                           Test map                             */
+	/*================================================================*/
+
+	void node_delete___map_listener() {
+		Osm_Node* p_node = new Osm_Node(1.1, 1.1);
+		Osm_Map map;
+		long long id = p_node->get_id();
+
+		map.add(p_node);
+		QCOMPARE(true, map.has(p_node));
+		Sub sub(*p_node);
+		delete p_node;
+		QCOMPARE(sub.last(), NODE_DELETE);
+		QCOMPARE(nullptr, map.get_node(id));
+	}
+
+	void way_delete___map_listener() {
+		Osm_Way* p_way = new Osm_Way;
+		Osm_Map map;
+		long long id = p_way->get_id();
+
+		map.add(p_way);
+		QCOMPARE(true, map.has(p_way));
+		Sub sub(*p_way);
+		delete p_way;
+		QCOMPARE(sub.last(), WAY_DELETE);
+		QCOMPARE(nullptr, map.get_way(id));
+	}
+
+	void relation_delete___map_listener() {
+		Osm_Relation* p_relation = new Osm_Relation;
+		Osm_Map map;
+		long long id = p_relation->get_id();
+
+		map.add(p_relation);
+		Sub sub(*p_relation);
+		QCOMPARE(true, map.has(p_relation));
+		delete p_relation;
+		QCOMPARE(sub.last(), RELATION_DELETE);
+		QCOMPARE(nullptr, map.get_relation(id));
+	}
 };
 
 QTEST_MAIN(Test_Referential_Integrity)

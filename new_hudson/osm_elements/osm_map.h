@@ -17,8 +17,13 @@ private:
 	QRectF									m_bounding_rect;
 	bool									f_destruct_physically;
 	bool									f_remove_orphaned_nodes;
+	bool									f_is_valid;
+	bool									f_has_lon180_issue;
+	double									m_minlon;
+	double									m_maxlon;
+	double									m_minlat;
+	double									m_maxlat;
 
-	void									handle_lon_180				();
 	                                        Osm_Map						(const Osm_Map&) = delete;
 	Osm_Map&								operator=					(const Osm_Map&) = delete;
 public:
@@ -29,6 +34,7 @@ public:
 	typedef QHash<long long, ns_osm::Osm_Way*>::const_iterator			cway_iterator;
 	typedef QHash<long long, ns_osm::Osm_Relation*>::const_iterator		crelation_iterator;
 
+	bool									is_valid					() const;
 	void									set_remove_physically		(bool f);
 	void									set_remove_orphaned_nodes	(bool f);
 	int										count_parents				() const;
@@ -38,6 +44,9 @@ public:
 	void									add							(ns_osm::Osm_Node*);
 	void									add							(ns_osm::Osm_Way*);
 	void									add							(ns_osm::Osm_Relation*);
+	bool									has							(ns_osm::Osm_Node*) const;
+	bool									has							(ns_osm::Osm_Way*) const;
+	bool									has							(ns_osm::Osm_Relation*) const;
 	void									remove						(ns_osm::Osm_Node*);
 	void									remove						(ns_osm::Osm_Way*);
 	void									remove						(ns_osm::Osm_Relation*);
@@ -53,7 +62,7 @@ public:
 	cnode_iterator							cnend						() const;
 	way_iterator							wbegin						();
 	way_iterator							wend						();
-	cway_iterator							cwbegin						();
+	cway_iterator							cwbegin						() const;
 	cway_iterator							cwend						() const;
 	relation_iterator						rbegin						();
 	relation_iterator						rend						();

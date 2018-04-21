@@ -7,9 +7,16 @@ using namespace ns_osm;
 /*================================================================*/
 
 Osm_Map::Osm_Map() {
+	const double BIG = 300.0;
 	mn_parents = 0;
 	f_destruct_physically = true;
 	f_remove_orphaned_nodes = true;
+	f_is_valid = true;
+	f_has_lon180_issue = false;
+	m_minlon = BIG;
+	m_maxlon = -BIG;
+	m_minlat = BIG;
+	m_maxlat = -BIG;
 }
 
 Osm_Map::~Osm_Map() {
@@ -19,6 +26,10 @@ Osm_Map::~Osm_Map() {
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
+
+bool Osm_Map::is_valid() const {
+	return f_is_valid;
+}
 
 void Osm_Map::set_remove_physically(bool f) {
 	f_destruct_physically = f;
@@ -45,7 +56,30 @@ void Osm_Map::orphan() {
 }
 
 void Osm_Map::add(Osm_Node* p_node) {
+	double lon;
+	double lat;
+
 	if (p_node != nullptr) {
+		if (has(p_node)) {
+			return;
+		}
+		lon = p_node->get_lon();
+		lat = p_node->get_lat();
+		if (!(p_node->is_valid())) {
+			f_is_valid = false;
+		}
+		if (m_minlon > lon) {
+			m_minlon = lon;
+		}
+		if (m_maxlon < lon) {
+			m_maxlon = lon;
+		}
+		if (m_minlat > lat) {
+			m_minlat = lat;
+		}
+		if (m_maxlat < lat) {
+			m_maxlat = lat;
+		}
 		m_nodes_hash[p_node->get_id()] = p_node;
 		subscribe(*p_node);
 	}
@@ -53,6 +87,15 @@ void Osm_Map::add(Osm_Node* p_node) {
 
 void Osm_Map::add(Osm_Way* p_way) {
 	if (p_way != nullptr) {
+		if (has(p_way)) {
+			return;
+		}
+		if (!(p_way->is_valid())) {
+			f_is_valid = false;
+		}
+		for (auto it = p_way->get_nodes_list().cbegin(); it != p_way->get_nodes_list().cend(); ++it) {
+			add(const_cast<Osm_Node*>(*it));
+		}
 		m_ways_hash[p_way->get_id()] = p_way;
 		subscribe(*p_way);
 	}
@@ -60,9 +103,47 @@ void Osm_Map::add(Osm_Way* p_way) {
 
 void Osm_Map::add(Osm_Relation* p_rel) {
 	if (p_rel != nullptr) {
+		if (has(p_rel)) {
+			return;
+		}
+		if (!(p_rel->is_valid())) {
+			f_is_valid = false;
+		}
+		for (auto it = p_rel->get_nodes().cbegin(); it != p_rel->get_nodes().cend(); ++it) {
+			add(const_cast<Osm_Node*>(*it));
+		}
+		for (auto it = p_rel->get_ways().cbegin(); it != p_rel->get_ways().cend(); ++it) {
+			add(const_cast<Osm_Way*>(*it));
+		}
+		for (auto it = p_rel->get_relations().cbegin(); it != p_rel->get_relations().cend(); ++it) {
+			add(const_cast<Osm_Relation*>(*it));
+		}
 		m_relations_hash[p_rel->get_id()] = p_rel;
 		subscribe(*p_rel);
 	}
+}
+
+bool Osm_Map::has(Osm_Node* p_node) const {
+	if (p_node == nullptr) {
+		return false;
+	}
+	return m_nodes_hash.contains(p_node->get_id());
+}
+
+bool Osm_Map::has(Osm_Way* p_way) const {
+	if (p_way == nullptr) {
+		return false;
+	}
+
+	return m_ways_hash.contains(p_way->get_id());
+}
+
+bool Osm_Map::has(Osm_Relation* p_rel) const {
+	if (p_rel == nullptr) {
+		return false;
+	}
+
+	return m_relations_hash.contains(p_rel->get_id());
 }
 
 void Osm_Map::remove(Osm_Node* p_node) {
@@ -114,41 +195,11 @@ void Osm_Map::clear() {
 }
 
 void Osm_Map::fit_bounding_rect() {
-	node_iterator it;
-	long long minlat = 90;
-	long long minlon = 180;
-	long long maxlat = -90;
-	long long maxlon = -180;
-	long long temp_lat;
-	long long temp_lon;
+//	long long longitude;
 
-	if (m_bounding_rect.width()!=0 && m_bounding_rect.height()!=0) {
-		return;
-	}
-	if (!m_nodes_hash.isEmpty()) {
-		for (auto it = nbegin(); it !=nend(); ++it) {
-			temp_lat = it.value()->get_lat();
-			temp_lon = it.value()->get_lon();
-
-			if (temp_lat < minlat) {
-				minlat = temp_lat;
-			}
-			if (temp_lat > maxlat) {
-				maxlat = temp_lat;
-			}
-			if (temp_lon < minlon) {
-				minlon = temp_lon;
-			}
-			if (temp_lon > maxlon) {
-				maxlon = temp_lon;
-			}
-		}
-		m_bounding_rect.setLeft(minlon);
-		m_bounding_rect.setBottom(minlat);
-		m_bounding_rect.setRight(maxlon);
-		m_bounding_rect.setTop(maxlat);
-	}
-	handle_lon_180();
+//	if (m_bounding_rect.width()!=0 && m_bounding_rect.height()!=0) {
+//		return;
+//	}
 }
 
 QRectF Osm_Map::get_bound() const {
@@ -203,7 +254,7 @@ Osm_Map::way_iterator Osm_Map::wend() {
 	return m_ways_hash.end();
 }
 
-Osm_Map::cway_iterator Osm_Map::cwbegin() {
+Osm_Map::cway_iterator Osm_Map::cwbegin() const {
 	return m_ways_hash.cbegin();
 }
 
@@ -247,16 +298,4 @@ void Osm_Map::handle_event_delete(Osm_Way& way) {
 
 void Osm_Map::handle_event_delete(Osm_Relation& rel) {
 	m_relations_hash.remove(rel.get_id());
-}
-
-/*================================================================*/
-/*                       Private methods                          */
-/*================================================================*/
-
-void Osm_Map::handle_lon_180() {
-	if (m_bounding_rect.right() - m_bounding_rect.left() > 180) {
-		qreal oldleft = m_bounding_rect.left();
-		m_bounding_rect.setLeft(m_bounding_rect.right());
-		m_bounding_rect.setRight(180-oldleft);
-	}
 }

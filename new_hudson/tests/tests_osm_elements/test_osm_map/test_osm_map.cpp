@@ -16,6 +16,14 @@ private slots:
 		QCOMPARE(0, map.count_parents());
 	}
 
+	void fit_bounding_rect() {
+		Osm_Map map;
+		const double MINLON = 170;
+		const double MAXLON = -160;
+		const double MINLAT = -15;
+		const double MAXLAT = 15;
+	}
+
 	void get_node() {
 		Osm_Map		map;
 		Osm_Node*	p_node = new Osm_Node(1.11,11.1);
@@ -63,24 +71,81 @@ private slots:
 		QCOMPARE(nullptr, map.get_relation(id));
 	}
 
-	void node_iterator() {
-		const int	N_NODES = 10;
-		Osm_Map		map;
-		int			counter = 0;
+	void node_iterator___cnode_iterator() {
+		const int N_NODES = 10;
+		Osm_Map map;
+		Osm_Node* ap_nodes[N_NODES];
+		int counter = 0;
 
 		for (int i = 0; i < N_NODES; ++i) {
-			map.add(new Osm_Node(i,i));
+			ap_nodes[i] = new Osm_Node(i,i);
 		}
-		for (Osm_Map::node_iterator it = map.nbegin(); it != map.nend(); ++it) {
+
+		for (auto it = map.cnbegin(); it != map.cnend(); ++it) {
+			QCOMPARE(ap_nodes[counter], it.value());
 			counter++;
 		}
-		QCOMPARE(N_NODES, counter);
 
 		counter = 0;
-		for (Osm_Map::cnode_iterator it = map.cnbegin(); it != map.cnend(); ++it) {
+		for (auto it = map.nbegin(); it != map.nend(); ++it) {
+			QCOMPARE(ap_nodes[counter], it.value());
 			counter++;
 		}
-		QCOMPARE(N_NODES, counter);
+
+		for (int i = 0; i < N_NODES; ++i) {
+			delete ap_nodes[i];
+		}
+	}
+
+	void way_iterator___cway_iterator() {
+		const int N_WAYS = 10;
+		Osm_Map map;
+		Osm_Way* ap_ways[N_WAYS];
+		int counter = 0;
+
+		for (int i = 0; i < N_WAYS; ++i) {
+			ap_ways[i] = new Osm_Way;
+		}
+
+		for (auto it = map.wbegin(); it != map.cwbegin(); ++it) {
+			QCOMPARE(ap_ways[counter], it.value());
+			counter++;
+		}
+
+		counter = 0;
+		for (auto it = map.cwbegin(); it != map.cwend(); ++it) {
+			QCOMPARE(ap_ways[counter], it.value());
+			counter++;
+		}
+
+		for (int i = 0; i < N_WAYS; ++i) {
+			delete ap_ways[i];
+		}
+	}
+
+	void relation_iterator___crelation_iterator() {
+		const int N_RELATIONS = 10;
+		Osm_Map map;
+		Osm_Relation* ap_relations[N_RELATIONS];
+		int counter = 0;
+
+		for (int i = 0; i < N_RELATIONS; ++i) {
+			ap_relations[i] = new Osm_Relation;
+		}
+
+		for (auto it = map.rbegin(); it != map.rend(); ++it) {
+			QCOMPARE(ap_relations[counter], it.value());
+			counter++;
+		}
+
+		for (auto it = map.crbegin(); it!= map.crend(); ++it) {
+			QCOMPARE(ap_relations[counter], it.value());
+			counter++;
+		}
+
+		for (int i = 0; i < N_RELATIONS; ++i) {
+			delete ap_relations[i];
+		}
 	}
 };
 

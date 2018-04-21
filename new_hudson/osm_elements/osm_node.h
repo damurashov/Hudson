@@ -10,6 +10,7 @@ private:
 	double		m_lat;
 	double		m_lon;
 
+	void		correct			();
 	            Osm_Node		();
 public:
 	double		get_lat			() const;

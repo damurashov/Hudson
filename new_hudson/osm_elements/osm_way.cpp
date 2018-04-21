@@ -43,6 +43,9 @@ bool Osm_Way::push_node(Osm_Node* ptr_node) {
 				return false;
 			}
 		}
+		if (!(ptr_node->is_valid())) {
+			set_valid(false);
+		}
 		m_nodes.push_back(ptr_node);
 		m_size++;
 		subscribe(*ptr_node);
@@ -69,6 +72,9 @@ bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
 		}
 		if (f_is_found) {
 			it++;
+			if (!(node_ptr->is_valid())) {
+				set_valid(false);
+			}
 			m_nodes.insert(it, node_ptr);
 			subscribe(*node_ptr);
 			m_size++;
