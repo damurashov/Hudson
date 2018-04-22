@@ -12,7 +12,12 @@ Osm_Map::Osm_Map() {
 	f_destruct_physically = true;
 	f_remove_orphaned_nodes = true;
 	f_is_valid = true;
-	f_scene_has_180_issue = false;
+	f_force_dynamic_bound = false;
+
+	m_bounding_rect.setLeft(0.0);
+	m_bounding_rect.setRight(0.0);
+	m_bounding_rect.setTop(0.0);
+	m_bounding_rect.setBottom(0.0);
 	m_autorect_normal.setLeft(BIG);
 	m_autorect_normal.setRight(-BIG);
 	m_autorect_normal.setTop(-BIG);
@@ -30,6 +35,23 @@ Osm_Map::~Osm_Map() {
 /*================================================================*/
 /*                       Private methods                          */
 /*================================================================*/
+
+bool Osm_Map::is_valid_bound(const QRectF& rect) const {
+	if (rect.width() == 0.0 || rect.height() == 0.0) {
+		return false;
+	}
+	if (rect.bottom() < -90 || rect.top() > 90) {
+		return false;
+	}
+	if (rect.left() <= -180 || rect.right() > 180) {
+		return false;
+	}
+	return true;
+}
+
+bool Osm_Map::has_issue_180(const QRectF& rect) const {
+	return rect.right() < rect.left();
+}
 
 void Osm_Map::fit_autorects(Osm_Node& node) {
 	double lat = node.get_lat();
@@ -81,6 +103,10 @@ void Osm_Map::set_remove_physically(bool f) {
 
 void Osm_Map::set_remove_orphaned_nodes(bool f) {
 	f_remove_orphaned_nodes = f;
+}
+
+void Osm_Map::set_force_use_dynamic_bound(bool f) {
+	f_force_dynamic_bound = f;
 }
 
 void Osm_Map::set_bound(const QRectF& bound) {
@@ -237,11 +263,11 @@ void Osm_Map::fit_bounding_rect() {
 //	}
 }
 
-QRectF Osm_Map::get_bound(bool f) const {
+QRectF Osm_Map::get_bound() const {
 	double width_normal;
 	double width_180;
 
-	if (m_bounding_rect.width() == 0 || m_bounding_rect.height() == 0 || f) {
+	if (!is_valid_bound(m_bounding_rect) || f_force_dynamic_bound) {
 		width_normal = m_autorect_normal.right() - m_autorect_normal.left();
 		width_180 = m_autorect_180.left() - m_autorect_180.right();
 
@@ -254,28 +280,22 @@ QRectF Osm_Map::get_bound(bool f) const {
 	return m_bounding_rect;
 }
 
-QRectF Osm_Map::get_scene_rect(bool f) const {
-	QRectF rect = get_bound(f);
-	if (rect == m_autorect_normal) {
-		f_scene_has_180_issue = false;
-		return rect;
-	} else {
-		if (rect.left() > rect.right()) {
-			rect.setRight(rect.right() + 360.0);
-			f_scene_has_180_issue = true;
-			return rect;
-		}
+QRectF Osm_Map::get_scene_rect() const {
+	QRectF rect = get_bound();
+	if (has_issue_180(rect)) {
+		rect.setRight(rect.right() + 360.0);
 	}
+	return rect;
 }
 
 QPointF Osm_Map::get_scene_coord(Osm_Node* p_node) const {
 	QPointF point;
 
-	if (!f_scene_has_180_issue || p_node->get_lon() > 0) {
+	if (!has_issue_180(get_bound()) || p_node->get_lon() > 0) {
 		point.setX(p_node->get_lon());
 		point.setY(p_node->get_lat());
 	} else {
-		point.setX(p_node->get_lon() + 360);
+		point.setX(p_node->get_lon() + 360.0);
 		point.setY(p_node->get_lat());
 	}
 
