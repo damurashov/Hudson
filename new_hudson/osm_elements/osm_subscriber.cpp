@@ -32,9 +32,17 @@ void Osm_Subscriber::unsubscribe() {
 	}
 	m_sources.clear();
 }
+
+Osm_Subscriber::Meta Osm_Subscriber::get_meta() const {
+	return m_meta;
+}
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
+
+void Osm_Subscriber::set_meta(Meta meta) {
+	m_meta = meta;
+}
 
 void Osm_Subscriber::unsubscribe(Osm_Object& source) {
 	source.remove_subscriber(*this);

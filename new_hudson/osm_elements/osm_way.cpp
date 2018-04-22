@@ -49,7 +49,7 @@ bool Osm_Way::push_node(Osm_Node* ptr_node) {
 		m_nodes.push_back(ptr_node);
 		m_size++;
 		subscribe(*ptr_node);
-		emit_update();
+		emit_update(NODE_ADDED);
 		return true;
 	}
 	return false;
@@ -78,7 +78,7 @@ bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
 			m_nodes.insert(it, node_ptr);
 			subscribe(*node_ptr);
 			m_size++;
-			emit_update();
+			emit_update(NODE_ADDED);
 			return true;
 		}
 	}
@@ -114,12 +114,17 @@ void Osm_Way::handle_event_delete(Osm_Node& node) {
 	if (f_stay_closed && get_size() >= 3) {
 		push_node(m_nodes.front());
 	}
+	emit_update(NODE_DELETED);
 }
 
-void Osm_Way::handle_event_delete(Osm_Object&) {
-	emit_update();
+void Osm_Way::handle_event_update(Osm_Node&) {
+	emit_update(NODE_UPDATED);
 }
 
-void Osm_Way::handle_event_update(Osm_Object&) {
-	emit_update();
-}
+//void Osm_Way::handle_event_delete(Osm_Object&) {
+//	emit_update();
+//}
+
+//void Osm_Way::handle_event_update(Osm_Object&) {
+//	emit_update();
+//}

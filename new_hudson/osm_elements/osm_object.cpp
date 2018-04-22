@@ -72,8 +72,9 @@ long long Osm_Object::get_inner_id() const {
 	return INNER_ID;
 }
 
-void Osm_Object::emit_delete() {
+void Osm_Object::emit_delete(Osm_Subscriber::Meta meta) {
 	for (auto it = m_subscribers.begin(); it != m_subscribers.end(); ++it) {
+		(*it)->set_meta(meta);
 		(*it)->unsubscribe(*this);
 		switch (get_type()) {
 		case Type::NODE:
@@ -90,8 +91,9 @@ void Osm_Object::emit_delete() {
 	}
 }
 
-void Osm_Object::emit_update() {
+void Osm_Object::emit_update(Osm_Subscriber::Meta meta) {
 	for (auto it = m_subscribers.begin(); it != m_subscribers.end(); ++it) {
+		(*it)->set_meta(meta);
 		switch (get_type()) {
 		case Type::NODE:
 			(*it)->handle_event_update(*static_cast<Osm_Node*>(this));

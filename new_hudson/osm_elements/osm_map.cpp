@@ -43,7 +43,7 @@ void Osm_Map::set_remove_orphaned_nodes(bool f) {
 }
 
 void Osm_Map::set_bound(const QRectF& bound) {
-	m_user_rect = bound;
+	m_bounding_rect = bound;
 }
 
 int Osm_Map::count_parents() const {
@@ -211,7 +211,7 @@ void Osm_Map::clear() {
 void Osm_Map::fit_bounding_rect() {
 //	long long longitude;
 
-//	if (m_user_rect.width()!=0 && m_user_rect.height()!=0) {
+//	if (m_bounding_rect.width()!=0 && m_bounding_rect.height()!=0) {
 //		return;
 //	}
 }
@@ -220,7 +220,7 @@ QRectF Osm_Map::get_bound(bool f_force_precalculated) const {
 	double width_normal;
 	double width_180;
 
-	if (m_user_rect.width() == 0 || m_user_rect.height() == 0 || f_force_precalculated) {
+	if (m_bounding_rect.width() == 0 || m_bounding_rect.height() == 0 || f_force_precalculated) {
 		width_normal = m_autorect_normal.right() - m_autorect_normal.left();
 		width_180 = m_autorect_180.left() - m_autorect_180.right();
 
@@ -230,7 +230,7 @@ QRectF Osm_Map::get_bound(bool f_force_precalculated) const {
 			return m_autorect_normal;
 		}
 	}
-	return m_user_rect;
+	return m_bounding_rect;
 }
 
 Osm_Node* Osm_Map::get_node(long long id) {

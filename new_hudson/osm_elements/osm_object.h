@@ -32,8 +32,8 @@ protected:
 	const Type						get_type			() const;
 	long long						get_inner_id		() const;
 	void							set_valid			(bool f_valid);
-	void							emit_delete			();
-	void							emit_update			();
+	void							emit_delete			(Osm_Subscriber::Meta meta = Osm_Subscriber::NONE);
+	void							emit_update			(Osm_Subscriber::Meta meta = Osm_Subscriber::NONE);
 	                                Osm_Object			(const Type);
 									Osm_Object			(const QString& id, const Type);
 									Osm_Object			(const Osm_Object&) = delete;

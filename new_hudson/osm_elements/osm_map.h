@@ -14,7 +14,7 @@ private:
 	QHash<long long, ns_osm::Osm_Node*>		m_nodes_hash;
 	QHash<long long, ns_osm::Osm_Way*>		m_ways_hash;
 	QHash<long long, ns_osm::Osm_Relation*> m_relations_hash;
-	QRectF									m_user_rect;
+	QRectF									m_bounding_rect;
 	QRectF									m_autorect_normal;
 	QRectF									m_autorect_180;
 	bool									f_destruct_physically;

@@ -46,7 +46,7 @@ void Osm_Relation::add(Osm_Node* ptr_node, const QString &role) {
 	m_nodes_list.push_back(ptr_node);
 	mn_nodes++;
 	set_role(ptr_node, role);
-	emit_update();
+	emit_update(NODE_ADDED);
 }
 
 
@@ -66,7 +66,7 @@ void Osm_Relation::add(Osm_Way* ptr_way, const QString &role) {
 	m_ways_list.push_back(ptr_way);
 	mn_ways++;
 	set_role(ptr_way, role);
-	emit_update();
+	emit_update(WAY_ADDED);
 }
 
 void Osm_Relation::add(Osm_Relation* ptr_rel, const QString& role) {
@@ -84,7 +84,7 @@ void Osm_Relation::add(Osm_Relation* ptr_rel, const QString& role) {
 	m_relations_list.push_back(ptr_rel);
 	mn_relations++;
 	set_role(ptr_rel, role);
-	emit_update();
+	emit_update(RELATION_ADDED);
 }
 
 void Osm_Relation::remove(Osm_Node* ptr_node) {
@@ -94,7 +94,7 @@ void Osm_Relation::remove(Osm_Node* ptr_node) {
 	mn_nodes -= m_nodes_list.removeAll(ptr_node);
 	m_roles_hash.remove(reinterpret_cast<Osm_Relation*>(ptr_node)->get_inner_id());
 	unsubscribe(*ptr_node);
-	emit_update();
+	emit_update(NODE_DELETED);
 }
 
 void Osm_Relation::remove(Osm_Way* ptr_way) {
@@ -104,7 +104,7 @@ void Osm_Relation::remove(Osm_Way* ptr_way) {
 	mn_ways -= m_ways_list.removeAll(ptr_way);
 	m_roles_hash.remove(reinterpret_cast<Osm_Relation*>(ptr_way)->get_inner_id());
 	unsubscribe(*ptr_way);
-	emit_update();
+	emit_update(WAY_DELETED);
 }
 
 void Osm_Relation::remove(Osm_Relation* ptr_rel) {
@@ -115,7 +115,7 @@ void Osm_Relation::remove(Osm_Relation* ptr_rel) {
 	mn_relations -= m_relations_list.removeAll(ptr_rel);
 	m_roles_hash.remove(reinterpret_cast<Osm_Relation*>(ptr_rel)->get_inner_id());
 	unsubscribe(*ptr_rel);
-	emit_update();
+	emit_update(RELATION_DELETED);
 }
 
 bool Osm_Relation::has(Osm_Node* p_node) const {
@@ -181,19 +181,22 @@ unsigned short Osm_Relation::count_relations() const {
 
 void Osm_Relation::handle_event_delete(Osm_Node& node) {
 	mn_nodes -= m_nodes_list.removeAll(&node);
+	emit_update(NODE_DELETED);
 }
 
 void Osm_Relation::handle_event_delete(Osm_Way& way) {
 	mn_ways -= m_ways_list.removeAll(&way);
+	emit_update(WAY_DELETED);
 }
 
 void Osm_Relation::handle_event_delete(Osm_Relation& relation) {
 	mn_relations -= m_relations_list.removeAll(&relation);
+	emit_update(RELATION_DELETED);
 }
 
 void Osm_Relation::handle_event_delete(Osm_Object& object) {
 	m_roles_hash.remove(static_cast<Osm_Relation&>(object).get_inner_id());
-	emit_update();
+	//emit_update();
 }
 
 void Osm_Relation::handle_event_update(Osm_Object &) {
