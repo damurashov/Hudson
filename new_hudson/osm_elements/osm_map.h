@@ -14,15 +14,12 @@ private:
 	QHash<long long, ns_osm::Osm_Node*>		m_nodes_hash;
 	QHash<long long, ns_osm::Osm_Way*>		m_ways_hash;
 	QHash<long long, ns_osm::Osm_Relation*> m_relations_hash;
-	QRectF									m_bounding_rect;
+	QRectF									m_user_rect;
+	QRectF									m_autorect_normal;
+	QRectF									m_autorect_180;
 	bool									f_destruct_physically;
 	bool									f_remove_orphaned_nodes;
 	bool									f_is_valid;
-	bool									f_has_lon180_issue;
-	double									m_minlon;
-	double									m_maxlon;
-	double									m_minlat;
-	double									m_maxlat;
 
 	                                        Osm_Map						(const Osm_Map&) = delete;
 	Osm_Map&								operator=					(const Osm_Map&) = delete;
@@ -52,7 +49,7 @@ public:
 	void									remove						(ns_osm::Osm_Relation*);
 	void									clear						();
 	void									fit_bounding_rect			();
-	QRectF									get_bound					() const;
+	QRectF									get_bound					(bool f_force_use_precalculated = false) const;
 	ns_osm::Osm_Node*						get_node					(long long id_node);
 	ns_osm::Osm_Way*						get_way						(long long id_way);
 	ns_osm::Osm_Relation*					get_relation				(long long id_relation);

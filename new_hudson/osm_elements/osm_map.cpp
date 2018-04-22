@@ -12,11 +12,14 @@ Osm_Map::Osm_Map() {
 	f_destruct_physically = true;
 	f_remove_orphaned_nodes = true;
 	f_is_valid = true;
-	f_has_lon180_issue = false;
-	m_minlon = BIG;
-	m_maxlon = -BIG;
-	m_minlat = BIG;
-	m_maxlat = -BIG;
+	m_autorect_normal.setLeft(BIG);
+	m_autorect_normal.setRight(-BIG);
+	m_autorect_normal.setTop(-BIG);
+	m_autorect_normal.setBottom(BIG);
+	m_autorect_180.setLeft(BIG);
+	m_autorect_180.setRight(-BIG);
+	m_autorect_180.setTop(-BIG);
+	m_autorect_180.setBottom(BIG);
 }
 
 Osm_Map::~Osm_Map() {
@@ -40,7 +43,7 @@ void Osm_Map::set_remove_orphaned_nodes(bool f) {
 }
 
 void Osm_Map::set_bound(const QRectF& bound) {
-	m_bounding_rect = bound;
+	m_user_rect = bound;
 }
 
 int Osm_Map::count_parents() const {
@@ -68,17 +71,27 @@ void Osm_Map::add(Osm_Node* p_node) {
 		if (!(p_node->is_valid())) {
 			f_is_valid = false;
 		}
-		if (m_minlon > lon) {
-			m_minlon = lon;
+		/* Mutual vertical bounds, ... */
+		if (lat > m_autorect_normal.top()) {
+			m_autorect_normal.setTop(lat);
+			m_autorect_180.setTop(lat);
 		}
-		if (m_maxlon < lon) {
-			m_maxlon = lon;
+		if (lat < m_autorect_normal.bottom()) {
+			m_autorect_normal.setBottom(lat);
+			m_autorect_180.setBottom(lat);
 		}
-		if (m_minlat > lat) {
-			m_minlat = lat;
+		/* ... but different horisontal ones */
+		if (lon < m_autorect_normal.left()) {
+			m_autorect_normal.setLeft(lon);
 		}
-		if (m_maxlat < lat) {
-			m_maxlat = lat;
+		if (lon > m_autorect_normal.right()) {
+			m_autorect_normal.setRight(lon);
+		}
+		if (lon < m_autorect_180.left() && lon > 0) {
+			m_autorect_180.setLeft(lon);
+		}
+		if (lon > m_autorect_180.right() && lon <= 0) {
+			m_autorect_180.setRight(lon);
 		}
 		m_nodes_hash[p_node->get_id()] = p_node;
 		subscribe(*p_node);
@@ -171,20 +184,21 @@ void Osm_Map::remove(Osm_Relation* p_rel) {
 }
 
 void Osm_Map::clear() {
+	unsubscribe();
 	for (auto it = nbegin(); it != nend(); ++it) {
-		unsubscribe(**it);
+		//unsubscribe(**it);
 		if (f_destruct_physically) {
 			delete *it;
 		}
 	}
 	for (auto it = wbegin(); it != wend(); ++it) {
-		unsubscribe(**it);
+		//unsubscribe(**it);
 		if (f_destruct_physically) {
 			delete *it;
 		}
 	}
 	for (auto it = rbegin(); it != rend(); ++it) {
-		unsubscribe(**it);
+		//unsubscribe(**it);
 		if (f_destruct_physically) {
 			delete *it;
 		}
@@ -197,13 +211,26 @@ void Osm_Map::clear() {
 void Osm_Map::fit_bounding_rect() {
 //	long long longitude;
 
-//	if (m_bounding_rect.width()!=0 && m_bounding_rect.height()!=0) {
+//	if (m_user_rect.width()!=0 && m_user_rect.height()!=0) {
 //		return;
 //	}
 }
 
-QRectF Osm_Map::get_bound() const {
-	return m_bounding_rect;
+QRectF Osm_Map::get_bound(bool f_force_precalculated) const {
+	double width_normal;
+	double width_180;
+
+	if (m_user_rect.width() == 0 || m_user_rect.height() == 0 || f_force_precalculated) {
+		width_normal = m_autorect_normal.right() - m_autorect_normal.left();
+		width_180 = m_autorect_180.left() - m_autorect_180.right();
+
+		if (width_180 < width_normal) {
+			return m_autorect_180;
+		} else {
+			return m_autorect_normal;
+		}
+	}
+	return m_user_rect;
 }
 
 Osm_Node* Osm_Map::get_node(long long id) {
