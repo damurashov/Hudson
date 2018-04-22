@@ -323,6 +323,75 @@ private slots:
 		QCOMPARE(nullptr, map.get_relation(id));
 	}
 
+	void node_added___way_source___map_listener() {
+		Osm_Map map;
+		Osm_Way way;
+		Osm_Way way2;
+		Osm_Node node(1.1, 1.1);
+		Osm_Node node2(1.1, 1.1);
+
+		map.add(&way);
+		QCOMPARE(false, map.has(&node));
+		way.push_node(&node);
+		QCOMPARE(true, map.has(&node));
+
+		way2.push_node(&node2);
+		map.add(&way2);
+		QCOMPARE(true, map.has(&node2));
+	}
+
+	void node_added___relation_source___map_listener() {
+		Osm_Node node(1.1, 1.1);
+		Osm_Node node2(1.1, 1.1);
+		Osm_Relation relation;
+		Osm_Relation relation2;
+		Osm_Map map;
+		map.set_remove_physically(false);
+
+		map.add(&relation);
+		QCOMPARE(false, map.has(&node));
+		relation.add(&node);
+		QCOMPARE(true, map.has(&node));
+
+		relation2.add(&node2);
+		map.add(&relation2);
+		QCOMPARE(true, map.has(&node2));
+	}
+
+	void way_added___relation_source___map_listener() {
+		Osm_Map map;
+		Osm_Way way;
+		Osm_Way way2;
+		Osm_Relation rel;
+		Osm_Relation rel2;
+
+		map.add(&rel);
+		QCOMPARE(false, map.has(&way));
+		rel.add(&way);
+		QCOMPARE(true, map.has(&way));
+
+		rel2.add(&way2);
+		map.add(&rel2);
+		QCOMPARE(true, map.has(&way2));
+	}
+
+	void relation_added___relation_source___map_listener() {
+		Osm_Map map;
+		Osm_Relation rel;
+		Osm_Relation rel2;
+		Osm_Relation source;
+		Osm_Relation source2;
+
+		map.add(&source);
+		QCOMPARE(false, map.has(&rel));
+		source.add(&rel);
+		QCOMPARE(true, map.has(&rel));
+
+		source2.add(&rel2);
+		map.add(&source2);
+		QCOMPARE(true, map.has(&rel2));
+	}
+
 
 };
 

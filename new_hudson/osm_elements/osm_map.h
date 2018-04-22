@@ -37,7 +37,6 @@ public:
 	bool									includes_in_scene			(Osm_Node*) const;
 	void									set_remove_physically		(bool f); /* True by default */
 	void									set_remove_orphaned_nodes	(bool f); /* True by default */
-	void									set_use_precalculated_bound	(bool f); /* False by default */
 	int										count_parents				() const;
 	void									set_bound					(const QRectF&);
 	void									adopt						();
