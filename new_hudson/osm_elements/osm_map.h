@@ -20,6 +20,7 @@ private:
 	bool									f_destruct_physically;
 	bool									f_remove_orphaned_nodes;
 	bool									f_is_valid;
+	mutable bool							f_scene_has_180_issue;
 
 	void									fit_autorects				(Osm_Node&);
 	                                        Osm_Map						(const Osm_Map&) = delete;
@@ -33,8 +34,10 @@ public:
 	typedef QHash<long long, ns_osm::Osm_Relation*>::const_iterator		crelation_iterator;
 
 	bool									is_valid					() const;
-	void									set_remove_physically		(bool f);
-	void									set_remove_orphaned_nodes	(bool f);
+	bool									includes_in_scene			(Osm_Node*) const;
+	void									set_remove_physically		(bool f); /* True by default */
+	void									set_remove_orphaned_nodes	(bool f); /* True by default */
+	void									set_use_precalculated_bound	(bool f); /* False by default */
 	int										count_parents				() const;
 	void									set_bound					(const QRectF&);
 	void									adopt						();
@@ -51,6 +54,8 @@ public:
 	void									clear						();
 	void									fit_bounding_rect			();
 	QRectF									get_bound					(bool f_force_use_precalculated = false) const;
+	QRectF									get_scene_rect				(bool f_force_use_precalculated = false) const;
+	QPointF									get_scene_coord				(Osm_Node* p_node) const;
 	ns_osm::Osm_Node*						get_node					(long long id_node);
 	ns_osm::Osm_Way*						get_way						(long long id_way);
 	ns_osm::Osm_Relation*					get_relation				(long long id_relation);

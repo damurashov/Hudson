@@ -12,6 +12,7 @@ Osm_Map::Osm_Map() {
 	f_destruct_physically = true;
 	f_remove_orphaned_nodes = true;
 	f_is_valid = true;
+	f_scene_has_180_issue = false;
 	m_autorect_normal.setLeft(BIG);
 	m_autorect_normal.setRight(-BIG);
 	m_autorect_normal.setTop(-BIG);
@@ -64,6 +65,14 @@ void Osm_Map::fit_autorects(Osm_Node& node) {
 
 bool Osm_Map::is_valid() const {
 	return f_is_valid;
+}
+
+bool Osm_Map::includes_in_scene(Osm_Node* p_node) const {
+	if (p_node == nullptr) {
+		return false;
+	}
+
+	return get_scene_rect().contains(get_scene_coord(p_node));
 }
 
 void Osm_Map::set_remove_physically(bool f) {
@@ -228,11 +237,11 @@ void Osm_Map::fit_bounding_rect() {
 //	}
 }
 
-QRectF Osm_Map::get_bound(bool f_force_precalculated) const {
+QRectF Osm_Map::get_bound(bool f) const {
 	double width_normal;
 	double width_180;
 
-	if (m_bounding_rect.width() == 0 || m_bounding_rect.height() == 0 || f_force_precalculated) {
+	if (m_bounding_rect.width() == 0 || m_bounding_rect.height() == 0 || f) {
 		width_normal = m_autorect_normal.right() - m_autorect_normal.left();
 		width_180 = m_autorect_180.left() - m_autorect_180.right();
 
@@ -243,6 +252,34 @@ QRectF Osm_Map::get_bound(bool f_force_precalculated) const {
 		}
 	}
 	return m_bounding_rect;
+}
+
+QRectF Osm_Map::get_scene_rect(bool f) const {
+	QRectF rect = get_bound(f);
+	if (rect == m_autorect_normal) {
+		f_scene_has_180_issue = false;
+		return rect;
+	} else {
+		if (rect.left() > rect.right()) {
+			rect.setRight(rect.right() + 360.0);
+			f_scene_has_180_issue = true;
+			return rect;
+		}
+	}
+}
+
+QPointF Osm_Map::get_scene_coord(Osm_Node* p_node) const {
+	QPointF point;
+
+	if (!f_scene_has_180_issue || p_node->get_lon() > 0) {
+		point.setX(p_node->get_lon());
+		point.setY(p_node->get_lat());
+	} else {
+		point.setX(p_node->get_lon() + 360);
+		point.setY(p_node->get_lat());
+	}
+
+	return point;
 }
 
 Osm_Node* Osm_Map::get_node(long long id) {
