@@ -322,6 +322,8 @@ private slots:
 		QCOMPARE(sub.last(), RELATION_DELETE);
 		QCOMPARE(nullptr, map.get_relation(id));
 	}
+
+
 };
 
 QTEST_MAIN(Test_Referential_Integrity)

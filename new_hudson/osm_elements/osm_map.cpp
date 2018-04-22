@@ -27,6 +27,38 @@ Osm_Map::~Osm_Map() {
 }
 
 /*================================================================*/
+/*                       Private methods                          */
+/*================================================================*/
+
+void Osm_Map::fit_autorects(Osm_Node& node) {
+	double lat = node.get_lat();
+	double lon = node.get_lon();
+
+	/* Mutual vertical bounds, ... */
+	if (lat > m_autorect_normal.top()) {
+		m_autorect_normal.setTop(lat);
+		m_autorect_180.setTop(lat);
+	}
+	if (lat < m_autorect_normal.bottom()) {
+		m_autorect_normal.setBottom(lat);
+		m_autorect_180.setBottom(lat);
+	}
+	/* ... but different horisontal ones */
+	if (lon < m_autorect_normal.left()) {
+		m_autorect_normal.setLeft(lon);
+	}
+	if (lon > m_autorect_normal.right()) {
+		m_autorect_normal.setRight(lon);
+	}
+	if (lon < m_autorect_180.left() && lon > 0) {
+		m_autorect_180.setLeft(lon);
+	}
+	if (lon > m_autorect_180.right() && lon <= 0) {
+		m_autorect_180.setRight(lon);
+	}
+}
+
+/*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
 
@@ -59,40 +91,20 @@ void Osm_Map::orphan() {
 }
 
 void Osm_Map::add(Osm_Node* p_node) {
-	double lon;
-	double lat;
+//	double lon;
+//	double lat;
 
 	if (p_node != nullptr) {
 		if (has(p_node)) {
 			return;
 		}
-		lon = p_node->get_lon();
-		lat = p_node->get_lat();
+//		lon = p_node->get_lon();
+//		lat = p_node->get_lat();
 		if (!(p_node->is_valid())) {
 			f_is_valid = false;
 		}
-		/* Mutual vertical bounds, ... */
-		if (lat > m_autorect_normal.top()) {
-			m_autorect_normal.setTop(lat);
-			m_autorect_180.setTop(lat);
-		}
-		if (lat < m_autorect_normal.bottom()) {
-			m_autorect_normal.setBottom(lat);
-			m_autorect_180.setBottom(lat);
-		}
-		/* ... but different horisontal ones */
-		if (lon < m_autorect_normal.left()) {
-			m_autorect_normal.setLeft(lon);
-		}
-		if (lon > m_autorect_normal.right()) {
-			m_autorect_normal.setRight(lon);
-		}
-		if (lon < m_autorect_180.left() && lon > 0) {
-			m_autorect_180.setLeft(lon);
-		}
-		if (lon > m_autorect_180.right() && lon <= 0) {
-			m_autorect_180.setRight(lon);
-		}
+		fit_autorects(*p_node);
+
 		m_nodes_hash[p_node->get_id()] = p_node;
 		subscribe(*p_node);
 	}
@@ -303,6 +315,60 @@ Osm_Map::crelation_iterator Osm_Map::crbegin() const {
 
 Osm_Map::crelation_iterator Osm_Map::crend() const {
 	return m_relations_hash.cend();
+}
+
+void Osm_Map::handle_event_update(Osm_Node& node) {
+	switch (get_meta()) {
+	case NODE_UPDATED:
+		fit_autorects(node);
+		break;
+	}
+}
+
+void Osm_Map::handle_event_update(Osm_Way& way) {
+	switch (get_meta()) {
+	case NODE_ADDED:
+		for (auto it = way.get_nodes_list().cbegin(); it != way.get_nodes_list().cend(); ++it) {
+			Osm_Node* p_node = const_cast<Osm_Node*>(*it);
+			if (!has(p_node)) {
+				add(p_node);
+				break;
+			}
+		}
+		break;
+	}
+}
+
+void Osm_Map::handle_event_update(Osm_Relation& relation) {
+	switch (get_meta()) {
+	case NODE_ADDED:
+		for (auto it = relation.get_nodes().cbegin(); it != relation.get_nodes().cend(); ++it) {
+			Osm_Node* p_node = const_cast<Osm_Node*>(*it);
+			if (!has(p_node)) {
+				add(p_node);
+				//fit_autorects(*p_node);
+				break;
+			}
+		}
+		break;
+	case WAY_ADDED:
+		for (auto it = relation.get_ways().cbegin(); it != relation.get_ways().cend(); ++it) {
+			Osm_Way* p_way = const_cast<Osm_Way*>(*it);
+			if (!has(p_way)) {
+				add(p_way);
+				break;
+			}
+		}
+		break;
+	case RELATION_ADDED:
+		for (auto it = relation.get_relations().cbegin(); it != relation.get_relations().cend(); ++it) {
+			Osm_Relation* p_rel = const_cast<Osm_Relation*>(*it);
+			if (!has(p_rel)) {
+				add(p_rel);
+				break;
+			}
+		}
+	}
 }
 
 void Osm_Map::handle_event_delete(Osm_Node& node) {

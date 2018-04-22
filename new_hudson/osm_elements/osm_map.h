@@ -21,6 +21,7 @@ private:
 	bool									f_remove_orphaned_nodes;
 	bool									f_is_valid;
 
+	void									fit_autorects				(Osm_Node&);
 	                                        Osm_Map						(const Osm_Map&) = delete;
 	Osm_Map&								operator=					(const Osm_Map&) = delete;
 public:
@@ -65,6 +66,9 @@ public:
 	relation_iterator						rend						();
 	crelation_iterator						crbegin						() const;
 	crelation_iterator						crend						() const;
+	void									handle_event_update			(Osm_Node&) override;
+	void									handle_event_update			(Osm_Way&) override;
+	void									handle_event_update			(Osm_Relation&) override;
 	void									handle_event_delete			(Osm_Node&) override;
 	void									handle_event_delete			(Osm_Way&) override;
 	void									handle_event_delete			(Osm_Relation&) override;
