@@ -2,6 +2,7 @@
 #define XML_HANDLER_H
 
 #include "osm_elements.h"
+#include "osm_message.h"
 
 #ifndef QT_WIDGETS_H
 #define QT_WIDGETS_H
@@ -17,25 +18,21 @@ namespace ns_osm  {
 
 class Xml_Handler {
 private:
-	                                    Xml_Handler();
+	                        Xml_Handler				()						= delete;
+							Xml_Handler				(const Xml_Handler&)	= delete;
+	Xml_Handler&			operator=				(const Xml_Handler&)	= delete;
 protected:
 	struct Osm_Xml;
 
-	QHash<long long, Osm_Node*>&		m_nodes_hash;
-	QHash<long long, Osm_Way*>&			m_ways_hash;
-	QHash<long long, Osm_Relation*>&	m_relations_hash;
-	QRectF&								m_bounding_rect;
+	ns_osm::Osm_Map&		m_map;
 
-	void								load_bound_from_xml		(const QDomNode& node);
-	void								load_nodes_from_xml		(const QDomNode& node);
-	void								load_ways_from_xml		(const QDomNode& node);
-	void								load_relations_from_xml	(const QDomNode& node);
+	void					load_bound_from_xml		(const QDomNode& node);
+	void					load_nodes_from_xml		(const QDomNode& node);
+	void					load_ways_from_xml		(const QDomNode& node);
+	void					load_relations_from_xml	(const QDomNode& node);
 public:
-	bool								load_from_xml			(const QString& xml_path);
-	                                    Xml_Handler				(QHash<long long, Osm_Node*>&,
-										                         QHash<long long, Osm_Way*>&,
-										                         QHash<long long, Osm_Relation*>&,
-										                         QRectF&);
+	int						load_from_xml			(const QString& xml_path);
+	                        Xml_Handler				(Osm_Map&);
 }; /* class Xml_Handler */
 }/* namespace  */
 

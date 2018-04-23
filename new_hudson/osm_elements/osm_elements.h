@@ -5,5 +5,6 @@
 #include "osm_node.h"
 #include "osm_way.h"
 #include "osm_relation.h"
+#include "osm_map.h"
 
 #endif // OSM_ELEMENTS_H

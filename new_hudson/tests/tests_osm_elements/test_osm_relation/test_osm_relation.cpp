@@ -6,231 +6,92 @@ class Test_Osm_Relation : public QObject {
 private slots:
 
 	void add() {
-		Osm_Relation relation;
+		Osm_Relation* p_relation = new Osm_Relation;
 		Osm_Way* p_way = new Osm_Way;
+		Osm_Way* p_way2 = nullptr;
 		Osm_Node* p_node = new Osm_Node(QString::number(12.2), QString::number(43.12));
 
-		relation.add(p_way);
-		relation.add(p_node);
-		QCOMPARE(2, relation.get_size());
-		QCOMPARE(1, relation.count_nodes());
-		QCOMPARE(1, relation.count_ways());
+		p_relation->add(p_way);
+		p_relation->add(p_node);
+		QCOMPARE(2, p_relation->get_size());
+		QCOMPARE(1, p_relation->count_nodes());
+		QCOMPARE(1, p_relation->count_ways());
 
-		relation.add(p_node);
-		relation.add(nullptr);
-		QCOMPARE(2, relation.get_size());
-		QCOMPARE(1, relation.count_nodes());
+		p_relation->add(p_node);
+		p_relation->add(p_way2);
+		QCOMPARE(2, p_relation->get_size());
+		QCOMPARE(1, p_relation->count_nodes());
+
+		delete p_way;
+		delete p_relation;
+		delete p_node;
 	}
 
 	void remove() {
-		Osm_Relation relation;
+		Osm_Relation* p_rel = new Osm_Relation;
 		Osm_Way* p_way = new Osm_Way;
-		Osm_Node* p_node = new Osm_Node(1.1, 1.1);
+		Osm_Node* p_node = new Osm_Node(0.0,0.0);
 
-		relation.add(p_way);
-		relation.add(p_node);
-		QCOMPARE(2, relation.get_size());
-
-		relation.remove(p_way);
-		relation.remove(nullptr);
-		QCOMPARE(1, relation.get_size());
+		p_rel->add(p_way);
+		p_rel->add(p_node);
+		QCOMPARE(2, p_rel->get_size());
+		delete p_way;
+		p_rel->remove(p_node);
+		QCOMPARE(0, p_rel->get_size());
 		delete p_node;
-		QCOMPARE(0, relation.get_size());
+		delete p_rel;
 	}
 
-	void has_object() {
-		Osm_Relation relation;
-		Osm_Way* p_way = new Osm_Way;
-		Osm_Node* p_node = new Osm_Node(1.1, 1.1);
-		Osm_Node* p_node_2 = new Osm_Node(2.2, 2.2);
+	void has() {
+		Osm_Relation rel;
+		Osm_Way way1;
+		Osm_Way way2;
+		Osm_Node node(0,0);
 
-		relation.add(p_way);
-		relation.add(p_node);
-		relation.add(p_node_2);
-		QCOMPARE(true, relation.has_object(p_way));
-		QCOMPARE(true, relation.has_object(p_node));
-		QCOMPARE(true, relation.has_object(p_node_2));
-
-		relation.remove(p_way);
-		delete p_node_2;
-		QCOMPARE(false, relation.has_object(p_way));
-		QCOMPARE(false, relation.has_object(p_node_2));
-		QCOMPARE(true, relation.has_object(p_node));
-
-		delete p_node;
-		QCOMPARE(false, relation.has_object(p_node));
-	}
-
-	void set_role() {
-		Osm_Relation relation;
-		Osm_Way* p_way = new Osm_Way;
-		Osm_Node* p_node = new Osm_Node(1.1, 1.1);
-
-		relation.add(p_way, QString("busway"));
-		relation.add(p_node);
-		relation.set_role(p_node, QString("bus_stop"));
-	}
-
-	void get_size() {
-		Osm_Relation relation;
-		Osm_Way* ptr_way = new Osm_Way;
-		Osm_Node* ptr_node = new Osm_Node(1.1, 1.1);
-
-		QCOMPARE(0, relation.get_size());
-
-		relation.add(ptr_way);
-		relation.add(ptr_node, QString("some_role"));
-		QCOMPARE(2, relation.get_size());
-
-		relation.remove(ptr_way);
-		QCOMPARE(1, relation.get_size());
-
-		delete ptr_node;
-		QCOMPARE(0, relation.get_size());
+		rel.add(&way1);
+		rel.add(&way2);
+		rel.add(&node);
+		QCOMPARE(3, rel.get_size());
+		QCOMPARE(true, rel.has(&way1));
+		QCOMPARE(true, rel.has(&way2));
+		QCOMPARE(true, rel.has(&node));
 	}
 
 	void get_role() {
-		Osm_Relation rel;
-		Osm_Node* p_node = new Osm_Node(1.1, 1.1);
-		Osm_Way* p_way = new Osm_Way;
-
-		QCOMPARE(QString(""), rel.get_role(p_node));
-
-		rel.add(p_node, QString("this_is_my_role"));
-		rel.add(p_way);
-		QCOMPARE(QString("this_is_my_role"), rel.get_role(p_node));
-		QCOMPARE(QString(""), rel.get_role(p_way));
-
-		rel.set_role(p_way, QString("some_role"));
-		QCOMPARE(QString("some_role"), rel.get_role(p_way));
-
-		rel.remove(p_way);
-		QCOMPARE(QString(""), rel.get_role(p_way));
-
-		delete p_node;
-		QCOMPARE(QString(""), rel.get_role(p_node));
-	}
-
-	void get_nodes() {
-		Osm_Relation relation;
-		Osm_Node* p_node_1 = new Osm_Node(11.1, 1.11);
-		Osm_Node* p_node_2 = new Osm_Node(2.22, 222.2);
-
-		QCOMPARE(true, relation.get_nodes().isEmpty());
-
-		relation.add(p_node_1);
-		relation.add(p_node_2);
-		QCOMPARE(false, relation.get_nodes().isEmpty());
-		QCOMPARE(p_node_1, relation.get_nodes().at(0));
-		QCOMPARE(p_node_2, relation.get_nodes().at(1));
-	}
-
-	void get_ways() {
-		Osm_Relation relation;
-		Osm_Way* p_way_1 = new Osm_Way;
-		Osm_Way* p_way_2 = new Osm_Way;
-
-		QCOMPARE(true, relation.get_ways().isEmpty());
-
-		relation.add(p_way_1);
-		relation.add(p_way_2);
-		QCOMPARE(false, relation.get_ways().isEmpty());
-		QCOMPARE(p_way_1, relation.get_ways().at(0));
-		QCOMPARE(p_way_2, relation.get_ways().at(1));
-	}
-
-	void get_relations() {
-		Osm_Relation relation;
-		Osm_Relation* p_rel_1 = new Osm_Relation;
-		Osm_Relation* p_rel_2 = new Osm_Relation;
-
-		QCOMPARE(true, relation.get_relations().isEmpty());
-
-		relation.add(p_rel_1);
-		relation.add(p_rel_2);
-		QCOMPARE(false, relation.get_relations().isEmpty());
-		QCOMPARE(p_rel_1, relation.get_relations().at(0));
-		QCOMPARE(p_rel_2, relation.get_relations().at(1));
-	}
-
-	void count_nodes() {
-		Osm_Relation relation;
-		Osm_Node* p_node_1 = new Osm_Node(1.1, 11.1);
-		Osm_Node* p_node_2 = new Osm_Node(22.2, 2.22);
-		Osm_Way* p_way = new Osm_Way;
-
-		QCOMPARE(0, relation.count_nodes());
-
-		relation.add(p_node_1);
-		relation.add(p_way);
-		relation.add(p_node_2);
-		QCOMPARE(3, relation.get_size());
-		QCOMPARE(2, relation.count_nodes());
-
-		relation.remove(p_node_1);
-		delete p_node_2;
-		QCOMPARE(1, relation.get_size());
-		QCOMPARE(0, relation.count_nodes());
-	}
-
-	void count_ways() {
-		Osm_Relation rel;
-		Osm_Way* p_way_1 = new Osm_Way;
-		Osm_Way* p_way_2 = new Osm_Way;
-		Osm_Node* p_node = new Osm_Node(1.11, 1.11);
 		Osm_Relation* p_rel = new Osm_Relation;
+		Osm_Way* p1_way = new Osm_Way;
+		Osm_Way* p2_way = new Osm_Way;
 
-		QCOMPARE(0, rel.get_size());
-		QCOMPARE(0, rel.count_ways());
-
-		rel.add(p_way_1);
-		rel.add(p_way_2);
-		rel.add(p_node);
-		rel.add(p_rel);
-		QCOMPARE(4, rel.get_size());
-		QCOMPARE(2, rel.count_ways());
-
-		rel.remove(p_way_1);
-		delete p_way_2;
-		QCOMPARE(2, rel.get_size());
-		QCOMPARE(0, rel.count_ways());
+		QCOMPARE("", p_rel->get_role(p1_way));
+		p_rel->add(p1_way, "p1_way");
+		p_rel->add(p2_way, "p2_way");
+		QCOMPARE("p1_way", p_rel->get_role(p1_way));
+		p_rel->set_role(p2_way, "another way");
+		QCOMPARE("another way", p_rel->get_role(p2_way));
 	}
 
-	void count_relations() {
-		Osm_Relation rel;
-		Osm_Relation* p_rel_1 = new Osm_Relation;
-		Osm_Relation* p_rel_2 = new Osm_Relation;
-		Osm_Node* p_node = new Osm_Node(111.1, 1.11);
-		Osm_Way* p_way = new Osm_Way;
+	void count_nodes___count_ways___count_relations___get_size() {
+		const int N_OBJECTS = 1000;
+		const int N_TO_DELETE = 100;
+		Osm_Relation relation;
+		Osm_Node* ap_nodes[N_OBJECTS];
+		Osm_Way* ap_ways[N_OBJECTS];
+		Osm_Relation* ap_relations[N_OBJECTS];
 
-		QCOMPARE(0, rel.get_size());
-		QCOMPARE(0, rel.count_relations());
-
-		rel.add(p_rel_1);
-		rel.add(p_node);
-		rel.add(p_rel_2);
-		rel.add(p_way);
-		QCOMPARE(4, rel.get_size());
-		QCOMPARE(2, rel.count_relations());
-
-		delete p_rel_1;
-		rel.remove(p_rel_2);
-		QCOMPARE(2, rel.get_size());
-		QCOMPARE(0, rel.count_relations());
-	}
-
-	void is_valid() {
-		Osm_Relation rel;
-		Osm_Node* p_node = new Osm_Node(1.1, 1.1);
-		long long id = p_node->get_id();
-
-		QCOMPARE(true, rel.is_valid());
-
-		rel.add(p_node);
-		QCOMPARE(true, rel.is_valid());
-
-		rel.add(nullptr);
-		QCOMPARE(false, rel.is_valid());
+		for (int i = 0; i < N_OBJECTS; ++i) {
+			ap_nodes[i] = new Osm_Node(i,i);
+			ap_ways[i] = new Osm_Way;
+			ap_relations[i] = new Osm_Relation;
+			relation.add(ap_nodes[i], QString::number(i));
+			relation.add(ap_ways[i], QString::number(i));
+			relation.add(ap_relations[i], QString::number(i));
+		}
+		for (int i = 0; i < N_TO_DELETE; ++i) {
+			delete ap_nodes[i];
+			delete ap_ways[i];
+			delete ap_relations[i];
+		}
+		QCOMPARE(relation.get_size(), 3*N_OBJECTS - 3*N_TO_DELETE);
 	}
 };
 

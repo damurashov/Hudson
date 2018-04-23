@@ -1,13 +1,21 @@
 #include "osm_object.h"
+#include "osm_node.h"
+#include "osm_way.h"
+#include "osm_relation.h"
+
 using namespace ns_osm;
-// ==================== Static members ====================
-//QHash<long long, Osm_Object*>	Osm_Object::s_all_nodes_ptrs;
-//QHash<long long, Osm_Object*>	Osm_Object::s_all_relations_ptrs;
-//QHash<long long, Osm_Object*>	Osm_Object::s_all_ways_ptrs;
+
+/*================================================================*/
+/*                        Static members                          */
+/*================================================================*/
+
 long long						Osm_Object::s_osm_id_bound(-1);
 long long						Osm_Object::s_inner_id_bound(0xFFFFFFFFFFFFFFFF);
 
-// =============== Constructors, destructors =================
+/*================================================================*/
+/*                  Constructors, destructors                     */
+/*================================================================*/
+
 Osm_Object::Osm_Object() :
     OSM_ID(s_osm_id_bound--),
 	INNER_ID(s_inner_id_bound++),
@@ -15,8 +23,7 @@ Osm_Object::Osm_Object() :
 {
 	f_is_valid = true;
 	m_attrmap[QString("id")] = QString::number(OSM_ID);
-	mn_children = 0;
-	mn_parents = 0;
+	mn_subscribers = 0;
 	//reg_osm_object(this);
 }
 
@@ -26,9 +33,8 @@ Osm_Object::Osm_Object(const Osm_Object::Type type) :
 	TYPE(type)
 {
 	f_is_valid = true;
-	mn_children = 0;
-	mn_parents = 0;
 	m_attrmap[QString("id")] = QString::number(OSM_ID);
+	mn_subscribers = 0;
 	//reg_osm_object(this);
 }
 
@@ -39,82 +45,19 @@ Osm_Object::Osm_Object(const QString &id, const Osm_Object::Type type):
 	TYPE(type)
 {
 	f_is_valid = true;
-	mn_children = 0;
-	mn_parents = 0;
 	m_attrmap[QString("id")] = QString::number(OSM_ID);
-	if (s_osm_id_bound >= OSM_ID)
+	if (s_osm_id_bound >= OSM_ID) {
 		s_osm_id_bound = (OSM_ID - 1);
-	//reg_osm_object(this);
+	}
+	mn_subscribers = 0;
 }
 
 Osm_Object::~Osm_Object() {
-	for (QHash<long long, Osm_Object*>::iterator it = m_parents.begin(); it != m_parents.end(); ++it) {
-		it.value()->remove_child(this);
-	}
-	for (QHash<long long, Osm_Object*>::iterator it = m_children.begin(); it != m_children.end(); ++it) {
-		it.value()->remove_parent(this);
-	}
-	//unreg_osm_object(this);
 }
 
-// ==================== Private methods ======================
-
-//void Osm_Object::reg_osm_object(Osm_Object* object) {
-//	QHash<long long, Osm_Object*>& hash = get_working_hash(object->get_type());
-//	hash[object->get_id()] = object;
-//}
-
-//void Osm_Object::unreg_osm_object(Osm_Object* object) {
-//	QHash<long long, Osm_Object*>& hash = get_working_hash(object->get_type());
-//	hash.remove(object->get_id());
-//}
-
-void Osm_Object::add_child(Osm_Object* ptr_child) {
-	m_children[ptr_child->get_inner_id()] = ptr_child;
-	mn_children++;
-}
-
-void Osm_Object::add_parent(Osm_Object* ptr_parent) {
-	m_parents[ptr_parent->get_inner_id()] = ptr_parent;
-	mn_parents++;
-}
-
-void Osm_Object::remove_child(Osm_Object* ptr_child) {
-	m_children.remove(ptr_child->get_inner_id());
-	mn_children--;
-	handle_child_del(ptr_child);
-}
-
-void Osm_Object::remove_parent(Osm_Object* ptr_parent) {
-	m_parents.remove(ptr_parent->get_inner_id());
-	mn_parents--;
-}
-
-
-// ==================== Protected methods ====================
-//QHash<long long, Osm_Object*>& Osm_Object::get_working_hash(const Osm_Object::Type object_type) {
-//	switch (object_type) {
-//	case Type::NODE:
-//		return s_all_nodes_ptrs;
-//	case Type::WAY:
-//		return s_all_ways_ptrs;
-//	case Type::RELATION:
-//		return s_all_ways_ptrs;
-//	}
-//}
-
-//Osm_Object* Osm_Object::get_obj_by_id(const Type type, const long long &obj_id) {
-//	QHash<long long, Osm_Object*>& hash = get_working_hash(type);
-//	return hash[obj_id];
-//}
-
-const QHash<long long, Osm_Object*>& Osm_Object::get_children() const {
-	return m_children;
-}
-
-const QHash<long long, Osm_Object*>& Osm_Object::get_parents() const {
-	return m_parents;
-}
+/*================================================================*/
+/*                      Protected methods                         */
+/*================================================================*/
 
 const Osm_Object::Type Osm_Object::get_type() const {
 	return TYPE;
@@ -124,34 +67,69 @@ void Osm_Object::set_valid(bool f_valid) {
 	f_is_valid = f_valid;
 }
 
-void Osm_Object::reg_child(Osm_Object* ptr_child) {
-	if (ptr_child != nullptr) {
-		add_child(ptr_child);
-		ptr_child->add_parent(this);
-	}
-}
-
-void Osm_Object::unreg_child(Osm_Object* ptr_child) {
-	if (ptr_child != nullptr) {
-		remove_child(ptr_child);
-		ptr_child->remove_parent(this);
-	}
-}
 
 long long Osm_Object::get_inner_id() const {
 	return INNER_ID;
 }
 
-unsigned Osm_Object::count_parents() const {
-	return mn_parents;
+void Osm_Object::emit_delete(Osm_Subscriber::Meta meta) {
+	for (auto it = m_subscribers.begin(); it != m_subscribers.end(); ++it) {
+		(*it)->set_meta(meta);
+		(*it)->unsubscribe(*this);
+		switch (get_type()) {
+		case Type::NODE:
+			(*it)->handle_event_delete(*static_cast<Osm_Node*>(this));
+			break;
+		case Type::WAY:
+			(*it)->handle_event_delete(*static_cast<Osm_Way*>(this));
+			break;
+		case Type::RELATION:
+			(*it)->handle_event_delete(*static_cast<Osm_Relation*>(this));
+			break;
+		}
+		(*it)->handle_event_delete(*static_cast<Osm_Object*>(this));
+	}
 }
 
-unsigned Osm_Object::count_children() const {
-	return mn_children;
+void Osm_Object::emit_update(Osm_Subscriber::Meta meta) {
+	for (auto it = m_subscribers.begin(); it != m_subscribers.end(); ++it) {
+		(*it)->set_meta(meta);
+		switch (get_type()) {
+		case Type::NODE:
+			(*it)->handle_event_update(*static_cast<Osm_Node*>(this));
+			break;
+		case Type::WAY:
+			(*it)->handle_event_update(*static_cast<Osm_Way*>(this));
+			break;
+		case Type::RELATION:
+			(*it)->handle_event_update(*static_cast<Osm_Relation*>(this));
+			break;
+		}
+		(*it)->handle_event_update(*static_cast<Osm_Object*>(this));
+	}
 }
 
+/*================================================================*/
+/*                        Public methods                          */
+/*================================================================*/
 
-// ==================== Public methods ====================
+void Osm_Object::add_subscriber(Osm_Subscriber& subscriber) {
+	if (m_subscribers.indexOf(&subscriber) == -1) {
+		m_subscribers.push_back(&subscriber);
+		mn_subscribers++;
+	}
+}
+
+void Osm_Object::remove_subscriber(Osm_Subscriber& subscriber) {
+	//m_subscribers.remove(&subscriber);
+	m_subscribers.removeOne(&subscriber);
+	mn_subscribers--;
+}
+
+int Osm_Object::count_subscribers() const {
+	return mn_subscribers;
+}
+
 QString Osm_Object::get_attr_value(const QString& key) const {
 	return m_attrmap[key];
 }

@@ -1,6 +1,10 @@
 #include "osm_relation.h"
 using namespace ns_osm;
-// ========================= Constructors, destructors ==================
+
+/*================================================================*/
+/*                  Constructors, destructors                     */
+/*================================================================*/
+
 
 Osm_Relation::Osm_Relation(const QString& id) : Osm_Object(id, Osm_Object::Type::RELATION) {
 	mn_nodes = 0;
@@ -20,97 +24,135 @@ Osm_Relation::Osm_Relation() : Osm_Object(Osm_Object::Type::RELATION) {
 
 Osm_Relation::~Osm_Relation() {
 	//unreg_osm_object(this);
+	emit_delete();
 }
 
-// ========================== Private methods ===========================
+/*================================================================*/
+/*                        Public methods                          */
+/*================================================================*/
 
-void Osm_Relation::handle_child_del(Osm_Object* ptr_child) {
-	Osm_Object::Type object_type = (static_cast<Osm_Relation*>(ptr_child)->get_type());
-
-	switch (object_type) {
-	case Osm_Object::Type::NODE:
-		m_nodes_list.removeOne(static_cast<Osm_Node*>(ptr_child));
-		mn_nodes--;
-		//m_size--;
-		m_roles_hash.remove(static_cast<Osm_Relation*>(ptr_child)->get_inner_id());
-		break;
-	case Osm_Object::Type::WAY:
-		m_ways_list.removeOne(static_cast<Osm_Way*>(ptr_child));
-		mn_ways--;
-		//m_size--;
-		m_roles_hash.remove(static_cast<Osm_Relation*>(ptr_child)->get_inner_id());
-		break;
-	case Osm_Object::Type::RELATION:
-		m_relations_list.removeOne(static_cast<Osm_Relation*>(ptr_child));
-		mn_relations--;
-		//m_size--;
-		m_roles_hash.remove(static_cast<Osm_Relation*>(ptr_child)->get_inner_id());
-		break;
-	}
-}
-// =========================== Public methods ===========================
-
-void Osm_Relation::add(Osm_Object* ptr_object, const QString& role) {
-	Osm_Object::Type object_type;
-
-	if (ptr_object == nullptr) {
+void Osm_Relation::add(Osm_Node* ptr_node, const QString &role) {
+	if (ptr_node == nullptr) {
 		set_valid(false);
 		return;
-	} else if (has_object(ptr_object)) {
+	} else if (has(ptr_node)) {
 		return;
 	}
 
-	reg_child(ptr_object);
-	object_type = static_cast<Osm_Relation*>(ptr_object)->get_type();
-
-	switch (object_type) {
-	case Osm_Object::Type::NODE:
-		m_nodes_list.push_back(static_cast<Osm_Node*>(ptr_object));
-		mn_nodes++;
-		//m_size++;
-		break;
-	case Osm_Object::Type::WAY:
-		m_ways_list.push_back(static_cast<Osm_Way*>(ptr_object));
-		mn_ways++;
-		//m_size++;
-		break;
-	case Osm_Object::Type::RELATION:
-		m_relations_list.push_back(static_cast<Osm_Relation*>(ptr_object));
-		mn_relations++;
-		//m_size++;
-		break;
+	subscribe(*ptr_node);
+	if (!(ptr_node->is_valid())) {
+		set_valid(false);
 	}
-	set_role(ptr_object, role);
+	m_nodes_list.push_back(ptr_node);
+	mn_nodes++;
+	set_role(ptr_node, role);
+	emit_update(NODE_ADDED);
 }
 
-void Osm_Relation::remove(Osm_Object* ptr_object) {
-	if (has_object(ptr_object)) {
-		unreg_child(ptr_object);
+
+
+void Osm_Relation::add(Osm_Way* ptr_way, const QString &role) {
+	if (ptr_way == nullptr) {
+		set_valid(false);
+		return;
+	} else if (has(ptr_way)) {
+		return;
 	}
+
+	subscribe(*ptr_way);
+	if (!(ptr_way->is_valid())) {
+		set_valid(false);
+	}
+	m_ways_list.push_back(ptr_way);
+	mn_ways++;
+	set_role(ptr_way, role);
+	emit_update(WAY_ADDED);
 }
 
-bool Osm_Relation::has_object(Osm_Object* ptr_object) const {
-	if (ptr_object != nullptr) {
-		return get_children().contains(static_cast<Osm_Relation*>(ptr_object)->get_inner_id());
+void Osm_Relation::add(Osm_Relation* ptr_rel, const QString& role) {
+	if (ptr_rel == nullptr || ptr_rel == this) {
+		set_valid(false);
+		return;
+	} else if (has(ptr_rel)) {
+		return;
 	}
-	return false;
+
+	subscribe(*ptr_rel);
+	if (!(ptr_rel->is_valid())) {
+		set_valid(false);
+	}
+	m_relations_list.push_back(ptr_rel);
+	mn_relations++;
+	set_role(ptr_rel, role);
+	emit_update(RELATION_ADDED);
+}
+
+void Osm_Relation::remove(Osm_Node* ptr_node) {
+	if (ptr_node == nullptr) {
+		return;
+	}
+	mn_nodes -= m_nodes_list.removeAll(ptr_node);
+	m_roles_hash.remove(reinterpret_cast<Osm_Relation*>(ptr_node)->get_inner_id());
+	unsubscribe(*ptr_node);
+	emit_update(NODE_DELETED);
+}
+
+void Osm_Relation::remove(Osm_Way* ptr_way) {
+	if (ptr_way == nullptr) {
+		return;
+	}
+	mn_ways -= m_ways_list.removeAll(ptr_way);
+	m_roles_hash.remove(reinterpret_cast<Osm_Relation*>(ptr_way)->get_inner_id());
+	unsubscribe(*ptr_way);
+	emit_update(WAY_DELETED);
+}
+
+void Osm_Relation::remove(Osm_Relation* ptr_rel) {
+	if (ptr_rel == nullptr) {
+		return;
+	}
+
+	mn_relations -= m_relations_list.removeAll(ptr_rel);
+	m_roles_hash.remove(reinterpret_cast<Osm_Relation*>(ptr_rel)->get_inner_id());
+	unsubscribe(*ptr_rel);
+	emit_update(RELATION_DELETED);
+}
+
+bool Osm_Relation::has(Osm_Node* p_node) const {
+	if (p_node == nullptr) {
+		return false;
+	}
+	return m_nodes_list.contains(p_node);
+}
+
+bool Osm_Relation::has(Osm_Way* p_way) const {
+	if (p_way == nullptr) {
+		return false;
+	}
+	return m_ways_list.contains(p_way);
+}
+
+bool Osm_Relation::has(Osm_Relation* p_rel) const {
+	if (p_rel == nullptr) {
+		return false;
+	}
+	return m_relations_list.contains(p_rel);
 }
 
 void Osm_Relation::set_role(Osm_Object* ptr_object, const QString& role) {
-	if (has_object(ptr_object)) {
-		m_roles_hash[static_cast<Osm_Relation*>(ptr_object)->get_inner_id()] = role;
+	if (ptr_object == nullptr) {
+		return;
 	}
+	m_roles_hash[static_cast<Osm_Relation*>(ptr_object)->get_inner_id()] = role;
+	emit_update();
 }
 
 unsigned Osm_Relation::get_size() const {
-	return count_children();
+	return count_nodes() + count_ways() + count_relations();
 }
 
 const QString Osm_Relation::get_role(Osm_Object* ptr_object) const {
-	if (has_object(ptr_object)) {
-		return m_roles_hash[static_cast<Osm_Relation*>(ptr_object)->get_inner_id()];
-	}
-	return QString("");
+	return m_roles_hash[static_cast<Osm_Relation*>(ptr_object)->get_inner_id()];
 }
 
 const QList<Osm_Node*>& Osm_Relation::get_nodes() const {
@@ -135,4 +177,28 @@ unsigned short Osm_Relation::count_ways() const {
 
 unsigned short Osm_Relation::count_relations() const {
 	return mn_relations;
+}
+
+void Osm_Relation::handle_event_delete(Osm_Node& node) {
+	mn_nodes -= m_nodes_list.removeAll(&node);
+	emit_update(NODE_DELETED);
+}
+
+void Osm_Relation::handle_event_delete(Osm_Way& way) {
+	mn_ways -= m_ways_list.removeAll(&way);
+	emit_update(WAY_DELETED);
+}
+
+void Osm_Relation::handle_event_delete(Osm_Relation& relation) {
+	mn_relations -= m_relations_list.removeAll(&relation);
+	emit_update(RELATION_DELETED);
+}
+
+void Osm_Relation::handle_event_delete(Osm_Object& object) {
+	m_roles_hash.remove(static_cast<Osm_Relation&>(object).get_inner_id());
+	//emit_update();
+}
+
+void Osm_Relation::handle_event_update(Osm_Object &) {
+	emit_update();
 }

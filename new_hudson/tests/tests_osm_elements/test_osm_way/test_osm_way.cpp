@@ -4,174 +4,118 @@ using namespace ns_osm;
 class Test_Osm_Way : public QObject {
 	Q_OBJECT
 private slots:
-
 	void get_size() {
-		Osm_Way way;
-		Osm_Node* ptr_node_1 = new Osm_Node(1.1,1.1);
-		//Osm_Node* ptr_node_2 = new Osm_Node(2.2, 2.2);
+		const int ARRAY_SIZE = 4;
+		Osm_Way* p_way = new Osm_Way;
+		Osm_Node* ap_nodes[ARRAY_SIZE];
 
-		QCOMPARE(0, way.get_size());
+		for (int i = 0; i < ARRAY_SIZE; ++i) {
+			ap_nodes[i] = new Osm_Node(i,i);
+			p_way->push_node(ap_nodes[i]);
+		}
 
-		way.push_node(ptr_node_1);
-		//way.push_node(ptr_node_2);
-		QCOMPARE(1, way.get_size());
+		QCOMPARE(ARRAY_SIZE, p_way->get_size());
+		delete ap_nodes[ARRAY_SIZE-1];
+		QCOMPARE(ARRAY_SIZE-1, p_way->get_size());
 
-		delete ptr_node_1;
-		QCOMPARE(0, way.get_size());
+		delete p_way;
+		for (int i = 0; i < ARRAY_SIZE-1; ++i) {
+			delete ap_nodes[i];
+		}
 	}
 
 	void get_capacity() {
-		Osm_Way way;
-		QCOMPARE(2000, way.get_capacity());
+		Osm_Way* p_way = new Osm_Way;
+
+		QCOMPARE(2000, p_way->get_capacity());
+		delete p_way;
 	}
 
 	void push_node() {
-		//bool f_success;
-		Osm_Way way;
-		Osm_Node* ptr_node_1 = new Osm_Node(1.1, 1.1);
-		Osm_Node* ptr_node_2 = new Osm_Node(2.2, 2.2);
-		Osm_Node* ptr_node_3 = new Osm_Node(3.3, 3.3);
+		const int ARRAY_SIZE = 4;
+		Osm_Way* p_way = new Osm_Way;
+		Osm_Node* ap_nodes[ARRAY_SIZE];
 
-		QCOMPARE(0, way.get_size());
+		for (int i = 0; i < ARRAY_SIZE; ++i) {
+			ap_nodes[i] = new Osm_Node(i,i);
+			QCOMPARE(true, p_way->push_node(ap_nodes[i]));
+		}
+		QCOMPARE(false, p_way->push_node(ap_nodes[ARRAY_SIZE-1]));
+		QCOMPARE(true, p_way->push_node(ap_nodes[0]));
+		QCOMPARE(false, p_way->push_node(ap_nodes[1]));
 
-		way.push_node(ptr_node_1);
-		way.push_node(ptr_node_2);
-		way.push_node(ptr_node_3);
-		QCOMPARE(3, way.get_size());
-
-		QCOMPARE(false, way.push_node(ptr_node_3));
-		QCOMPARE(3, way.get_size());
-
-		QCOMPARE(true, way.push_node(ptr_node_1));
-		QCOMPARE(4, way.get_size());
-
-		delete ptr_node_1;
-		QCOMPARE(2, way.get_size());
-
-		delete ptr_node_2;
-		delete ptr_node_3;
-		QCOMPARE(0, way.get_size());
+		for (int i = 0; i < ARRAY_SIZE; ++i) {
+			delete ap_nodes[i];
+		}
+		delete p_way;
 	}
 
 	void insert_node_between() {
-		Osm_Way way;
-		Osm_Node* ptr_node_1 = new Osm_Node(1.1, 1.1);
-		Osm_Node* ptr_node_2 = new Osm_Node(2.2, 2.2);
-		Osm_Node* ptr_node_3 = new Osm_Node(3.3, 3.3);
+		const int ARRAY_SIZE = 3;
+		Osm_Way* p_way = new Osm_Way;
+		Osm_Node* ap_nodes[ARRAY_SIZE];
+		for (int i = 0; i < ARRAY_SIZE; ++i) {
+			ap_nodes[i] = new Osm_Node(i,i);
+		}
 
-		QCOMPARE(0, way.get_size());
+		QCOMPARE(false, p_way->insert_node_between(ap_nodes[0], ap_nodes[1], ap_nodes[2]));;
+		p_way->push_node(ap_nodes[0]);
+		QCOMPARE(true, p_way->insert_node_between(ap_nodes[2], ap_nodes[0], ap_nodes[1]));
+		QCOMPARE(true, p_way->insert_node_between(ap_nodes[1], ap_nodes[0], ap_nodes[2]));
+		QCOMPARE(3, p_way->get_size());
 
-		QCOMPARE(false, way.insert_node_between(nullptr, nullptr, nullptr));
-
-		QCOMPARE(false, way.insert_node_between(ptr_node_1, ptr_node_2, ptr_node_3));
-		QCOMPARE(0, way.get_size());
-
-		way.push_node(ptr_node_1);
-		QCOMPARE(false, way.insert_node_between(ptr_node_1, ptr_node_1, ptr_node_2));
-		QCOMPARE(1, way.get_size());
-
-		QCOMPARE(true, way.insert_node_between(ptr_node_2, ptr_node_1, ptr_node_3));
-
-		QCOMPARE(true, way.insert_node_between(ptr_node_3, ptr_node_1, ptr_node_2));
-
-		QCOMPARE(ptr_node_3, way.get_nodes_list().at(1));
-		QCOMPARE(3, way.get_size());
+		delete p_way;
+		for (int i = 0; i < ARRAY_SIZE; ++i) {
+			delete ap_nodes[i];
+		}
 	}
 
-	void has_node() {
-		Osm_Way way;
-		Osm_Node* ptr_node_1 = new Osm_Node(1.1, 1.1);
-		Osm_Node* ptr_node_2 = new Osm_Node(2.2, 2.2);
-		Osm_Node* ptr_node_3;
-		int id_1 = ptr_node_1->get_id();
-		int id_2 = ptr_node_2->get_id();
+	void has() {
+		Osm_Way* p_way = new Osm_Way;
+		Osm_Node* p1_node = new Osm_Node(1.0, 1.0);
+		Osm_Node* p2_node = new Osm_Node(2.0, 2.0);
+		Osm_Node* p3_node; /* nullptr */
 
-		QCOMPARE(false, way.has_node(nullptr));
+		QCOMPARE(false,p_way->has(p1_node));
+		QCOMPARE(false,p_way->has(p3_node));
 
-		way.push_node(ptr_node_1);
-		way.push_node(ptr_node_2);
-		//way.push_node(ptr_node_3);
-		QCOMPARE(true, way.has_node(ptr_node_1));
-		//QCOMPARE(false, way.has_node(ptr_node_3));
+		p_way->push_node(p1_node);
+		p_way->push_node(p2_node);
+		QCOMPARE(2, p_way->get_size());
+		QCOMPARE(true, p_way->is_valid());
+
+		QCOMPARE(false, p_way->push_node(p3_node));
+		QCOMPARE(false, p_way->is_valid());
+		QCOMPARE(2, p_way->get_size());
+
+		delete p1_node;
+		QCOMPARE(1, p_way->get_size());
+		delete p2_node;
+		QCOMPARE(0, p_way->get_size());
+		QCOMPARE(true, p_way->is_empty());
+		delete p_way;
 	}
 
 	void is_closed() {
+		const int N_NODES = 5;
+		const int N_REMAINS = 3;
 		Osm_Way way;
-		Osm_Node* ptr_node_1 = new Osm_Node(1.1, 1.1);
-		Osm_Node* ptr_node_2 = new Osm_Node(2.2, 2.2);
-		Osm_Node* ptr_node_3 = new Osm_Node(3.3, 3.3);
+		Osm_Node* ap_nodes[N_NODES];
 
+		for (int i = 0; i < N_NODES; ++i) {
+			ap_nodes[i] = new Osm_Node(i,i);
+			way.push_node(ap_nodes[i]);
+		}
 		QCOMPARE(false, way.is_closed());
-
-		way.push_node(ptr_node_1);
-		way.push_node(ptr_node_2);
-		way.push_node(ptr_node_3);
-		QCOMPARE(false, way.push_node(ptr_node_3));
-		QCOMPARE(false, way.is_closed());
-
-		way.push_node(ptr_node_1);
+		way.push_node(ap_nodes[0]);
 		QCOMPARE(true, way.is_closed());
 
-		delete ptr_node_2;
-		delete ptr_node_3;
+		for (int i = 0; i < N_NODES - N_REMAINS; ++i) {
+			delete ap_nodes[i];
+			QCOMPARE(true, way.is_closed());
+		}
+		delete ap_nodes[N_NODES - N_REMAINS];
 		QCOMPARE(false, way.is_closed());
-	}
-
-	void is_valid() {
-		Osm_Way way;
-		Osm_Node* ptr_node_1 = new Osm_Node(1.1, 1.1);
-		Osm_Node* ptr_node_2;
-		Osm_Node* ptr_node_3 = new Osm_Node(QString::number(2.2), QString::number(2.2));
-		int nonexst_id = (ptr_node_1->get_id()) + (ptr_node_2->get_id()) + 1;
-
-		QCOMPARE(true, way.is_valid());
-
-		way.push_node(ptr_node_1);
-		QCOMPARE(true, way.is_valid());
-
-		way.push_node(nullptr);
-		QCOMPARE(false, way.is_valid());
-
-		//QCOMPARE(true, way.push_node(ptr_node_2));
-		//QCOMPARE(false, way.is_valid());
-
-		way.push_node(ptr_node_3);
-		QCOMPARE(false, way.is_valid());
-	}
-
-	void is_empty() {
-		Osm_Way way;
-		Osm_Node* ptr_node_1 = new Osm_Node(1.1, 1.1);
-		Osm_Node* ptr_node_2 = new Osm_Node(2.2, 2.2);
-
-		QCOMPARE(true, way.is_empty());
-
-		way.push_node(ptr_node_1);
-		way.push_node(ptr_node_2);
-		QCOMPARE(false, way.is_empty());
-
-		delete ptr_node_1;
-		delete ptr_node_2;
-		QCOMPARE(true, way.is_empty());
-	}
-
-	void get_nodes_list() {
-		Osm_Way way;
-		Osm_Node* ptr_node_1 = new Osm_Node(1.1, 1.1);
-		Osm_Node* ptr_node_2 = new Osm_Node(2.2, 2.2);
-		Osm_Node* ptr_node_3 = new Osm_Node(3.3, 3.3);
-		Osm_Node* ptr_node_4 = new Osm_Node(4.4, 4.4);
-
-		way.push_node(ptr_node_1);
-		way.push_node(ptr_node_2);
-		way.push_node(ptr_node_3);
-		way.push_node(ptr_node_4);
-		way.push_node(ptr_node_1);
-
-		delete ptr_node_1;
-		QCOMPARE(ptr_node_2, way.get_nodes_list().at(0));
-		QCOMPARE(ptr_node_3, way.get_nodes_list().at(1));
-		QCOMPARE(ptr_node_4, way.get_nodes_list().at(2));
 	}
 };
 

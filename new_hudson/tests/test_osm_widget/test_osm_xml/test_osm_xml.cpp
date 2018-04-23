@@ -22,25 +22,25 @@ class Test_Osm_Xml : public QObject {
 private slots:
 	void load_from_xml() {
 		Osm_Widget* p_osmw = new Osm_Widget;
-		QCOMPARE(true, p_osmw->load_from_xml(PATH_GENUINE_MAP));
+		QCOMPARE(OSM_OK, p_osmw->load_from_xml(PATH_GENUINE_MAP));
 	}
 
 	void load_from_xml___bounding_rect() {
 		Osm_Widget osmw;
 
 		osmw.load_from_xml(PATH_TEST_MAP);
-		QCOMPARE(50.0, osmw.m_bounding_rect.left());
-		QCOMPARE(10.0, osmw.m_bounding_rect.bottom());
-		QCOMPARE(90.0, osmw.m_bounding_rect.right());
-		QCOMPARE(20.0, osmw.m_bounding_rect.top());
+		QCOMPARE(50.0, osmw.mp_map->m_bounding_rect.left());
+		QCOMPARE(10.0, osmw.mp_map->m_bounding_rect.bottom());
+		QCOMPARE(90.0, osmw.mp_map->m_bounding_rect.right());
+		QCOMPARE(20.0, osmw.mp_map->m_bounding_rect.top());
 	}
 
 	void load_from_xml___nodes() {
 		Osm_Widget					 osmw;
 		Osm_Node*					 p_node;
-		QHash<long long, Osm_Node*>& nodes = osmw.m_nodes_hash;
+		QHash<long long, Osm_Node*>& nodes = osmw.mp_map->m_nodes_hash;
 
-		QCOMPARE(true, osmw.load_from_xml(PATH_TEST_MAP));
+		QCOMPARE(OSM_OK, osmw.load_from_xml(PATH_TEST_MAP));
 		//QCOMPARE(5, nodes.count());
 
 		/* node 1 */
@@ -130,10 +130,10 @@ private slots:
 	void load_from_xml___ways() {
 		Osm_Way*					 p_way;
 		Osm_Widget					 osmw;
-		QHash<long long, Osm_Node*>& nodes = osmw.m_nodes_hash;
-		QHash<long long, Osm_Way*>&  ways = osmw.m_ways_hash;
+		QHash<long long, Osm_Node*>& nodes = osmw.mp_map->m_nodes_hash;
+		QHash<long long, Osm_Way*>&  ways = osmw.mp_map->m_ways_hash;
 
-		QCOMPARE(true, osmw.load_from_xml(PATH_TEST_MAP));
+		QCOMPARE(OSM_OK, osmw.load_from_xml(PATH_TEST_MAP));
 
 		/* way 11 */
 		p_way = ways[11];
@@ -175,17 +175,17 @@ private slots:
 
 	void load_from_xml___relations() {
 		Osm_Widget						 osmw;
-		QHash<long long, Osm_Node*>&	 nodes = osmw.m_nodes_hash;
-		QHash<long long, Osm_Way*>&		 ways = osmw.m_ways_hash;
-		QHash<long long, Osm_Relation*>& relations = osmw.m_relations_hash;
+		QHash<long long, Osm_Node*>&	 nodes = osmw.mp_map->m_nodes_hash;
+		QHash<long long, Osm_Way*>&		 ways = osmw.mp_map->m_ways_hash;
+		QHash<long long, Osm_Relation*>& relations = osmw.mp_map->m_relations_hash;
 		Osm_Relation*					 p_rel;
 
-		QCOMPARE(true, osmw.load_from_xml(PATH_TEST_MAP));
+		QCOMPARE(OSM_OK, osmw.load_from_xml(PATH_TEST_MAP));
 
 		/* relation 101 */
 		//QCOMPARE(true, relations.contains(101));
 		p_rel = relations[101];
-		QCOMPARE(true,		p_rel->is_valid());
+		QCOMPARE(false,		p_rel->is_valid()); /* This relation contains an invalid way */
 		QCOMPARE(3,			p_rel->get_size());
 		QCOMPARE(101,		p_rel->get_id());
 		QCOMPARE("first",	p_rel->get_role(relations[102]));

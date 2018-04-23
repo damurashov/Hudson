@@ -1,47 +1,29 @@
 #include "osm_way.h"
 using namespace ns_osm;
-//======================= Constructors, destructors ==================
+
+/*================================================================*/
+/*                  Constructors, destructors                     */
+/*================================================================*/
+
+
 Osm_Way::Osm_Way() : Osm_Object(Osm_Object::Type::WAY) {
 	m_size = 0;
-	//reg_osm_object(this);
 }
 
 Osm_Way::Osm_Way(const QString &id) : Osm_Object(id, Osm_Object::Type::WAY) {
 	m_size = 0;
-	//reg_osm_object(this);
 }
 
 Osm_Way::~Osm_Way() {
-	QList<Osm_Node*>::iterator it;
-
-	// Remove all orphaned nodes.
-//	for (it = m_nodes.begin(); it != m_nodes.end(); ++it) {
-//		if ((reinterpret_cast<Osm_Way*>(*it)->count_children()) == 1) {
-//			delete *it;
-//		}
-//	}
-	for (it = m_nodes.begin(); it != m_nodes.end(); ++it) {
-		if (reinterpret_cast<Osm_Way*>(*it)->count_parents() == 1) {
-			delete *it;
-			it = m_nodes.begin();
-		}
-	}
+	emit_delete();
+	/* Remove all orphaned nodes */
 }
 
-//======================= Private methods ========================
-void Osm_Way::handle_child_del(Osm_Object* ptr_child) {
-	int			ndel;
-	Osm_Node*	ptr_node = static_cast<Osm_Node*>(ptr_child);
-	bool		f_stay_closed = (is_closed() && (ptr_node == m_nodes.back()));
 
-	ndel = m_nodes.removeAll(ptr_node);
-	m_size -= ndel;
-	if (f_stay_closed && (get_size() >= 3)) {
-		push_node(m_nodes.back());
-	}
-}
+/*================================================================*/
+/*                        Public methods                          */
+/*================================================================*/
 
-//======================= Public methods ========================
 
 unsigned Osm_Way::get_size() const {
 	return m_size;
@@ -61,9 +43,13 @@ bool Osm_Way::push_node(Osm_Node* ptr_node) {
 				return false;
 			}
 		}
+		if (!(ptr_node->is_valid())) {
+			set_valid(false);
+		}
 		m_nodes.push_back(ptr_node);
 		m_size++;
-		reg_child(ptr_node);
+		subscribe(*ptr_node);
+		emit_update(NODE_ADDED);
 		return true;
 	}
 	return false;
@@ -72,7 +58,7 @@ bool Osm_Way::push_node(Osm_Node* ptr_node) {
 bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
                                   Osm_Node* target_ptr_1,
                                   Osm_Node* target_ptr_2){
-	if (!has_node(node_ptr)
+	if (!has(node_ptr)
 	&& node_ptr != nullptr
 	&& target_ptr_1 != nullptr
 	&& target_ptr_2 != nullptr) {
@@ -86,20 +72,24 @@ bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
 		}
 		if (f_is_found) {
 			it++;
+			if (!(node_ptr->is_valid())) {
+				set_valid(false);
+			}
 			m_nodes.insert(it, node_ptr);
+			subscribe(*node_ptr);
 			m_size++;
-			reg_child(node_ptr);
+			emit_update(NODE_ADDED);
 			return true;
 		}
 	}
 	return false;
 }
 
-bool Osm_Way::has_node(Osm_Node* ptr_node) const {
+bool Osm_Way::has(Osm_Node* ptr_node) const {
 	if (ptr_node == nullptr) {
 		return false;
 	}
-	return get_children().contains(reinterpret_cast<Osm_Way*>(ptr_node)->get_inner_id());
+	return m_nodes.lastIndexOf(ptr_node) != -1;
 }
 
 bool Osm_Way::is_closed() const {
@@ -116,3 +106,25 @@ bool Osm_Way::is_empty() const {
 const QList<Osm_Node*>& Osm_Way::get_nodes_list() const {
 	return m_nodes;
 }
+
+void Osm_Way::handle_event_delete(Osm_Node& node) {
+	bool f_stay_closed = (is_closed() && (node.get_id() == m_nodes.back()->get_id()));
+
+	m_size -= m_nodes.removeAll(&node);
+	if (f_stay_closed && get_size() >= 3) {
+		push_node(m_nodes.front());
+	}
+	emit_update(NODE_DELETED);
+}
+
+void Osm_Way::handle_event_update(Osm_Node&) {
+	emit_update(NODE_UPDATED);
+}
+
+//void Osm_Way::handle_event_delete(Osm_Object&) {
+//	emit_update();
+//}
+
+//void Osm_Way::handle_event_update(Osm_Object&) {
+//	emit_update();
+//}

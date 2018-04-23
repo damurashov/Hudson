@@ -3,26 +3,15 @@ using namespace ns_osm;
 
 /* ===================== Constructors, destructors ===================== */
 
-Xml_Handler::Xml_Handler()
-    : m_nodes_hash		(*(new QHash<long long, ns_osm::Osm_Node*>)),
-      m_ways_hash		(*(new QHash<long long, ns_osm::Osm_Way*>)),
-      m_relations_hash	(*(new QHash<long long, ns_osm::Osm_Relation*>)),
-      m_bounding_rect	(*(new QRectF)) {}
 
-Xml_Handler::Xml_Handler(QHash<long long, Osm_Node*>& nodes_hash,
-                         QHash<long long, Osm_Way*>& ways_hash,
-                         QHash<long long, Osm_Relation*>& relations_hash,
-                         QRectF& bounding_rect):
-    m_nodes_hash(nodes_hash),
-    m_ways_hash(ways_hash),
-    m_relations_hash(relations_hash),
-    m_bounding_rect(bounding_rect) {}
+Xml_Handler::Xml_Handler(Osm_Map& map) : m_map(map) {}
 
 /* ===================== Protected methods ===================== */
 
 void Xml_Handler::load_bound_from_xml(const QDomNode& node) {
 	QDomNode	dom_node = node.firstChild();
 	QDomElement dom_element;
+	QRectF		bound;
 	double minlat = 0.0;
 	double minlon = 0.0;
 	double maxlat = 0.0;
@@ -46,10 +35,11 @@ void Xml_Handler::load_bound_from_xml(const QDomNode& node) {
 
 	//m_bounding_rect.setCoords(maxlon, maxlat, minlon, minlat);
 	//m_bounding_rect.setCoords(minlon, minlat, maxlon, maxlat);
-	m_bounding_rect.setLeft(minlon);
-	m_bounding_rect.setBottom(minlat);
-	m_bounding_rect.setRight(maxlon);
-	m_bounding_rect.setTop(maxlat);
+	bound.setLeft(minlon);
+	bound.setBottom(minlat);
+	bound.setRight(maxlon);
+	bound.setTop(maxlat);
+	m_map.set_bound(bound);
 }
 
 void Xml_Handler::load_nodes_from_xml(const QDomNode &node) {
@@ -96,7 +86,7 @@ void Xml_Handler::load_nodes_from_xml(const QDomNode &node) {
 			}
 		}
 		if (p_node != nullptr) {
-			m_nodes_hash[p_node->get_id()] = p_node;
+			m_map.add(p_node);
 		}
 		dom_node_outer = dom_node_outer.nextSibling();
 	}
@@ -135,9 +125,9 @@ void Xml_Handler::load_ways_from_xml(const QDomNode &node) {
 								if (dom_element.tagName() == Osm_Xml::TAG) {
 									p_way->set_tag(dom_element.attribute(Osm_Xml::K, ""), dom_element.attribute(Osm_Xml::V, ""));
 
-									/* Fill nodes by references */
+									/* Push referenced nodes into the way */
 								} else if (dom_element.tagName() == Osm_Xml::ND) {
-									p_way->push_node(m_nodes_hash[dom_element.attribute(Osm_Xml::REF, "").toLongLong()]);
+									p_way->push_node(m_map.get_node(dom_element.attribute(Osm_Xml::REF, "").toLongLong()));
 								}
 							}
 						}
@@ -147,7 +137,8 @@ void Xml_Handler::load_ways_from_xml(const QDomNode &node) {
 			}
 		}
 		if (p_way != nullptr) {
-			m_ways_hash[p_way->get_id()] = p_way;
+			//m_ways_hash[p_way->get_id()] = p_way;
+			m_map.add(p_way);
 		}
 		dom_node_outer = dom_node_outer.nextSibling();
 	}
@@ -203,9 +194,9 @@ void Xml_Handler::load_relations_from_xml(const QDomNode &node) {
 									ref = dom_element.attribute(Osm_Xml::REF, "").toLongLong();
 									attr_type = dom_element.attribute(Osm_Xml::TYPE);
 									if (attr_type == Osm_Xml::NODE) {
-										p_rel->add(m_nodes_hash[ref], dom_element.attribute(Osm_Xml::ROLE));
+										p_rel->add(m_map.get_node(ref), dom_element.attribute(Osm_Xml::ROLE));
 									} else if (attr_type == Osm_Xml::WAY) {
-										p_rel->add(m_ways_hash[ref], dom_element.attribute(Osm_Xml::ROLE));
+										p_rel->add(m_map.get_way(ref), dom_element.attribute(Osm_Xml::ROLE));
 									} else if (attr_type == Osm_Xml::RELATION) {
 										pending_relations.push_front(Pending_Relation());
 										Pending_Relation& r_pr = pending_relations.front();
@@ -222,25 +213,27 @@ void Xml_Handler::load_relations_from_xml(const QDomNode &node) {
 			}
 		}
 		if (p_rel != nullptr) {
-			m_relations_hash[p_rel->get_id()] = p_rel;
+			m_map.add(p_rel);
+			//m_relations_hash[p_rel->get_id()] = p_rel;
 		}
 		dom_node_outer = dom_node_outer.nextSibling();
 	}
 
 	/* Handle pending relations */
 	for (it_pr = pending_relations.begin(); it_pr != pending_relations.end(); ++it_pr) {
-		it_pr->p_master->add(m_relations_hash[it_pr->slave_id], it_pr->slave_role);
+		it_pr->p_master->add(m_map.get_relation(it_pr->slave_id), it_pr->slave_role);
 	}
 }
 
 /* ===================== Public methods ===================== */
 
-bool Xml_Handler::load_from_xml(const QString &xml_path) {
+int Xml_Handler::load_from_xml(const QString &xml_path) {
 	QDomDocument dom_document;
 	QFile		 file(xml_path);
 	QDomElement  dom_element;
-	bool	     f_done = true;
+	int			 code = OSM_OK;
 
+	m_map.clear();
 	if (file.open(QIODevice::ReadOnly)) {
 		if (dom_document.setContent(&file)) {
 			dom_element = dom_document.documentElement();
@@ -249,11 +242,17 @@ bool Xml_Handler::load_from_xml(const QString &xml_path) {
 			load_ways_from_xml(dom_element);
 			load_relations_from_xml(dom_element);
 		} else {
-			f_done = false;
+			//f_done = false;
+			code = OSM_ERROR_WRONG_XML_FORMAT;
 		}
 	} else {
-		f_done = false;
+		//f_done = false;
+		code = OSM_ERROR_XML_FILE_NOT_EXISTS;
+	}
+	if (code == OSM_OK) {
+		m_map.fit_bounding_rect();
 	}
 
-	return f_done;
+	//return f_done;
+	return code;
 }

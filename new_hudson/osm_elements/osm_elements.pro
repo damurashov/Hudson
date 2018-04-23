@@ -6,8 +6,6 @@ TARGET = osm_elements
 
 CONFIG += c++11 \
     staticlib\
-    #create_prl\
-    #link_prl
 
 DESTDIR = $$PWD/../intermediate_libs/
 
@@ -15,7 +13,9 @@ SOURCES += \
         osm_object.cpp \
         osm_node.cpp \
         osm_way.cpp \
-        osm_relation.cpp
+        osm_relation.cpp \
+    osm_map.cpp \
+    osm_subscriber.cpp
 
 HEADERS += \
         osm_elements.h \
@@ -23,3 +23,5 @@ HEADERS += \
         osm_way.h \
         osm_relation.h \
         osm_object.h \
+    osm_map.h \
+    osm_subscriber.h

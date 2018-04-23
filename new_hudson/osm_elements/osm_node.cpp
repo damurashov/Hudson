@@ -13,34 +13,47 @@ Osm_Node::Osm_Node(const QString &id,
 	set_attr("lon", longitude);
 	m_lat = latitude.toDouble();
 	m_lon = longitude.toDouble();
+	correct();
 }
 
 Osm_Node::Osm_Node(const QString &latitude, const QString &longitude):
 	Osm_Object(Osm_Object::Type::NODE)
 {
-	//reg_osm_object(this);
 	set_attr("lat", latitude);
 	set_attr("lon", longitude);
 	m_lat = latitude.toDouble();
 	m_lon = longitude.toDouble();
+	correct();
 }
 
 Osm_Node::Osm_Node(const double& latitude, const double& longitude) :
 	Osm_Object(Osm_Object::Type::NODE)
 {
-	//reg_osm_object(this);
 	m_lat = latitude;
 	m_lon = longitude;
 	set_attr("lat", QString(QString::number(m_lat)));
 	set_attr("lon", QString(QString::number(m_lon)));
+	correct();
 }
 
 Osm_Node::~Osm_Node() {
-	//unreg_osm_object(this);
+	emit_delete();
 }
 
-// ========================= Private methods =========================
-void Osm_Node::handle_child_del(Osm_Object* child) {
+/*================================================================*/
+/*                       Private methods                          */
+/*================================================================*/
+
+void Osm_Node::correct() {
+	while (m_lon > 180.0) {
+		m_lon -= 360.0;
+	}
+	while (m_lon <= -180.0) {
+		m_lon += 360.0;
+	}
+	if (m_lat > 90 || m_lat < -90) {
+		set_valid(false);
+	}
 }
 
 // =========================== Public methods ===========================
@@ -56,11 +69,21 @@ double Osm_Node::get_lon() const {
 void Osm_Node::set_lat(const double &latitude) {
 	m_lat = latitude;
 	set_attr(QString("lat"), QString(QString::number(m_lat)));
+	emit_update();
 }
 
 void Osm_Node::set_lon(const double &longitude) {
 	m_lon = longitude;
+	correct();
 	set_attr(QString("lon"), QString(QString::number(m_lon)));
+	emit_update();
 }
 
-
+void Osm_Node::set_lat_lon(const double &latitude, const double &longitude) {
+	m_lat = latitude;
+	m_lon = longitude;
+	correct();
+	set_attr(QString("lat"), QString(QString::number(m_lat)));
+	set_attr(QString("lon"), QString(QString::number(m_lon)));
+	emit_update();
+}
