@@ -185,7 +185,7 @@ private slots:
 		/* relation 101 */
 		//QCOMPARE(true, relations.contains(101));
 		p_rel = relations[101];
-		QCOMPARE(true,		p_rel->is_valid());
+		QCOMPARE(false,		p_rel->is_valid()); /* This relation contains an invalid way */
 		QCOMPARE(3,			p_rel->get_size());
 		QCOMPARE(101,		p_rel->get_id());
 		QCOMPARE("first",	p_rel->get_role(relations[102]));
