@@ -6,6 +6,11 @@
 #include "osm_way.h"
 #include "osm_relation.h"
 
+#ifndef CMATH_H
+#define CMATH_H
+#include <cmath>
+#endif /* Include guard CMATH_H*/
+
 namespace ns_osm {
 
 class Osm_Map : public Osm_Subscriber {

@@ -40,10 +40,10 @@ bool Osm_Map::is_valid_bound(const QRectF& rect) const {
 	if (rect.width() == 0.0 || rect.height() == 0.0) {
 		return false;
 	}
-	if (rect.bottom() < -90 || rect.top() > 90) {
+	if (std::abs(rect.bottom()) > 90 || std::abs(rect.top()) > 90 || rect.bottom() > rect.top()) {
 		return false;
 	}
-	if (rect.left() <= -180 || rect.right() > 180) {
+	if (std::abs(rect.left()) >= 180 || std::abs(rect.right()) > 180) {
 		return false;
 	}
 	return true;
