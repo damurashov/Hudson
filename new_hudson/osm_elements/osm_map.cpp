@@ -11,6 +11,7 @@ Osm_Map::Osm_Map() {
 	mn_parents = 0;
 	f_destruct_physically = true;
 	f_remove_orphaned_nodes = true;
+	f_remove_one_node_ways = true;
 	f_is_valid = true;
 	f_force_dynamic_bound = false;
 
@@ -40,10 +41,10 @@ bool Osm_Map::is_valid_bound(const QRectF& rect) const {
 	if (rect.width() == 0.0 || rect.height() == 0.0) {
 		return false;
 	}
-	if (rect.bottom() < -90 || rect.top() > 90) {
+	if (std::abs(rect.bottom()) > 90 || std::abs(rect.top()) > 90 || rect.bottom() > rect.top()) {
 		return false;
 	}
-	if (rect.left() <= -180 || rect.right() > 180) {
+	if (std::abs(rect.left()) >= 180 || std::abs(rect.right()) > 180) {
 		return false;
 	}
 	return true;
@@ -103,6 +104,10 @@ void Osm_Map::set_remove_physically(bool f) {
 
 void Osm_Map::set_remove_orphaned_nodes(bool f) {
 	f_remove_orphaned_nodes = f;
+}
+
+void Osm_Map::set_remove_one_node_ways(bool f) {
+	f_remove_one_node_ways = f;
 }
 
 void Osm_Map::set_force_use_dynamic_bound(bool f) {
@@ -393,6 +398,23 @@ void Osm_Map::handle_event_update(Osm_Way& way) {
 			}
 		}
 		break;
+	case NODE_DELETED:
+		if (way.get_size() == 1 && f_remove_one_node_ways) {
+			set_remove_one_node_ways(false);
+			Osm_Node* p_last_node = const_cast<Osm_Node*>(way.get_nodes_list().front());
+			if (f_remove_orphaned_nodes && p_last_node->count_osm_subscribers() == 1) {
+				if (f_destruct_physically) {
+					set_remove_orphaned_nodes(false);
+					way.unsubscribe(*p_last_node);
+				}
+				remove(p_last_node);
+				set_remove_one_node_ways(true);
+			}
+			remove(&way);
+			set_remove_one_node_ways(true);
+			stop_broadcast();
+		}
+		break;
 	}
 }
 
@@ -433,17 +455,24 @@ void Osm_Map::handle_event_delete(Osm_Node& node) {
 }
 
 void Osm_Map::handle_event_delete(Osm_Way& way) {
-	m_ways_hash.remove(way.get_id());
+	bool f_buf_one_node_ways = f_remove_one_node_ways;
+	QList<Osm_Node*> l_nodes_to_delete;
 
-	/* Remove orphaned nodes */
+	m_ways_hash.remove(way.get_id());
 	if (!f_remove_orphaned_nodes) {
 		return;
 	}
-	for (auto it = nbegin(); it != nend(); ++it) {
-		if ((*it)->count_subscribers() == 0) {
-			remove(*it);
+	set_remove_one_node_ways(false);
+	for (auto it = way.get_nodes_list().cbegin(); it != way.get_nodes_list().cend(); ++it) {
+		if ((*it)->count_osm_subscribers() == 1) {
+			//remove(const_cast<Osm_Node*>(*it));
+			l_nodes_to_delete.push_back(const_cast<Osm_Node*>(*it));
 		}
 	}
+	for (auto it = l_nodes_to_delete.begin(); it != l_nodes_to_delete.end(); ++it) {
+		remove(*it);
+	}
+	set_remove_one_node_ways(f_buf_one_node_ways);
 }
 
 void Osm_Map::handle_event_delete(Osm_Relation& rel) {

@@ -19,7 +19,14 @@ SOURCES += \
     osm_widget.cpp \
     osm_xml.cpp \
     xml_handler.cpp \
-    osm_message.cpp
+    osm_message.cpp \
+    view_handler.cpp \
+    osm_message.cpp \
+    osm_widget.cpp \
+    osm_xml.cpp \
+    view_handler.cpp \
+    xml_handler.cpp \
+    items/item_node.cpp
     #item_node.cpp \
     #item_edge.cpp \
 
@@ -29,4 +36,11 @@ HEADERS += \
     #item_node.h \
     #item_edge.h \
     xml_handler.h \
-    osm_message.h
+    osm_message.h \
+    view_handler.h \
+    osm_message.h \
+    osm_widget.h \
+    osm_xml.h \
+    view_handler.h \
+    xml_handler.h \
+    items/item_node.h

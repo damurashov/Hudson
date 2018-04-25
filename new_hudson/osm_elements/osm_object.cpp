@@ -24,6 +24,7 @@ Osm_Object::Osm_Object() :
 	f_is_valid = true;
 	m_attrmap[QString("id")] = QString::number(OSM_ID);
 	mn_subscribers = 0;
+	mn_osm_object_subscribers = 0;
 	//reg_osm_object(this);
 }
 
@@ -35,6 +36,7 @@ Osm_Object::Osm_Object(const Osm_Object::Type type) :
 	f_is_valid = true;
 	m_attrmap[QString("id")] = QString::number(OSM_ID);
 	mn_subscribers = 0;
+	mn_osm_object_subscribers = 0;
 	//reg_osm_object(this);
 }
 
@@ -50,9 +52,23 @@ Osm_Object::Osm_Object(const QString &id, const Osm_Object::Type type):
 		s_osm_id_bound = (OSM_ID - 1);
 	}
 	mn_subscribers = 0;
+	mn_osm_object_subscribers = 0;
 }
 
 Osm_Object::~Osm_Object() {
+}
+
+/*================================================================*/
+/*                       Private methods                          */
+/*================================================================*/
+
+bool Osm_Object::is_osm_object(Osm_Subscriber* p_subscriber) const {
+	if (dynamic_cast<Osm_Node*>(p_subscriber) != nullptr ||
+	        dynamic_cast<Osm_Way*>(p_subscriber) != nullptr ||
+	        dynamic_cast<Osm_Relation*>(p_subscriber) != nullptr) {
+		return true;
+	}
+	return false;
 }
 
 /*================================================================*/
@@ -76,6 +92,10 @@ void Osm_Object::emit_delete(Osm_Subscriber::Meta meta) {
 	for (auto it = m_subscribers.begin(); it != m_subscribers.end(); ++it) {
 		(*it)->set_meta(meta);
 		(*it)->unsubscribe(*this);
+		(*it)->handle_event_delete(*static_cast<Osm_Object*>(this));
+		if (Osm_Subscriber::is_broadcast_delegated()) {
+			return;
+		}
 		switch (get_type()) {
 		case Type::NODE:
 			(*it)->handle_event_delete(*static_cast<Osm_Node*>(this));
@@ -87,13 +107,19 @@ void Osm_Object::emit_delete(Osm_Subscriber::Meta meta) {
 			(*it)->handle_event_delete(*static_cast<Osm_Relation*>(this));
 			break;
 		}
-		(*it)->handle_event_delete(*static_cast<Osm_Object*>(this));
+		if (Osm_Subscriber::is_broadcast_delegated()) {
+			return;
+		}
 	}
 }
 
 void Osm_Object::emit_update(Osm_Subscriber::Meta meta) {
 	for (auto it = m_subscribers.begin(); it != m_subscribers.end(); ++it) {
 		(*it)->set_meta(meta);
+		(*it)->handle_event_update(*static_cast<Osm_Object*>(this));
+		if (Osm_Subscriber::is_broadcast_delegated()) {
+			return;
+		}
 		switch (get_type()) {
 		case Type::NODE:
 			(*it)->handle_event_update(*static_cast<Osm_Node*>(this));
@@ -105,7 +131,9 @@ void Osm_Object::emit_update(Osm_Subscriber::Meta meta) {
 			(*it)->handle_event_update(*static_cast<Osm_Relation*>(this));
 			break;
 		}
-		(*it)->handle_event_update(*static_cast<Osm_Object*>(this));
+		if (Osm_Subscriber::is_broadcast_delegated()) {
+			return;
+		}
 	}
 }
 
@@ -114,20 +142,32 @@ void Osm_Object::emit_update(Osm_Subscriber::Meta meta) {
 /*================================================================*/
 
 void Osm_Object::add_subscriber(Osm_Subscriber& subscriber) {
-	if (m_subscribers.indexOf(&subscriber) == -1) {
+	//if (m_subscribers.indexOf(&subscriber) == -1) {
+	if (!m_subscribers.contains(&subscriber)) {
 		m_subscribers.push_back(&subscriber);
 		mn_subscribers++;
+		if (is_osm_object(&subscriber)) {
+			mn_osm_object_subscribers++;
+		}
 	}
 }
 
 void Osm_Object::remove_subscriber(Osm_Subscriber& subscriber) {
 	//m_subscribers.remove(&subscriber);
-	m_subscribers.removeOne(&subscriber);
-	mn_subscribers--;
+	if (m_subscribers.removeOne(&subscriber)) {
+		mn_subscribers--;
+		if (is_osm_object(&subscriber)) {
+			mn_osm_object_subscribers--;
+		}
+	}
 }
 
 int Osm_Object::count_subscribers() const {
 	return mn_subscribers;
+}
+
+int Osm_Object::count_osm_subscribers() const {
+	return mn_osm_object_subscribers;
 }
 
 QString Osm_Object::get_attr_value(const QString& key) const {
