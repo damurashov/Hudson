@@ -392,6 +392,71 @@ private slots:
 		QCOMPARE(true, map.has(&rel2));
 	}
 
+	void remove_orphaned_nodes() {
+		Osm_Map map;
+		Osm_Way* p_way = new Osm_Way;
+		Osm_Relation* p_rel = new Osm_Relation;
+		Osm_Node* p1_node = new Osm_Node(1.1, 1.1);
+		Osm_Node* p2_node = new Osm_Node(1.1, 1.1);
+		Osm_Node* p3_node = new Osm_Node(1.1, 1.1);
+		Osm_Node* p4_node = new Osm_Node(1.1, 1.1);
+		Osm_Node* p5_node = new Osm_Node(1.1, 1.1);
+		Sub sub(*p5_node);
+
+		p_rel->add(p1_node);
+		p_way->push_node(p1_node);
+		p_way->push_node(p2_node);
+		p_way->push_node(p3_node);
+		p_way->push_node(p4_node);
+		p_way->push_node(p5_node);
+		map.add(p_way); /* No need to add all the nodes in a special way. Since the way includes
+						   them they will be included in the map automatically */
+		map.add(p_rel); /* Not necessary in this test case */
+
+		QCOMPARE(true, map.has(p1_node));
+		QCOMPARE(true, map.has(p2_node));
+		QCOMPARE(true, map.has(p3_node));
+		QCOMPARE(true, map.has(p4_node));
+		QCOMPARE(true, map.has(p5_node));
+		delete p_way;
+		/*	The map supposed to delete inner nodes only when they have no more Osm_Object instances
+		*	as subscribers */
+		QCOMPARE(true, map.has(p1_node)); /* Instance p_rel is an Osm_Object, and it is subscribed */
+		QCOMPARE(false, map.has(p2_node));
+		QCOMPARE(false, map.has(p3_node));
+		QCOMPARE(false, map.has(p4_node));
+		QCOMPARE(false, map.has(p5_node)); /* Instance sub is subscribed, BUT it is not an Osm_Object */
+	}
+
+	void remove_one_node_ways() {
+		Osm_Map map;
+		Osm_Way* p_way = new Osm_Way;
+		Osm_Node* p1_node = new Osm_Node(1.1, 1.1);
+		Osm_Node* p2_node = new Osm_Node(1.1, 1.1);
+		Osm_Node* p3_node = new Osm_Node(1.1, 1.1);
+		Osm_Node* p4_node = new Osm_Node(1.1, 1.1);
+		Osm_Node* p5_node = new Osm_Node(1.1, 1.1);
+		Sub sub_node1(*p1_node);
+		Sub sub_way(*p_way);
+
+		p_way->push_node(p1_node);
+		p_way->push_node(p2_node);
+		p_way->push_node(p3_node);
+		p_way->push_node(p4_node);
+		p_way->push_node(p5_node);
+		map.add(p_way);
+
+		QCOMPARE(true, map.has(p_way));
+		delete p5_node;
+		QCOMPARE(true, map.has(p_way));
+		delete p4_node;
+		QCOMPARE(true, map.has(p_way));
+		delete p3_node;
+		QCOMPARE(true, map.has(p_way));
+		delete p2_node;
+		QCOMPARE(WAY_DELETE, sub_way.last());
+		QCOMPARE(NODE_DELETE, sub_node1.last());
+	}
 
 };
 
