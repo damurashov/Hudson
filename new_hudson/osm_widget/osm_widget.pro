@@ -11,36 +11,37 @@ CONFIG += c++11\
     #create_prl\
     #link_prl
 
-INCLUDEPATH = $$PWD/../osm_elements/
+INCLUDEPATH = $$PWD/../osm_elements/ \
+    $$PWD/view_handler \
+    $$PWD/xml_handler
 
 LIBS += -L$$PWD/../intermediate_libs/ -losm_elements
 
 SOURCES += \
+    xml_handler.cpp \
+    xml_handler/osm_xml.cpp \
+    xml_handler/xml_handler.cpp \
+    view_handler/view_handler.cpp \
+    view_handler.cpp \
+    view_handler/item_node.cpp \
     osm_widget.cpp \
     osm_xml.cpp \
-    xml_handler.cpp \
     osm_message.cpp \
-    view_handler.cpp \
     osm_message.cpp \
     osm_widget.cpp \
-    osm_xml.cpp \
-    view_handler.cpp \
-    xml_handler.cpp \
-    items/item_node.cpp
-    #item_node.cpp \
-    #item_edge.cpp \
+    view_handler/item_edge.cpp \
+    view_handler/item_way.cpp
 
 HEADERS += \
-    osm_widget.h \
-    osm_xml.h \
-    #item_node.h \
-    #item_edge.h \
     xml_handler.h \
-    osm_message.h \
+    xml_handler/osm_xml.h \
+    xml_handler/xml_handler.h \
+    view_handler/view_handler.h \
     view_handler.h \
+    view_handler/item_node.h\
+    osm_widget.h \
+    osm_message.h \
     osm_message.h \
     osm_widget.h \
-    osm_xml.h \
-    view_handler.h \
-    xml_handler.h \
-    items/item_node.h
+    view_handler/item_edge.h \
+    view_handler/item_way.h

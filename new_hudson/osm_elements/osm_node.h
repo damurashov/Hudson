@@ -11,7 +11,7 @@ private:
 	double		m_lon;
 
 	void		correct			();
-	            Osm_Node		();
+	            Osm_Node		() = delete;
 public:
 	double		get_lat			() const;
 	double		get_lon			() const;
