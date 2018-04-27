@@ -12,6 +12,9 @@ private:
 	static const unsigned short				CAPACITY = 2000;
 	unsigned								m_size;
 	QList<Osm_Node*>						m_nodes;
+protected:
+	void									handle_event_delete	(Osm_Node&) override;
+	void									handle_event_update	(Osm_Node&) override;
 public:
 	unsigned								get_size			() const;
 	unsigned short							get_capacity		() const;
@@ -23,8 +26,6 @@ public:
 	bool									is_closed			() const;
 	bool									is_empty			() const;
 	const QList<Osm_Node*>&					get_nodes_list		() const;
-	void									handle_event_delete	(Osm_Node&) override;
-	void									handle_event_update	(Osm_Node&) override;
 	//void									handle_event_update	(Osm_Object&) override;
 	//void									handle_event_delete	(Osm_Object&) override;
 											Osm_Way				(const QString& id);

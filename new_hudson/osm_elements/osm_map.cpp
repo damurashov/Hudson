@@ -82,6 +82,108 @@ void Osm_Map::fit_autorects(Osm_Node& node) {
 	}
 }
 
+
+void Osm_Map::handle_event_update(Osm_Node& node) {
+	switch (get_meta()) {
+	case NODE_UPDATED:
+		fit_autorects(node);
+		break;
+	}
+}
+
+void Osm_Map::handle_event_update(Osm_Way& way) {
+	switch (get_meta()) {
+	case NODE_ADDED:
+		for (auto it = way.get_nodes_list().cbegin(); it != way.get_nodes_list().cend(); ++it) {
+			Osm_Node* p_node = const_cast<Osm_Node*>(*it);
+			if (!has(p_node)) {
+				add(p_node);
+				break;
+			}
+		}
+		break;
+	case NODE_DELETED:
+		if (way.get_size() == 1 && f_remove_one_node_ways) {
+			set_remove_one_node_ways(false);
+			Osm_Node* p_last_node = const_cast<Osm_Node*>(way.get_nodes_list().front());
+			if (f_remove_orphaned_nodes && p_last_node->count_osm_subscribers() == 1) {
+				if (f_destruct_physically) {
+					set_remove_orphaned_nodes(false);
+					way.unsubscribe(*p_last_node);
+				}
+				remove(p_last_node);
+				set_remove_one_node_ways(true);
+			}
+			remove(&way);
+			set_remove_one_node_ways(true);
+			stop_broadcast();
+		}
+		break;
+	}
+}
+
+void Osm_Map::handle_event_update(Osm_Relation& relation) {
+	switch (get_meta()) {
+	case NODE_ADDED:
+		for (auto it = relation.get_nodes().cbegin(); it != relation.get_nodes().cend(); ++it) {
+			Osm_Node* p_node = const_cast<Osm_Node*>(*it);
+			if (!has(p_node)) {
+				add(p_node);
+				//fit_autorects(*p_node);
+				break;
+			}
+		}
+		break;
+	case WAY_ADDED:
+		for (auto it = relation.get_ways().cbegin(); it != relation.get_ways().cend(); ++it) {
+			Osm_Way* p_way = const_cast<Osm_Way*>(*it);
+			if (!has(p_way)) {
+				add(p_way);
+				break;
+			}
+		}
+		break;
+	case RELATION_ADDED:
+		for (auto it = relation.get_relations().cbegin(); it != relation.get_relations().cend(); ++it) {
+			Osm_Relation* p_rel = const_cast<Osm_Relation*>(*it);
+			if (!has(p_rel)) {
+				add(p_rel);
+				break;
+			}
+		}
+	}
+}
+
+void Osm_Map::handle_event_delete(Osm_Node& node) {
+	m_nodes_hash.remove(node.get_id());
+}
+
+void Osm_Map::handle_event_delete(Osm_Way& way) {
+	bool f_buf_one_node_ways = f_remove_one_node_ways;
+	QList<Osm_Node*> l_nodes_to_delete;
+
+	m_ways_hash.remove(way.get_id());
+	if (!f_remove_orphaned_nodes) {
+		return;
+	}
+	set_remove_one_node_ways(false);
+	for (auto it = way.get_nodes_list().cbegin(); it != way.get_nodes_list().cend(); ++it) {
+		if ((*it)->count_osm_subscribers() == 1) {
+			//remove(const_cast<Osm_Node*>(*it));
+			l_nodes_to_delete.push_back(const_cast<Osm_Node*>(*it));
+		}
+	}
+	for (auto it = l_nodes_to_delete.begin(); it != l_nodes_to_delete.end(); ++it) {
+		remove(*it);
+	}
+	set_remove_one_node_ways(f_buf_one_node_ways);
+}
+
+void Osm_Map::handle_event_delete(Osm_Relation& rel) {
+	m_relations_hash.remove(rel.get_id());
+}
+
+
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
@@ -212,6 +314,9 @@ bool Osm_Map::has(Osm_Relation* p_rel) const {
 }
 
 void Osm_Map::remove(Osm_Node* p_node) {
+	if (p_node == nullptr) {
+		return;
+	}
 	m_nodes_hash.remove(p_node->get_id());
 	unsubscribe(*p_node);
 	if (f_destruct_physically) {
@@ -220,6 +325,9 @@ void Osm_Map::remove(Osm_Node* p_node) {
 }
 
 void Osm_Map::remove(Osm_Way* p_way) {
+	if (p_way == nullptr) {
+		return;
+	}
 	m_ways_hash.remove(p_way->get_id());
 	unsubscribe(*p_way);
 	if (f_destruct_physically) {
@@ -228,6 +336,9 @@ void Osm_Map::remove(Osm_Way* p_way) {
 }
 
 void Osm_Map::remove(Osm_Relation* p_rel) {
+	if (p_rel == nullptr) {
+		return;
+	}
 	m_relations_hash.remove(p_rel->get_id());
 	unsubscribe(*p_rel);
 	if (f_destruct_physically) {
@@ -296,6 +407,9 @@ QRectF Osm_Map::get_scene_rect() const {
 QPointF Osm_Map::get_scene_coord(Osm_Node* p_node) const {
 	QPointF point;
 
+	if (p_node == nullptr) {
+		return point;
+	}
 	if (!has_issue_180(get_bound()) || p_node->get_lon() > 0) {
 		point.setX(p_node->get_lon());
 		point.setY(p_node->get_lat());
@@ -377,104 +491,4 @@ Osm_Map::crelation_iterator Osm_Map::crbegin() const {
 
 Osm_Map::crelation_iterator Osm_Map::crend() const {
 	return m_relations_hash.cend();
-}
-
-void Osm_Map::handle_event_update(Osm_Node& node) {
-	switch (get_meta()) {
-	case NODE_UPDATED:
-		fit_autorects(node);
-		break;
-	}
-}
-
-void Osm_Map::handle_event_update(Osm_Way& way) {
-	switch (get_meta()) {
-	case NODE_ADDED:
-		for (auto it = way.get_nodes_list().cbegin(); it != way.get_nodes_list().cend(); ++it) {
-			Osm_Node* p_node = const_cast<Osm_Node*>(*it);
-			if (!has(p_node)) {
-				add(p_node);
-				break;
-			}
-		}
-		break;
-	case NODE_DELETED:
-		if (way.get_size() == 1 && f_remove_one_node_ways) {
-			set_remove_one_node_ways(false);
-			Osm_Node* p_last_node = const_cast<Osm_Node*>(way.get_nodes_list().front());
-			if (f_remove_orphaned_nodes && p_last_node->count_osm_subscribers() == 1) {
-				if (f_destruct_physically) {
-					set_remove_orphaned_nodes(false);
-					way.unsubscribe(*p_last_node);
-				}
-				remove(p_last_node);
-				set_remove_one_node_ways(true);
-			}
-			remove(&way);
-			set_remove_one_node_ways(true);
-			stop_broadcast();
-		}
-		break;
-	}
-}
-
-void Osm_Map::handle_event_update(Osm_Relation& relation) {
-	switch (get_meta()) {
-	case NODE_ADDED:
-		for (auto it = relation.get_nodes().cbegin(); it != relation.get_nodes().cend(); ++it) {
-			Osm_Node* p_node = const_cast<Osm_Node*>(*it);
-			if (!has(p_node)) {
-				add(p_node);
-				//fit_autorects(*p_node);
-				break;
-			}
-		}
-		break;
-	case WAY_ADDED:
-		for (auto it = relation.get_ways().cbegin(); it != relation.get_ways().cend(); ++it) {
-			Osm_Way* p_way = const_cast<Osm_Way*>(*it);
-			if (!has(p_way)) {
-				add(p_way);
-				break;
-			}
-		}
-		break;
-	case RELATION_ADDED:
-		for (auto it = relation.get_relations().cbegin(); it != relation.get_relations().cend(); ++it) {
-			Osm_Relation* p_rel = const_cast<Osm_Relation*>(*it);
-			if (!has(p_rel)) {
-				add(p_rel);
-				break;
-			}
-		}
-	}
-}
-
-void Osm_Map::handle_event_delete(Osm_Node& node) {
-	m_nodes_hash.remove(node.get_id());
-}
-
-void Osm_Map::handle_event_delete(Osm_Way& way) {
-	bool f_buf_one_node_ways = f_remove_one_node_ways;
-	QList<Osm_Node*> l_nodes_to_delete;
-
-	m_ways_hash.remove(way.get_id());
-	if (!f_remove_orphaned_nodes) {
-		return;
-	}
-	set_remove_one_node_ways(false);
-	for (auto it = way.get_nodes_list().cbegin(); it != way.get_nodes_list().cend(); ++it) {
-		if ((*it)->count_osm_subscribers() == 1) {
-			//remove(const_cast<Osm_Node*>(*it));
-			l_nodes_to_delete.push_back(const_cast<Osm_Node*>(*it));
-		}
-	}
-	for (auto it = l_nodes_to_delete.begin(); it != l_nodes_to_delete.end(); ++it) {
-		remove(*it);
-	}
-	set_remove_one_node_ways(f_buf_one_node_ways);
-}
-
-void Osm_Map::handle_event_delete(Osm_Relation& rel) {
-	m_relations_hash.remove(rel.get_id());
 }

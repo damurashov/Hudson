@@ -14,7 +14,8 @@ class Osm_Way;
 class Osm_Relation;
 
 class Osm_Subscriber {
-public:
+protected:
+	friend class Osm_Object;
 	enum Meta {
 		NONE = 0,
 		NODE_ADDED,
@@ -32,12 +33,11 @@ private:
 	QList<Osm_Object*>		m_sources;
 	Osm_Subscriber::Meta	m_meta;
 protected:
+	static bool				is_broadcast_delegated	();
+	Osm_Subscriber::Meta	get_meta				() const;
 	void					stop_broadcast			();
 	void					unsubscribe				();
 	void					subscribe				(Osm_Object&);
-	Osm_Subscriber::Meta	get_meta				() const;
-public:
-	static bool				is_broadcast_delegated	();
 	void					set_meta				(Meta);
 	void					unsubscribe				(Osm_Object&);
 	virtual void			handle_event_update		(Osm_Way& source);

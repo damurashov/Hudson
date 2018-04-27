@@ -30,6 +30,10 @@ void Item_Edge::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 	emit signal_edge_clicked(event->scenePos(), &m_way, &m_node1, &m_node2, event->button());
 }
 
+void Item_Edge::handle_event_update(Osm_Node& node) {
+	update(boundingRect());
+}
+
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
@@ -44,10 +48,6 @@ Osm_Node* Item_Edge::second() const {
 
 int Item_Edge::type() const {
 	return Type;
-}
-
-void Item_Edge::handle_event_update(Osm_Node& node) {
-	update(boundingRect());
 }
 
 QRectF Item_Edge::boundingRect() const {

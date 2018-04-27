@@ -44,9 +44,6 @@ void Osm_Subscriber::unsubscribe() {
 Osm_Subscriber::Meta Osm_Subscriber::get_meta() const {
 	return m_meta;
 }
-/*================================================================*/
-/*                        Public methods                          */
-/*================================================================*/
 
 bool Osm_Subscriber::is_broadcast_delegated() {
 	if (sf_delegated) {

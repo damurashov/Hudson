@@ -30,13 +30,13 @@ protected:
 	Osm_Node&		m_node2;
 
 	void			mouseReleaseEvent	(QGraphicsSceneMouseEvent *event) override;
+	void			handle_event_update	(Osm_Node&) override;
 public:
 	enum {Type = UserType + 2};
 
 	Osm_Node*		first				() const;
 	Osm_Node*		second				() const;
 	int				type				() const override;
-	void			handle_event_update	(Osm_Node&) override;
 	QRectF			boundingRect		() const override;
 	void			paint				(QPainter *painter,
 	                                     const QStyleOptionGraphicsItem *option,

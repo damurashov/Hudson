@@ -18,7 +18,10 @@ protected:
 	Osm_Way&			m_way;
 	QList<Item_Edge*>	m_edges;
 
+	void				handle_node_added	();
+	void				handle_node_deleted	();
 	void				compose_group		();
+	void				handle_event_update	(Osm_Way&) override;
 public:
 	enum {Type = UserType + 3};
 
@@ -26,7 +29,6 @@ public:
 	                                         const QStyleOptionGraphicsItem *option,
 	                                         QWidget *widget) override;
 	int					type				() const override;
-	void				handle_event_update	(Osm_Way&) override;
 	                    Item_Way			(const Osm_Map&, Osm_Way&, QObject* p_parent = nullptr);
 						Item_Way			() = delete;
 						Item_Way			(const Item_Way&) = delete;
