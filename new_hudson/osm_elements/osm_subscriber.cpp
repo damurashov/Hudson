@@ -22,12 +22,17 @@ Osm_Subscriber::~Osm_Subscriber() {
 }
 
 /*================================================================*/
-/*                      Protected methods                         */
+/*                        Pubilc methods                          */
 /*================================================================*/
 
-void Osm_Subscriber::stop_broadcast() {
-	sf_delegated = true;
+void Osm_Subscriber::unsubscribe(Osm_Object& source) {
+	source.remove_subscriber(*this);
+	m_sources.removeOne(&source);
 }
+
+/*================================================================*/
+/*                      Protected methods                         */
+/*================================================================*/
 
 void Osm_Subscriber::subscribe(Osm_Object& object) {
 	object.add_subscriber(*this);
@@ -39,6 +44,10 @@ void Osm_Subscriber::unsubscribe() {
 		(*it)->remove_subscriber(*this);
 	}
 	m_sources.clear();
+}
+
+void Osm_Subscriber::stop_broadcast() {
+	sf_delegated = true;
 }
 
 Osm_Subscriber::Meta Osm_Subscriber::get_meta() const {
@@ -55,11 +64,6 @@ bool Osm_Subscriber::is_broadcast_delegated() {
 
 void Osm_Subscriber::set_meta(Meta meta) {
 	m_meta = meta;
-}
-
-void Osm_Subscriber::unsubscribe(Osm_Object& source) {
-	source.remove_subscriber(*this);
-	m_sources.removeOne(&source);
 }
 
 //void Osm_Subscriber::remove_source(const Osm_Object& source) {
