@@ -7,15 +7,14 @@ using namespace ns_osm;
 /*================================================================*/
 
 Item_Edge::Item_Edge(const Osm_Map& map,
+                     const Edge& edge,
                      Osm_Way& way,
-                     Osm_Node& node1,
-                     Osm_Node& node2,
                      QObject *p_parent)
                      : QObject(p_parent),
                        m_map(map),
                        m_way(way),
-                       m_node1(node1),
-                       m_node2(node2)
+                       m_node1(edge.first()),
+                       m_node2(edge.second())
 {
 	subscribe(&m_node1);
 	subscribe(&m_node2);

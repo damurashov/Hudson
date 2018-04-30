@@ -12,10 +12,11 @@
 #endif /* Include guard ALGORITHM_H */
 
 #include "osm_elements.h"
+#include "edge.h"
 
 namespace ns_osm {
 
-class Item_Edge : public QGraphicsItem, public Osm_Subscriber {
+class Item_Edge : public QGraphicsItem, public Osm_Subscriber, public Edge {
 	Q_OBJECT
 signals:
 	void			signal_edge_clicked	(QPointF,
@@ -26,8 +27,6 @@ signals:
 protected:
 	const Osm_Map&	m_map;
 	Osm_Way&		m_way;
-	Osm_Node&		m_node1;
-	Osm_Node&		m_node2;
 
 	void			mouseReleaseEvent	(QGraphicsSceneMouseEvent *event) override;
 	void			handle_event_update	(Osm_Node&) override;
@@ -42,9 +41,13 @@ public:
 	                                     const QStyleOptionGraphicsItem *option,
 	                                     QWidget *widget) override;
 	                Item_Edge			(const Osm_Map&,
+					                     Osm_Node& node1,
+					                     Osm_Node& node2,
 					                     Osm_Way&,
-					                     Osm_Node&,
-					                     Osm_Node&,
+					                     QObject* p_parent = nullptr);
+					Item_Edge			(const Osm_Map&,
+					                     const Edge&,
+					                     Osm_Way&,
 					                     QObject* p_parent = nullptr);
 					Item_Edge			() = delete;
 					Item_Edge			(const Item_Edge&) = delete;

@@ -13,6 +13,7 @@ namespace ns_osm {
 class Osm_Object {
 protected:
 	enum class Type;
+	friend class Osm_Map;
 private:
 	const long long					OSM_ID;
 	const long long					INNER_ID;

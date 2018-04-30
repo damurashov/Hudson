@@ -16,6 +16,7 @@ class Osm_Relation;
 class Osm_Subscriber {
 protected:
 	friend class Osm_Object;
+	friend class Osm_Map;
 	enum Meta {
 		NONE = 0,
 		NODE_ADDED,
@@ -51,7 +52,6 @@ protected:
 							Osm_Subscriber			(Osm_Subscriber&) = delete;
 	Osm_Subscriber			operator=				(Osm_Subscriber&) = delete;
 	virtual					~Osm_Subscriber			();
-public:
 	void					unsubscribe				(Osm_Object&);
 };
 }

@@ -321,6 +321,8 @@ void Osm_Map::remove(Osm_Node* p_node) {
 	unsubscribe(*p_node);
 	if (f_destruct_physically) {
 		delete p_node;
+	} else {
+		p_node->emit_delete();
 	}
 }
 
@@ -332,6 +334,8 @@ void Osm_Map::remove(Osm_Way* p_way) {
 	unsubscribe(*p_way);
 	if (f_destruct_physically) {
 		delete p_way;
+	} else {
+		p_way->emit_delete();
 	}
 }
 
@@ -343,6 +347,8 @@ void Osm_Map::remove(Osm_Relation* p_rel) {
 	unsubscribe(*p_rel);
 	if (f_destruct_physically) {
 		delete p_rel;
+	} else {
+		p_rel->emit_delete();
 	}
 }
 

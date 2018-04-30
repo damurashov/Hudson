@@ -22,17 +22,13 @@ Osm_Subscriber::~Osm_Subscriber() {
 }
 
 /*================================================================*/
-/*                        Pubilc methods                          */
+/*                      Protected methods                         */
 /*================================================================*/
 
 void Osm_Subscriber::unsubscribe(Osm_Object& source) {
 	source.remove_subscriber(*this);
 	m_sources.removeOne(&source);
 }
-
-/*================================================================*/
-/*                      Protected methods                         */
-/*================================================================*/
 
 void Osm_Subscriber::subscribe(Osm_Object& object) {
 	object.add_subscriber(*this);

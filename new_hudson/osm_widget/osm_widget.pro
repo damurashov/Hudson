@@ -30,7 +30,9 @@ SOURCES += \
     osm_message.cpp \
     osm_widget.cpp \
     view_handler/item_edge.cpp \
-    view_handler/item_way.cpp
+    view_handler/item_way.cpp \
+    view_handler/osm_view.cpp \
+    view_handler/edge.cpp
 
 HEADERS += \
     xml_handler.h \
@@ -44,4 +46,6 @@ HEADERS += \
     osm_message.h \
     osm_widget.h \
     view_handler/item_edge.h \
-    view_handler/item_way.h
+    view_handler/item_way.h \
+    view_handler/osm_view.h \
+    view_handler/edge.h
