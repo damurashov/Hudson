@@ -329,6 +329,9 @@ private slots:
 		Osm_Way way2;
 		Osm_Node node(1.1, 1.1);
 		Osm_Node node2(1.1, 1.1);
+		map.set_remove_physically(false);
+		map.set_remove_orphaned_nodes(false);
+		map.set_remove_one_node_ways(false);
 
 		map.add(&way);
 		QCOMPARE(false, map.has(&node));
@@ -364,6 +367,7 @@ private slots:
 		Osm_Way way2;
 		Osm_Relation rel;
 		Osm_Relation rel2;
+		map.set_remove_physically(false);
 
 		map.add(&rel);
 		QCOMPARE(false, map.has(&way));
@@ -381,6 +385,7 @@ private slots:
 		Osm_Relation rel2;
 		Osm_Relation source;
 		Osm_Relation source2;
+		map.set_remove_physically(false);
 
 		map.add(&source);
 		QCOMPARE(false, map.has(&rel));

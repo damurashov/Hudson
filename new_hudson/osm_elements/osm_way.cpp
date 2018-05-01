@@ -19,6 +19,23 @@ Osm_Way::~Osm_Way() {
 	/* Remove all orphaned nodes */
 }
 
+/*================================================================*/
+/*                      Protected methods                         */
+/*================================================================*/
+
+void Osm_Way::handle_event_delete(Osm_Node& node) {
+	bool f_stay_closed = (is_closed() && (node.get_id() == m_nodes.back()->get_id()));
+
+	m_size -= m_nodes.removeAll(&node);
+	if (f_stay_closed && get_size() >= 3) {
+		push_node(m_nodes.front());
+	}
+	emit_update(NODE_DELETED);
+}
+
+void Osm_Way::handle_event_update(Osm_Node&) {
+	emit_update(NODE_UPDATED);
+}
 
 /*================================================================*/
 /*                        Public methods                          */
@@ -105,20 +122,6 @@ bool Osm_Way::is_empty() const {
 
 const QList<Osm_Node*>& Osm_Way::get_nodes_list() const {
 	return m_nodes;
-}
-
-void Osm_Way::handle_event_delete(Osm_Node& node) {
-	bool f_stay_closed = (is_closed() && (node.get_id() == m_nodes.back()->get_id()));
-
-	m_size -= m_nodes.removeAll(&node);
-	if (f_stay_closed && get_size() >= 3) {
-		push_node(m_nodes.front());
-	}
-	emit_update(NODE_DELETED);
-}
-
-void Osm_Way::handle_event_update(Osm_Node&) {
-	emit_update(NODE_UPDATED);
 }
 
 //void Osm_Way::handle_event_delete(Osm_Object&) {

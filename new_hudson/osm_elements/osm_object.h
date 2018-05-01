@@ -13,7 +13,9 @@ namespace ns_osm {
 class Osm_Object {
 protected:
 	enum class Type;
+	friend class Osm_Map;
 private:
+	static QHash<long long, bool>	s_id_to_lifestage; /* true - exists, false - destructed */
 	const long long					OSM_ID;
 	const long long					INNER_ID;
 	const Type						TYPE;
@@ -22,10 +24,12 @@ private:
 	QMap<QString, QString>			m_attrmap;
 	QMap<QString, QString>			m_tagmap;
 	QList<Osm_Subscriber*>			m_subscribers;
+	QList<Osm_Subscriber*>			m_active_stack;
 	int								mn_subscribers;
 	int								mn_osm_object_subscribers;
 	bool							f_is_valid;
 
+	static bool						is_locked				(long long);
 	bool							is_osm_object			(Osm_Subscriber*) const;
 	                                Osm_Object				();
 protected:
