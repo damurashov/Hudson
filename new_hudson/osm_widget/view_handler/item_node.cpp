@@ -58,6 +58,6 @@ void Item_Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 }
 
 QRectF Item_Node::boundingRect() const {
-	int sz = get_pen_size();
+	int sz = get_pen_size() / 2;
 	return QRectF(-sz, sz, 2*sz, 2*sz);
 }

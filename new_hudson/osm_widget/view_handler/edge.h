@@ -8,15 +8,14 @@ namespace ns_osm {
 
 class Edge {
 private:
-	static long long	s_id_bound;
-	long long			ID;
-	Osm_Node&			mp_node_first;
-	Osm_Node&			mp_node_second;
+//	static long long	s_id_bound;
+//	long long			ID;
+	Osm_Node*			mp_node_first;
+	Osm_Node*			mp_node_second;
 public:
-	long long			get_id			() const;
+//	long long			get_id			() const;
 	static QList<Edge>	to_edge_list	(const Osm_Way&);
 	static QList<Edge>	to_edge_list	(const QList<Osm_Node*>&);
-	long long			get_id			();
 	Osm_Node*			first			() const;
 	Osm_Node*			second			() const;
 	                    Edge			(Osm_Node& p_first, Osm_Node& p_second);

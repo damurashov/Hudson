@@ -25,7 +25,7 @@ void Osm_View::scale_view(double scale_factor) {
 /*================================================================*/
 
 QPointF Osm_View::get_last_pos() const {
-	return QPointF;
+	return m_last_pos;
 }
 
 void Osm_View::set_last_pos(const QPointF& point) {

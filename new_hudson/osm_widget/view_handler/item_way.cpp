@@ -92,6 +92,10 @@ void Item_Way::remove_item(Item_Edge* p_item_edge) {
 	delete p_item_edge;
 }
 
+void Item_Way::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+	/* TODO: implement drawing */
+}
+
 int Item_Way::type() const {
 	return Type;
 }

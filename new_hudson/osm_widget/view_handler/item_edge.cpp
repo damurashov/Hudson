@@ -7,17 +7,32 @@ using namespace ns_osm;
 /*================================================================*/
 
 Item_Edge::Item_Edge(const Osm_Map& map,
+                     Osm_Node& node1,
+                     Osm_Node& node2,
+                     Osm_Way& way,
+                     QObject* p_parent)
+                     : QObject(p_parent),
+                       m_map(map),
+                       m_way(way),
+                       mp_node_first(&node1),
+                       mp_node_second(&node2)
+{
+	subscribe(*mp_node_first);
+	subscribe(*mp_node_second);
+}
+
+Item_Edge::Item_Edge(const Osm_Map& map,
                      const Edge& edge,
                      Osm_Way& way,
                      QObject *p_parent)
                      : QObject(p_parent),
                        m_map(map),
                        m_way(way),
-                       m_node1(edge.first()),
-                       m_node2(edge.second())
+                       mp_node_first(edge.first()),
+                       mp_node_second(edge.second())
 {
-	subscribe(&m_node1);
-	subscribe(&m_node2);
+	subscribe(*mp_node_first);
+	subscribe(*mp_node_second);
 }
 
 Item_Edge::~Item_Edge() {}
@@ -26,7 +41,7 @@ Item_Edge::~Item_Edge() {}
 /*================================================================*/
 
 void Item_Edge::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-	emit signal_edge_clicked(event->scenePos(), &m_way, &m_node1, &m_node2, event->button());
+	emit signal_edge_clicked(event->scenePos(), &m_way, first(), second(), event->button());
 }
 
 void Item_Edge::handle_event_update(Osm_Node& node) {
@@ -36,14 +51,6 @@ void Item_Edge::handle_event_update(Osm_Node& node) {
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
-
-Osm_Node* Item_Edge::first() const {
-	return &m_node1;
-}
-
-Osm_Node* Item_Edge::second() const {
-	return &m_node2;
-}
 
 int Item_Edge::type() const {
 	return Type;

@@ -33,8 +33,6 @@ protected:
 public:
 	enum {Type = UserType + 2};
 
-	Osm_Node*		first				() const;
-	Osm_Node*		second				() const;
 	int				type				() const override;
 	QRectF			boundingRect		() const override;
 	void			paint				(QPainter *painter,
