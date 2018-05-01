@@ -14,7 +14,7 @@ Item_Node::Item_Node(const Osm_Map& map,
                        m_node(node)
 {
 	setPos(m_map.get_scene_coord(mp_node));
-	//setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable);
+	//setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsGeometryChanges);
 }
 
 Item_Node::~Item_Node() {}

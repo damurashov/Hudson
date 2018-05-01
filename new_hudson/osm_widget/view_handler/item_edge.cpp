@@ -42,6 +42,7 @@ Item_Edge::~Item_Edge() {}
 
 void Item_Edge::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 	emit signal_edge_clicked(event->scenePos(), &m_way, first(), second(), event->button());
+	QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void Item_Edge::handle_event_update(Osm_Node& node) {
