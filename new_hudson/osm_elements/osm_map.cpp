@@ -112,11 +112,12 @@ void Osm_Map::handle_event_update(Osm_Way& way) {
 					way.unsubscribe(*p_last_node);
 				}
 				remove(p_last_node);
-				set_remove_one_node_ways(true);
+				set_remove_orphaned_nodes(true);
+				//set_remove_one_node_ways(true);
 			}
 			remove(&way);
 			set_remove_one_node_ways(true);
-			stop_broadcast();
+			//stop_broadcast();
 		}
 		break;
 	}
@@ -353,25 +354,21 @@ void Osm_Map::remove(Osm_Relation* p_rel) {
 }
 
 void Osm_Map::clear() {
+	node_iterator it_node;
+	way_iterator it_way;
+	relation_iterator it_rel;
+
 	unsubscribe();
-	for (auto it = nbegin(); it != nend(); ++it) {
-		//unsubscribe(**it);
-		if (f_destruct_physically) {
-			delete *it;
-		}
+	while ((it_node = nbegin()) != nend()) {
+		remove(*it_node);
 	}
-	for (auto it = wbegin(); it != wend(); ++it) {
-		//unsubscribe(**it);
-		if (f_destruct_physically) {
-			delete *it;
-		}
+	while ((it_way = wbegin()) != wend()) {
+		remove(*it_way);
 	}
-	for (auto it = rbegin(); it != rend(); ++it) {
-		//unsubscribe(**it);
-		if (f_destruct_physically) {
-			delete *it;
-		}
+	while ((it_rel = rbegin()) != rend()) {
+		remove(*it_rel);
 	}
+
 	m_nodes_hash.clear();
 	m_ways_hash.clear();
 	m_relations_hash.clear();

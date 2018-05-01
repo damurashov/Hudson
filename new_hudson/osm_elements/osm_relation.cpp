@@ -33,28 +33,33 @@ Osm_Relation::~Osm_Relation() {
 
 void Osm_Relation::handle_event_delete(Osm_Node& node) {
 	mn_nodes -= m_nodes_list.removeAll(&node);
+	m_roles_hash.remove(reinterpret_cast<Osm_Relation&>(node).get_inner_id());
 	emit_update(NODE_DELETED);
 }
 
 void Osm_Relation::handle_event_delete(Osm_Way& way) {
 	mn_ways -= m_ways_list.removeAll(&way);
+	m_roles_hash.remove(reinterpret_cast<Osm_Relation&>(way).get_inner_id());
 	emit_update(WAY_DELETED);
 }
 
 void Osm_Relation::handle_event_delete(Osm_Relation& relation) {
 	mn_relations -= m_relations_list.removeAll(&relation);
+	m_roles_hash.remove(reinterpret_cast<Osm_Relation&>(relation).get_inner_id());
 	emit_update(RELATION_DELETED);
 }
 
-void Osm_Relation::handle_event_delete(Osm_Object& object) {
-	m_roles_hash.remove(static_cast<Osm_Relation&>(object).get_inner_id());
-	//emit_update();
+void Osm_Relation::handle_event_update(Osm_Node&) {
+	emit_update(NODE_UPDATED);
 }
 
-void Osm_Relation::handle_event_update(Osm_Object &) {
-	emit_update();
+void Osm_Relation::handle_event_update(Osm_Way&) {
+	emit_update(WAY_UPDATED);
 }
 
+void Osm_Relation::handle_event_update(Osm_Relation&) {
+	emit_update(RELATION_UPDATED);
+}
 
 /*================================================================*/
 /*                        Public methods                          */
