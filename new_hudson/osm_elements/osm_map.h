@@ -24,6 +24,7 @@ private:
 	QRectF									m_autorect_180;
 	bool									f_destruct_physically;
 	bool									f_remove_orphaned_nodes;
+	bool									f_remove_one_node_ways;
 	bool									f_is_valid;
 	bool									f_force_dynamic_bound;
 	//mutable bool							f_scene_has_180_issue;
@@ -31,6 +32,12 @@ private:
 	bool									is_valid_bound				(const QRectF&) const;
 	bool									has_issue_180				(const QRectF&) const;
 	void									fit_autorects				(Osm_Node&);
+	void									handle_event_update			(Osm_Node&) override;
+	void									handle_event_update			(Osm_Way&) override;
+	void									handle_event_update			(Osm_Relation&) override;
+	void									handle_event_delete			(Osm_Node&) override;
+	void									handle_event_delete			(Osm_Way&) override;
+	void									handle_event_delete			(Osm_Relation&) override;
 	                                        Osm_Map						(const Osm_Map&) = delete;
 	Osm_Map&								operator=					(const Osm_Map&) = delete;
 public:
@@ -45,6 +52,7 @@ public:
 	bool									includes_in_scene			(Osm_Node*) const;
 	void									set_remove_physically		(bool f); /* True by default */
 	void									set_remove_orphaned_nodes	(bool f); /* True by default */
+	void									set_remove_one_node_ways	(bool f); /* True by default */
 	void									set_force_use_dynamic_bound	(bool f); /* False by default */
 	int										count_parents				() const;
 	void									set_bound					(const QRectF&);
@@ -79,14 +87,8 @@ public:
 	relation_iterator						rend						();
 	crelation_iterator						crbegin						() const;
 	crelation_iterator						crend						() const;
-	void									handle_event_update			(Osm_Node&) override;
-	void									handle_event_update			(Osm_Way&) override;
-	void									handle_event_update			(Osm_Relation&) override;
-	void									handle_event_delete			(Osm_Node&) override;
-	void									handle_event_delete			(Osm_Way&) override;
-	void									handle_event_delete			(Osm_Relation&) override;
 	                                        Osm_Map						();
-											~Osm_Map					();
+	virtual									~Osm_Map					();
 };
 
 }

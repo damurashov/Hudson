@@ -16,6 +16,15 @@ private:
 	QList<Osm_Node*>						m_nodes_list;
 	QList<Osm_Way*>							m_ways_list;
 	QList<Osm_Relation*>					m_relations_list;
+protected:
+	void									handle_event_delete	(Osm_Node&) override;
+	void									handle_event_delete	(Osm_Way&) override;
+	void									handle_event_delete	(Osm_Relation&) override;
+	void									handle_event_update	(Osm_Node&) override;
+	void									handle_event_update	(Osm_Way&) override;
+	void									handle_event_update	(Osm_Relation&) override;
+//	void									handle_event_delete	(Osm_Object&) override;
+//	void									handle_event_update	(Osm_Object&) override;
 public:
 	void									add					(Osm_Node*, const QString& role = "");
 	void									add					(Osm_Way*, const QString& role = "");
@@ -35,11 +44,6 @@ public:
 	unsigned short							count_nodes			() const;
 	unsigned short							count_ways			() const;
 	unsigned short							count_relations		() const;
-	void									handle_event_delete	(Osm_Node&) override;
-	void									handle_event_delete	(Osm_Way&) override;
-	void									handle_event_delete	(Osm_Relation&) override;
-	void									handle_event_delete	(Osm_Object&) override;
-	void									handle_event_update	(Osm_Object&) override;
 	                                        Osm_Relation		(const QString& id);
 											Osm_Relation		();
 	virtual									~Osm_Relation		();
