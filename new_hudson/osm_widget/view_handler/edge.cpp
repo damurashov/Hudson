@@ -6,18 +6,18 @@ using namespace ns_osm;
 /*                        Static members                          */
 /*================================================================*/
 
-long long Edge::s_id_bound = 0xFFFFFFFFFFFFFFFF;
+//long long Edge::s_id_bound = 0xFFFFFFFFFFFFFFFF;
 
 /*================================================================*/
 /*          Constructors, destructors, arithmetic ops.            */
 /*================================================================*/
 
-Edge::Edge(Osm_Node& first, Osm_Node& second) : ID(s_id_bound++) {
+Edge::Edge(Osm_Node& first, Osm_Node& second) /*: ID(s_id_bound++)*/ {
 	mp_node_first = &first;
 	mp_node_second = &second;
 }
 
-Edge::Edge(const Edge& edge) : ID(edge.ID) {
+Edge::Edge(const Edge& edge) /*: ID(edge.ID)*/ {
 	mp_node_first = edge.mp_node_first;
 	mp_node_second = edge.mp_node_second;
 }
@@ -28,7 +28,7 @@ Edge& Edge::operator=(const Edge& edge) {
 	return *this;
 }
 
-Edge::Edge(Edge&& edge) : ID(edge.id) {
+Edge::Edge(Edge&& edge) /*: ID(edge.id)*/ {
 	mp_node_first = edge.mp_node_first;
 	mp_node_second = edge.mp_node_second;
 }
@@ -39,12 +39,12 @@ Edge::~Edge() {}
 /*                        Public methods                          */
 /*================================================================*/
 
-long long Edge::get_id() const {
-	return ID;
-}
+//long long Edge::get_id() const {
+//	return ID;
+//}
 
 QList<Edge> Edge::to_edge_list(const Osm_Way& way) {
-	return to_edge_list(to_edge_list(way.get_nodes_list()));
+	return to_edge_list(way.get_nodes_list());
 }
 
 QList<Edge> Edge::to_edge_list(const QList<Osm_Node*>& nodelist) {
@@ -53,14 +53,14 @@ QList<Edge> Edge::to_edge_list(const QList<Osm_Node*>& nodelist) {
 	QList<Osm_Node*>::iterator	it_current = nodes.begin();
 	QList<Osm_Node*>::iterator	it_next = nodes.end();
 
-	if (way.get_size() < 2) {
-		return edges;
-	} else {
+	it_next++;
+	while (it_next != nodes.end()) {
+		edges.push_back(Edge(**it_current, **it_next));
+		it_current++;
 		it_next++;
-		while (it_next != nodes.end()) {
-			edges.push_back(Edge(*it_current, it_next));
-		}
 	}
+
+	return edges;
 }
 
 Osm_Node* Edge::first() const {
@@ -71,59 +71,11 @@ Osm_Node* Edge::second() const {
 	return mp_node_second;
 }
 
-long long Edge::get_id() const {
-	return ID;
-}
-
 /*================================================================*/
 /*                           Friends                              */
 /*================================================================*/
 
 bool operator==(const Edge& lhs, const Edge& rhs) {
-	return lhs.first() == rhs.first() && lhs.second() == rhs.second()
-	        || lhs.first() == rhs.second() && lhs.second() == rhs.first();
-}
-
-bool operator==(const Edge& ledge, const Item_Edge& ritem_edge) {
-	Edge redge(ritem_edge.first(), ritem_edge.second());
-	return ledge == redge;
-}
-
-bool operator==(const Item_Edge& litem_edge, const Edge& redge) {
-	Edge ledge(litem_edge.first(), litem_edge.second());
-	return ledge == redge;
-}
-
-//bool operator<(const Edge& lhs, const Edge& rhs) {
-//	if (lhs.first() < rhs.first()) {
-//		return true;
-//	} else if (lhs.first() > rhs.first()) {
-//		return false;
-//	} else if (lhs.second() < rhs.second()) {
-//		return true;
-//	}
-//	return false;
-//}
-
-//bool operator>(const Edge& lhs, const Edge& rhs) {
-//	if (lhs.first() > rhs.first()) {
-//		return true;
-//	} else if (lhs.first() < rhs.first()) {
-//		return false;
-//	} else if (lhs.second() > rhs.second()) {
-//		return true;
-//	}
-//	return false;
-//}
-
-//bool operator<=(const Edge& lhs, const Edge& rhs) {
-//	return (lhs < rhs) || (lhs == rhs);
-//}
-
-//bool operator>=(const Edge& lhs, const Edge& rhs) {
-//	return (lhs > rhs) || (lhs == rhs);
-//}
-
-unsigned int qHash(const Edge& edge, unsigned int seed) {
-	return edge.ID;
+	return ((lhs.first() == rhs.first() && lhs.second() == rhs.second())
+	        || (lhs.first() == rhs.second() && lhs.second() == rhs.first()));
 }
