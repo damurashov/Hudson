@@ -4,10 +4,11 @@
 #include "osm_subscriber.h"
 #include "osm_object.h"
 #include "osm_node.h"
+#include "osm_info.h"
 
 namespace ns_osm {
 
-class Osm_Way : public Osm_Object, public Osm_Subscriber {
+class Osm_Way : public Osm_Object, public Osm_Subscriber, public Osm_Info {
 private:
 	static const unsigned short				CAPACITY = 2000;
 	unsigned								m_size;
