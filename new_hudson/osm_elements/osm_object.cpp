@@ -93,21 +93,17 @@ void Osm_Object::set_valid(bool f_valid) {
 	f_is_valid = f_valid;
 }
 
-void Osm_Object::set_meta(Meta::Event event) {
-	m_meta = event;
-}
-
 long long Osm_Object::get_inner_id() const {
 	return INNER_ID;
 }
 
-void Osm_Object::emit_delete(Osm_Subscriber::Meta meta) {
+void Osm_Object::emit_delete(ns_osm::Event event) {
 	const long long THIS_ID = INNER_ID;
 	m_active_stack = m_subscribers;
 	Osm_Subscriber* p_current_subscriber;
 	while (!m_active_stack.empty()) {
 		p_current_subscriber = m_active_stack.front();
-		p_current_subscriber->set_meta(meta);
+		p_current_subscriber->m_meta = event;
 		switch (get_type()) {
 		case Type::NODE:
 			p_current_subscriber->handle_event_delete(*static_cast<Osm_Node*>(this));
@@ -132,13 +128,13 @@ void Osm_Object::emit_delete(Osm_Subscriber::Meta meta) {
 	}
 }
 
-void Osm_Object::emit_update(Osm_Subscriber::Meta meta) {
+void Osm_Object::emit_update(ns_osm::Event event) {
 	const long long THIS_ID = INNER_ID;
 	m_active_stack = m_subscribers;
 	Osm_Subscriber* p_current_subscriber;
 	while (!m_active_stack.empty()) {
 		p_current_subscriber = m_active_stack.front();
-		p_current_subscriber->set_meta(meta);
+		p_current_subscriber->m_meta = event;
 		switch (get_type()) {
 		case Type::NODE:
 			p_current_subscriber->handle_event_update(*static_cast<Osm_Node*>(this));
@@ -165,10 +161,6 @@ void Osm_Object::emit_update(Osm_Subscriber::Meta meta) {
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
-
-Meta Osm_Object::get_meta() const {
-	return m_meta;
-}
 
 void Osm_Object::add_subscriber(Osm_Subscriber& subscriber) {
 	//if (m_subscribers.indexOf(&subscriber) == -1) {
