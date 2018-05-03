@@ -16,13 +16,9 @@ protected:
 	friend class Osm_Map;
 private:
 	static QHash<long long, bool>	s_id_to_lifestage; /* true - exists, false - destructed */
-	const long long					OSM_ID;
 	const long long					INNER_ID;
 	const Type						TYPE;
-	static long long				s_osm_id_bound;
 	static long long				s_inner_id_bound;
-	QMap<QString, QString>			m_attrmap;
-	QMap<QString, QString>			m_tagmap;
 	QList<Osm_Subscriber*>			m_subscribers;
 	QList<Osm_Subscriber*>			m_active_stack;
 	int								mn_subscribers;
@@ -31,7 +27,7 @@ private:
 
 	static bool						is_locked				(long long);
 	bool							is_osm_object			(Osm_Subscriber*) const;
-	                                Osm_Object				();
+	                                Osm_Object				() = delete;
 protected:
 	enum class Type {NODE, WAY, RELATION};
 
@@ -41,7 +37,6 @@ protected:
 	void							emit_delete				(Osm_Subscriber::Meta meta = Osm_Subscriber::NONE);
 	void							emit_update				(Osm_Subscriber::Meta meta = Osm_Subscriber::NONE);
 	                                Osm_Object				(const Type);
-									Osm_Object				(const QString& id, const Type);
 									Osm_Object				(const Osm_Object&) = delete;
 	Osm_Object&						operator=				(const Osm_Object&) = delete;
 public:
@@ -49,15 +44,6 @@ public:
 	void							remove_subscriber		(Osm_Subscriber&);
 	int								count_subscribers		() const;
 	int								count_osm_subscribers	() const;
-	QString							get_attr_value			(const QString& key) const;
-	QString							get_tag_value			(const QString& key) const;
-	const QMap<QString, QString>&	get_tag_map				() const;
-	const QMap<QString, QString>&	get_attr_map			() const;
-	long long						get_id					() const;
-	void							set_tag					(const QString& key, const QString& value);
-	void							set_attr				(const QString& key, const QString& value);
-	void							remove_tag				(const QString& key);
-	void							clear_tags				();
 	bool							is_valid				() const;
 	virtual							~Osm_Object				();
 };	// class Osm_Object

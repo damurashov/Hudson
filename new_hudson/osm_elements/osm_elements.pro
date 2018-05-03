@@ -15,7 +15,8 @@ SOURCES += \
         osm_way.cpp \
         osm_relation.cpp \
     osm_map.cpp \
-    osm_subscriber.cpp
+    osm_subscriber.cpp \
+    osm_info.cpp
 
 HEADERS += \
         osm_elements.h \
@@ -24,4 +25,5 @@ HEADERS += \
         osm_relation.h \
         osm_object.h \
     osm_map.h \
-    osm_subscriber.h
+    osm_subscriber.h \
+    osm_info.h

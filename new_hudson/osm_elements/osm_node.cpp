@@ -1,13 +1,15 @@
 #include "osm_node.h"
 using namespace ns_osm;
-// ===================== Constructors, destructors =====================
-//Osm_Node::Osm_Node() : Osm_Object(Osm_Object::Type::NODE) {
-//}
+
+/*================================================================*/
+/*                  Constructors, destructors                     */
+/*================================================================*/
 
 Osm_Node::Osm_Node(const QString &id,
                    const QString &latitude,
                    const QString &longitude):
-    Osm_Object(id, Osm_Object::Type::NODE)
+    Osm_Object(Osm_Object::Type::NODE),
+    Osm_Info(id)
 {
 	set_attr("lat", latitude);
 	set_attr("lon", longitude);
@@ -56,7 +58,9 @@ void Osm_Node::correct() {
 	}
 }
 
-// =========================== Public methods ===========================
+/*================================================================*/
+/*                        Public methods                          */
+/*================================================================*/
 
 double Osm_Node::get_lat() const {
 	return m_lat;

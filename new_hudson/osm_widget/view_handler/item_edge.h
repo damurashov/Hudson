@@ -12,6 +12,7 @@
 #endif /* Include guard ALGORITHM_H */
 
 #include "osm_elements.h"
+#include "osm_subscriber.h"
 #include "edge.h"
 
 namespace ns_osm {
@@ -33,8 +34,6 @@ protected:
 public:
 	enum {Type = UserType + 2};
 
-	Osm_Node*		first				() const;
-	Osm_Node*		second				() const;
 	int				type				() const override;
 	QRectF			boundingRect		() const override;
 	void			paint				(QPainter *painter,
@@ -44,11 +43,11 @@ public:
 					                     Osm_Node& node1,
 					                     Osm_Node& node2,
 					                     Osm_Way&,
-					                     QObject* p_parent = nullptr);
+					                     QGraphicsItem* p_parent = nullptr);
 					Item_Edge			(const Osm_Map&,
 					                     const Edge&,
 					                     Osm_Way&,
-					                     QObject* p_parent = nullptr);
+					                     QGraphicsItem* p_parent = nullptr);
 					Item_Edge			() = delete;
 					Item_Edge			(const Item_Edge&) = delete;
 	Item_Edge&		operator=			(const Item_Edge&) = delete;
