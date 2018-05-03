@@ -3,28 +3,43 @@
 
 namespace ns_osm {
 
+/*================================================================*/
+/*               Concrete events and event groups                 */
+/*================================================================*/
+
+enum Event {
+	NONE				= 0,
+	// Special events go here
+	NODE_ADDED			= 100,
+	NODE_ADDED_FRONT,
+	NODE_ADDED_BACK,
+	NODE_UPDATED		= 200,
+	NODE_DELETED		= 300,
+	NODE_DELETED_FRONT,
+	NODE_DELETED_BACK,
+	WAY_ADDED			= 400,
+	WAY_UPDATED			= 500,
+	WAY_DELETED			= 600,
+	RELATION_ADDED		= 700,
+	RELATION_UPDATED	= 800,
+	RELATION_DELETED	= 900
+};
+
+/*================================================================*/
+/*                          Class Meta                            */
+/*================================================================*/
+
+class Osm_Object;
+
 class Meta {
-public:
-	enum Event {
-		NONE				= 0,
-		NODE_ADDED			= 10,
-		NODE_ADDED_FRONT,
-		NODE_ADDED_BACK,
-		NODE_UPDATED		= 20,
-		NODE_DELETED		= 30,
-		NODE_DELETED_FRONT,
-		NODE_DELETED_BACK,
-		NODE_DELETED,
-		WAY_ADDED			= 40,
-		WAY_UPDATED			= 50,
-		WAY_DELETED			= 60,
-		RELATION_ADDED		= 70,
-		RELATION_UPDATED	= 80,
-		RELATION_DELETED	= 90
-	};
 private:
 	Event		m_event;
+	Osm_Object* mp_subject;
 public:
+	Meta&		set_event	(Event);
+	Meta&		set_subject	(Osm_Object&);
+	Osm_Object*	get_subject	() const;
+	Event		get_event	() const;
 	            Meta		();
 				Meta		(Event);
 				Meta		(const Meta&);
@@ -32,12 +47,10 @@ public:
 	Meta&		operator=	(const Meta&);
 	Meta&		operator=	(Meta&&);
 	Meta&		operator=	(Event);
-	void		set_meta	(Event);
-	Event		get_meta	() const;
-	            operator int();
-	friend bool	operator==	(const Meta&, const Meta&);
-	friend bool	operator==	(const Meta&, Event);
-	friend bool operator==	(Event, const Meta&);
+	Meta&		operator=	(Osm_Object& subject);
+	bool		operator==	(Event);
+	bool		operator==	(const Meta&);
+	            operator int() const;
 };
 
 } /* namespace */

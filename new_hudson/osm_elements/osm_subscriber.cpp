@@ -7,11 +7,6 @@
 using namespace ns_osm;
 
 /*================================================================*/
-/*                        Static members                          */
-/*================================================================*/
-//bool Osm_Subscriber::sf_delegated = false;
-
-/*================================================================*/
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
@@ -42,29 +37,9 @@ void Osm_Subscriber::unsubscribe() {
 	m_sources.clear();
 }
 
-//void Osm_Subscriber::stop_broadcast() {
-//	sf_delegated = true;
-//}
-
-Osm_Subscriber::Meta Osm_Subscriber::get_meta() const {
+Meta Osm_Subscriber::get_meta() const {
 	return m_meta;
 }
-
-//bool Osm_Subscriber::is_broadcast_delegated() {
-//	if (sf_delegated) {
-//		sf_delegated = false;
-//		return true;
-//	}
-//	return false;
-//}
-
-void Osm_Subscriber::set_meta(Meta meta) {
-	m_meta = meta;
-}
-
-//void Osm_Subscriber::remove_source(const Osm_Object& source) {
-//	m_sources.removeAll(&source);
-//}
 
 void Osm_Subscriber::handle_event_update (Osm_Node&) {}
 

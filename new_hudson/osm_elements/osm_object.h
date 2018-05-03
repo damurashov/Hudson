@@ -7,6 +7,7 @@
 #endif // include guard QT_CORE_H
 
 #include "osm_subscriber.h"
+#include "meta.h"
 
 namespace ns_osm {
 
@@ -34,8 +35,8 @@ protected:
 	const Type						get_type				() const;
 	long long						get_inner_id			() const;
 	void							set_valid				(bool f_valid);
-	void							emit_delete				(Osm_Subscriber::Meta meta = Osm_Subscriber::NONE);
-	void							emit_update				(Osm_Subscriber::Meta meta = Osm_Subscriber::NONE);
+	void							emit_delete				(Meta meta = ns_osm::NONE);
+	void							emit_update				(Meta meta = ns_osm::NONE);
 	                                Osm_Object				(const Type);
 									Osm_Object				(const Osm_Object&) = delete;
 	Osm_Object&						operator=				(const Osm_Object&) = delete;
@@ -43,7 +44,7 @@ public:
 	void							add_subscriber			(Osm_Subscriber&);
 	void							remove_subscriber		(Osm_Subscriber&);
 	int								count_subscribers		() const;
-	int								count_osm_subscribers	() const;
+	int								count_osm_subscribers	() const; /* Genuine OSM objects : nodes, ways, relations. */
 	bool							is_valid				() const;
 	virtual							~Osm_Object				();
 };	// class Osm_Object

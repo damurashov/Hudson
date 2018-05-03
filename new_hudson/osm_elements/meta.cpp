@@ -1,4 +1,5 @@
 #include "meta.h"
+#include "osm_object.h"
 
 using namespace ns_osm;
 
@@ -7,42 +8,62 @@ using namespace ns_osm;
 /*================================================================*/
 
 Meta::Meta() {
-	m_event = Meta::Event::NONE;
+	m_event = ns_osm::Event::NONE;
+	mp_subject = nullptr;
 }
 
-Meta::Meta(Meta::Event event) {
+Meta::Meta(ns_osm::Event event) {
 	m_event = event;
+	mp_subject = nullptr;
 }
 
 Meta::Meta(const Meta& meta) {
 	m_event = meta.m_event;
+	mp_subject = meta.mp_subject;
 }
 
 Meta::Meta(Meta&& meta) {
 	m_event = meta.m_event;
+	mp_subject = meta.mp_subject;
 }
 
 Meta& Meta::operator=(const Meta& meta) {
 	m_event = meta.m_event;
+	mp_subject = meta.mp_subject;
 	return *this;
 }
 
 Meta& Meta::operator=(Meta&& meta) {
 	m_event = meta.m_event;
+	mp_subject = meta.mp_subject;
 	return *this;
 }
 
-Meta& Meta::operator=(Meta::Event event) {
+Meta& Meta::operator=(ns_osm::Event event) {
 	m_event = event;
 	return *this;
 }
 
-/*================================================================*/
-/*                        Public methods                          */
-/*================================================================*/
+Meta& Meta::operator=(Osm_Object& subject) {
+	mp_subject = &subject;
+}
+
+bool Meta::operator==(Event event) {
+	/* When event describes a group of events */
+	if (static_cast<int>(Meta(event)) == event) {
+		return event == static_cast<int>(*this);
+	/* When event describes a concrete event */
+	} else {
+		return m_event == event;
+	}
+}
+
+bool Meta::operator==(const Meta& meta) {
+	return (meta == m_event || *this == meta.m_event);
+}
 
 #define BOUNDARY(event) if (m_event >= event) return event
-Meta::operator int() {
+Meta::operator int() const {
 	BOUNDARY(RELATION_DELETED);
 	BOUNDARY(RELATION_UPDATED);
 	BOUNDARY(RELATION_ADDED);
@@ -52,38 +73,28 @@ Meta::operator int() {
 	BOUNDARY(NODE_DELETED);
 	BOUNDARY(NODE_UPDATED);
 	BOUNDARY(NODE_ADDED);
-	return NONE;
+	return m_event;
 }
 #undef BOUNDARY
 
-void Meta::set_meta(Event event) {
+/*================================================================*/
+/*                        Public methods                          */
+/*================================================================*/
+
+Meta& Meta::set_event(Event event) {
 	m_event = event;
+	return *this;
 }
 
-void Meta::get_meta() const {
+Meta& Meta::set_subject(Osm_Object& subject) {
+	mp_subject = &subject;
+	return *this;
+}
+
+Event Meta::get_event() const {
 	return m_event;
 }
 
-/*================================================================*/
-/*                           Friends                              */
-/*================================================================*/
-
-bool operator==(const Meta& meta, Meta::Event event) {
-	/* When event desribes a group of events */
-	if (static_cast<int>(Meta(event)) == event) {
-		return event == static_cast<int>(meta);
-	/* When event describes a concrete event */
-	} else {
-		return meta.m_event == event;
-	}
-}
-
-bool operator==(Meta::Event event, const Meta& meta) {
-	return meta == event;
-}
-
-bool operator==(const Meta& lhs, const Meta& rhs) {
-	/* If both lhs and rhs describe concrete events, their 'm_event' members must be strictly equal.
-	   Otherwise to be in a mutual group is enough for equality. */
-	return (lhs.m_event == rhs || lhs == rhs.m_event);
+Osm_Object* Meta::get_subject() const {
+	return mp_subject;
 }

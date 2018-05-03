@@ -6,6 +6,8 @@
 #include <QtCore>
 #endif /* Include guard QT_CORE_H*/
 
+#include "meta.h"
+
 namespace ns_osm {
 
 class Osm_Object;
@@ -14,27 +16,13 @@ class Osm_Way;
 class Osm_Relation;
 
 class Osm_Subscriber {
-protected:
 	friend class Osm_Object;
 	friend class Osm_Map;
-	enum Meta {
-		NONE = 0,
-		NODE_ADDED,
-		NODE_UPDATED,
-		NODE_DELETED,
-		WAY_ADDED,
-		WAY_UPDATED,
-		WAY_DELETED,
-		RELATION_ADDED,
-		RELATION_UPDATED,
-		RELATION_DELETED
-	};
 private:
 	QList<Osm_Object*>		m_sources;
-	Osm_Subscriber::Meta	m_meta;
+	Meta					m_meta;
 protected:
-	Osm_Subscriber::Meta	get_meta				() const;
-	void					set_meta				(Meta);
+	ns_osm::Meta			get_meta				() const;
 	virtual void			handle_event_update		(Osm_Way& source);
 	virtual void			handle_event_update		(Osm_Node& source);
 	virtual void			handle_event_update		(Osm_Relation& source);
