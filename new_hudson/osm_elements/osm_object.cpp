@@ -93,6 +93,9 @@ void Osm_Object::set_valid(bool f_valid) {
 	f_is_valid = f_valid;
 }
 
+void Osm_Object::set_meta(Meta::Event event) {
+	m_meta = event;
+}
 
 long long Osm_Object::get_inner_id() const {
 	return INNER_ID;
@@ -162,6 +165,10 @@ void Osm_Object::emit_update(Osm_Subscriber::Meta meta) {
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
+
+Meta Osm_Object::get_meta() const {
+	return m_meta;
+}
 
 void Osm_Object::add_subscriber(Osm_Subscriber& subscriber) {
 	//if (m_subscribers.indexOf(&subscriber) == -1) {

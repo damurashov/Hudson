@@ -7,6 +7,7 @@
 #endif // include guard QT_CORE_H
 
 #include "osm_subscriber.h"
+#include "meta.h"
 
 namespace ns_osm {
 
@@ -19,6 +20,7 @@ private:
 	const long long					INNER_ID;
 	const Type						TYPE;
 	static long long				s_inner_id_bound;
+	Meta							m_meta;
 	QList<Osm_Subscriber*>			m_subscribers;
 	QList<Osm_Subscriber*>			m_active_stack;
 	int								mn_subscribers;
@@ -34,12 +36,14 @@ protected:
 	const Type						get_type				() const;
 	long long						get_inner_id			() const;
 	void							set_valid				(bool f_valid);
+	void							set_meta				(Meta::Event);
 	void							emit_delete				(Osm_Subscriber::Meta meta = Osm_Subscriber::NONE);
 	void							emit_update				(Osm_Subscriber::Meta meta = Osm_Subscriber::NONE);
 	                                Osm_Object				(const Type);
 									Osm_Object				(const Osm_Object&) = delete;
 	Osm_Object&						operator=				(const Osm_Object&) = delete;
 public:
+	Meta							get_meta				() const;
 	void							add_subscriber			(Osm_Subscriber&);
 	void							remove_subscriber		(Osm_Subscriber&);
 	int								count_subscribers		() const;
