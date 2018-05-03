@@ -9,7 +9,7 @@ using namespace ns_osm;
 /*                        Static members                          */
 /*================================================================*/
 
-long long				Osm_Object::s_osm_id_bound(-1);
+//long long				Osm_Object::s_osm_id_bound(-1);
 long long				Osm_Object::s_inner_id_bound(0xFFFFFFFFFFFFFFFF);
 QHash<long long, bool>	Osm_Object::s_id_to_lifestage;
 
@@ -17,26 +17,25 @@ QHash<long long, bool>	Osm_Object::s_id_to_lifestage;
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
-Osm_Object::Osm_Object() :
-    OSM_ID(s_osm_id_bound--),
-	INNER_ID(s_inner_id_bound++),
-	TYPE(Osm_Object::Type::NODE)
-{
-	f_is_valid = true;
-	m_attrmap[QString("id")] = QString::number(OSM_ID);
-	mn_subscribers = 0;
-	mn_osm_object_subscribers = 0;
-	s_id_to_lifestage[INNER_ID] = true;
-	//reg_osm_object(this);
-}
+//Osm_Object::Osm_Object() :
+//    OSM_ID(s_osm_id_bound--),
+//	INNER_ID(s_inner_id_bound++),
+//	TYPE(Osm_Object::Type::NODE)
+//{
+//	f_is_valid = true;
+//	m_attrmap[QString("id")] = QString::number(OSM_ID);
+//	mn_subscribers = 0;
+//	mn_osm_object_subscribers = 0;
+//	s_id_to_lifestage[INNER_ID] = true;
+//	//reg_osm_object(this);
+//}
 
 Osm_Object::Osm_Object(const Osm_Object::Type type) :
-	OSM_ID(s_osm_id_bound--),
 	INNER_ID(s_inner_id_bound++),
 	TYPE(type)
 {
 	f_is_valid = true;
-	m_attrmap[QString("id")] = QString::number(OSM_ID);
+	//m_attrmap[QString("id")] = QString::number(OSM_ID);
 	mn_subscribers = 0;
 	mn_osm_object_subscribers = 0;
 	s_id_to_lifestage[INNER_ID] = true;
@@ -44,20 +43,19 @@ Osm_Object::Osm_Object(const Osm_Object::Type type) :
 }
 
 
-Osm_Object::Osm_Object(const QString &id, const Osm_Object::Type type):
-    OSM_ID(id.toLongLong()),
-	INNER_ID(s_inner_id_bound++),
-	TYPE(type)
-{
-	f_is_valid = true;
-	m_attrmap[QString("id")] = QString::number(OSM_ID);
-	if (s_osm_id_bound >= OSM_ID) {
-		s_osm_id_bound = (OSM_ID - 1);
-	}
-	mn_subscribers = 0;
-	mn_osm_object_subscribers = 0;
-	s_id_to_lifestage[INNER_ID] = true;
-}
+//Osm_Object::Osm_Object(const Osm_Object::Type type):
+//	INNER_ID(s_inner_id_bound++),
+//	TYPE(type)
+//{
+//	f_is_valid = true;
+//	m_attrmap[QString("id")] = QString::number(OSM_ID);
+//	if (s_osm_id_bound >= OSM_ID) {
+//		s_osm_id_bound = (OSM_ID - 1);
+//	}
+//	mn_subscribers = 0;
+//	mn_osm_object_subscribers = 0;
+//	s_id_to_lifestage[INNER_ID] = true;
+//}
 
 Osm_Object::~Osm_Object() {
 	s_id_to_lifestage[INNER_ID] = false;
@@ -193,45 +191,6 @@ int Osm_Object::count_subscribers() const {
 
 int Osm_Object::count_osm_subscribers() const {
 	return mn_osm_object_subscribers;
-}
-
-QString Osm_Object::get_attr_value(const QString& key) const {
-	return m_attrmap[key];
-}
-
-QString Osm_Object::get_tag_value(const QString &key) const {
-	return m_tagmap[key];
-}
-
-const QMap<QString, QString>& Osm_Object::get_tag_map() const {
-	return m_tagmap;
-}
-
-const QMap<QString, QString>& Osm_Object::get_attr_map() const {
-	return m_attrmap;
-}
-
-long long Osm_Object::get_id() const {
-	return OSM_ID;
-}
-
-void Osm_Object::set_tag(const QString &key, const QString &value) {
-	m_tagmap[key] = value;
-}
-
-void Osm_Object::set_attr(const QString &key, const QString &value) {
-	if (key == "id")
-		return;
-	m_attrmap[key] = value;
-}
-
-void Osm_Object::remove_tag(const QString &key) {
-	m_tagmap.remove(key);
-}
-
-
-void Osm_Object::clear_tags() {
-	m_tagmap.clear();
 }
 
 bool Osm_Object::is_valid() const {

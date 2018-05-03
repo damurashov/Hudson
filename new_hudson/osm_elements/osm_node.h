@@ -2,10 +2,11 @@
 #define OSM_NODE_H
 
 #include "osm_object.h"
+#include "osm_info.h"
 
 namespace ns_osm {
 
-class Osm_Node : public Osm_Object {
+class Osm_Node : public Osm_Object, public Osm_Info {
 private:
 	double		m_lat;
 	double		m_lon;

@@ -5,8 +5,10 @@ using namespace ns_osm;
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
-
-Osm_Relation::Osm_Relation(const QString& id) : Osm_Object(id, Osm_Object::Type::RELATION) {
+Osm_Relation::Osm_Relation(const QString& id)
+    : Osm_Object(Osm_Object::Type::RELATION),
+      Osm_Info(id)
+{
 	mn_nodes = 0;
 	mn_ways = 0;
 	mn_relations = 0;

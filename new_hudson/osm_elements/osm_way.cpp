@@ -10,7 +10,10 @@ Osm_Way::Osm_Way() : Osm_Object(Osm_Object::Type::WAY) {
 	m_size = 0;
 }
 
-Osm_Way::Osm_Way(const QString &id) : Osm_Object(id, Osm_Object::Type::WAY) {
+Osm_Way::Osm_Way(const QString &id)
+    : Osm_Object(Osm_Object::Type::WAY),
+      Osm_Info(id)
+{
 	m_size = 0;
 }
 
