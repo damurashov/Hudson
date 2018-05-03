@@ -10,7 +10,7 @@ View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
 	load_from_map();
 }
 
-View_Handler::View_Handler(const View_Handler& vhandler) : m_map(vhandler.map) {
+View_Handler::View_Handler(const View_Handler& vhandler) : m_map(vhandler.m_map) {
 	f_has_info_table = vhandler.f_has_info_table;
 	f_editable = vhandler.f_editable;
 	load_from_map();
@@ -18,13 +18,11 @@ View_Handler::View_Handler(const View_Handler& vhandler) : m_map(vhandler.map) {
 
 View_Handler::~View_Handler() {
 	while(!m_nodeid_to_item.isEmpty()) {
-		remove(m_nodeid_to_item.begin().key());
+		remove(m_nodeid_to_item.begin().value()->get_node());
 	}
 	while (!m_wayid_to_item.isEmpty()) {
-		remove(m_wayid_to_item.begin().key());
+		remove(m_wayid_to_item.begin().value()->get_way());
 	}
-	/* TODO: implement information table */
-	/* TODO: check parentship for information table */
 }
 
 /*================================================================*/
@@ -92,7 +90,7 @@ void View_Handler::add(Osm_Way* p_way) {
 
 	edges = Edge::to_edge_list(*p_way);
 	for (auto it = edges.begin(); it != edges.end(); ++it) {
-		p_item_edge = p_item_way->emplace_item(*it);
+		p_item_edge = p_item_way->emplace_edge(*it);
 		add(p_item_edge);
 	}
 }
@@ -141,9 +139,9 @@ void View_Handler::remove(Osm_Way* p_way) {
 
 	edges = Edge::to_edge_list(*p_way);
 	for (auto it = edges.begin(); it != edges.end(); ++it) {
-		p_item_edge = p_item_way->get_item(*it);
+		p_item_edge = p_item_way->get_edgeitem(*it);
 		remove(p_item_edge);
-		p_item_way->remove(p_item_edge);
+		p_item_way->remove_edgeitem(p_item_edge);
 	}
 
 	delete p_item_way;
@@ -189,7 +187,7 @@ void View_Handler::handle_event_update(Osm_Way& way) {
 	QList<Edge>			edges;
 	QList<Item_Edge*>	edge_items;
 	Item_Edge*			p_item_edge;
-	Item_Way*			p_item_way = m_wayid_to_item[way->get_id()];
+	Item_Way*			p_item_way = m_wayid_to_item[way.get_id()];
 
 	if (p_item_way == nullptr) {
 		return;
@@ -199,7 +197,7 @@ void View_Handler::handle_event_update(Osm_Way& way) {
 	case NODE_ADDED:
 		edges = p_item_way->get_added();
 		for (auto it = edges.begin(); it != edges.end(); ++it) {
-			p_item_edge = p_item_way->emplace_item(*it);
+			p_item_edge = p_item_way->emplace_edgeitem(*it);
 			if (p_item_edge == nullptr) {
 				return;
 			}
@@ -211,7 +209,7 @@ void View_Handler::handle_event_update(Osm_Way& way) {
 		for (auto it = edge_items.begin(); it != edge_items.end(); ++it) {
 			p_item_edge = *it;
 			remove(p_item_edge);
-			p_item_way->remove_item(p_item_edge);
+			p_item_way->remove_edgeitem(p_item_edge);
 			break;
 		}
 	}

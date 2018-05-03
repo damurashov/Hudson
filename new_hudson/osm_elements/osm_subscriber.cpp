@@ -66,18 +66,18 @@ void Osm_Subscriber::set_meta(Meta meta) {
 //	m_sources.removeAll(&source);
 //}
 
-void Osm_Subscriber::handle_event_update (Osm_Node& source) {}
+void Osm_Subscriber::handle_event_update (Osm_Node&) {}
 
-void Osm_Subscriber::handle_event_update (Osm_Way& source) {}
+void Osm_Subscriber::handle_event_update (Osm_Way&) {}
 
-void Osm_Subscriber::handle_event_update (Osm_Relation& source) {}
+void Osm_Subscriber::handle_event_update (Osm_Relation&) {}
 
-//void Osm_Subscriber::handle_event_update(Osm_Object &source) {}
+//void Osm_Subscriber::handle_event_update(Osm_Object &) {}
 
-void Osm_Subscriber::handle_event_delete (Osm_Node& source) {}
+void Osm_Subscriber::handle_event_delete (Osm_Node&) {}
 
-void Osm_Subscriber::handle_event_delete (Osm_Way& source) {}
+void Osm_Subscriber::handle_event_delete (Osm_Way&) {}
 
-void Osm_Subscriber::handle_event_delete (Osm_Relation& source) {}
+void Osm_Subscriber::handle_event_delete (Osm_Relation&) {}
 
-//void Osm_Subscriber::handle_event_delete(Osm_Object &source) {}
+//void Osm_Subscriber::handle_event_delete(Osm_Object &) {}

@@ -1,5 +1,4 @@
 #include "item_way.h"
-#include "view_handler.h"
 
 using namespace ns_osm;
 
@@ -8,8 +7,9 @@ using namespace ns_osm;
 /*================================================================*/
 Item_Way::Item_Way(const Osm_Map& map,
                    Osm_Way& way,
-                   QObject* p_parent)
-                   : m_map(map),
+                   QGraphicsItem* p_parent)
+                   : QGraphicsItemGroup(p_parent),
+                     m_map(map),
                      m_way(way)
 {
 	subscribe(m_way);
@@ -26,12 +26,18 @@ void Item_Way::handle_event_update(Osm_Way&) {
 /*                        Public methods                          */
 /*================================================================*/
 
-QList<Edge> Item_Way::get_added() const {
-	QList<Edge> actual(Edge::to_edge_list(m_way));
-	QList<Edge>	to_be_emplaced;
+Osm_Way* Item_Way::get_way() const {
+	return &m_way;
+}
 
-	for (auto it_old = m_edges.begin(); it_old != m_edges.end(); ++it_old) {
-		for (auto it_actual = actual.begin(); it_actual != actual.end(); ++it_actual) {
+QList<Edge> Item_Way::get_added() const {
+	QList<Edge>							actual(Edge::to_edge_list(m_way));
+	QList<Edge>							to_be_emplaced;
+	QList<Item_Edge*>::const_iterator	it_old;
+	QList<Edge>::iterator				it_actual;
+
+	for (it_old = m_edges.begin(); it_old != m_edges.end(); ++it_old) {
+		for (it_actual = actual.begin(); it_actual != actual.end(); ++it_actual) {
 			if (*it_actual == **it_old) {
 				break;
 			}
@@ -45,11 +51,13 @@ QList<Edge> Item_Way::get_added() const {
 }
 
 QList<Item_Edge*> Item_Way::get_removed() const {
-	QList<Item_Edge*>	to_be_removed;
-	QList<Edge>			actual(Edge::to_edge_list(m_way));
+	QList<Item_Edge*>					to_be_removed;
+	QList<Edge>							actual(Edge::to_edge_list(m_way));
+	QList<Item_Edge*>::const_iterator	it_old;
+	QList<Edge>::iterator				it_actual;
 
-	for (auto it_actual = actual.begin(); it_actual != actual.end(); ++it_actual) {
-		for (auto it_old = m_edges.begin(); it_old != m_edges.end(); ++it_old) {
+	for (it_actual = actual.begin(); it_actual != actual.end(); ++it_actual) {
+		for (it_old = m_edges.begin(); it_old != m_edges.end(); ++it_old) {
 			if (**it_old == *it_actual) {
 				break;
 			}
@@ -62,7 +70,7 @@ QList<Item_Edge*> Item_Way::get_removed() const {
 	return to_be_removed;
 }
 
-Item_Edge* Item_Way::get_item(const Edge& edge) const {
+Item_Edge* Item_Way::get_edgeitem(const Edge& edge) const {
 	for (auto it = m_edges.begin(); it != m_edges.end(); ++it) {
 		if (**it == edge) {
 			return *it;
@@ -71,8 +79,8 @@ Item_Edge* Item_Way::get_item(const Edge& edge) const {
 	return nullptr;
 }
 
-Item_Edge* Item_Way::emplace_item(const Edge& edge) {
-	if (get_item(edge) != nullptr) {
+Item_Edge* Item_Way::emplace_edgeitem(const Edge& edge) {
+	if (get_edgeitem(edge) != nullptr) {
 		return nullptr;
 	}
 
@@ -82,8 +90,8 @@ Item_Edge* Item_Way::emplace_item(const Edge& edge) {
 	return m_edges.back();
 }
 
-void Item_Way::remove_item(Item_Edge* p_item_edge) {
-	if (get_item(*p_item_edge) == nullptr) {
+void Item_Way::remove_edgeitem(Item_Edge* p_item_edge) {
+	if (get_edgeitem(*p_item_edge) == nullptr) {
 		return;
 	}
 

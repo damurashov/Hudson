@@ -24,6 +24,7 @@ protected:
 public:
 	enum {Type = UserType + 1};
 
+	Osm_Node*		get_node			() const;
 	int				type				() const override;
 	virtual void	paint				(QPainter *painter,
 	                                     const QStyleOptionGraphicsItem *option,
@@ -31,7 +32,7 @@ public:
 	QRectF			boundingRect		() const override;
 	                Item_Node			(const Osm_Map&,
 					                     Osm_Node&,
-					                     QObject* p_parent = nullptr);
+					                     QGraphicsItem* p_parent = nullptr);
 					Item_Node			() = delete;
 					Item_Node			(const Item_Node&) = delete;
 	Item_Node&		operator=			(const Item_Node&) = delete;

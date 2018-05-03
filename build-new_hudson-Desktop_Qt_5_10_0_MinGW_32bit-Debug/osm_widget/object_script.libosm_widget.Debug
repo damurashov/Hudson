@@ -1,0 +1,17 @@
+CREATE ..\..\new_hudson\intermediate_libs\libosm_widget.a
+ADDMOD debug\osm_message.o
+ADDMOD debug\osm_widget.o
+ADDMOD debug\osm_xml.o
+ADDMOD debug\xml_handler.o
+ADDMOD debug\edge.o
+ADDMOD debug\item_edge.o
+ADDMOD debug\item_node.o
+ADDMOD debug\item_way.o
+ADDMOD debug\osm_view.o
+ADDMOD debug\view_handler.o
+ADDMOD debug\moc_item_edge.o
+ADDMOD debug\moc_item_node.o
+ADDMOD debug\moc_item_way.o
+ADDMOD debug\moc_osm_view.o
+ADDMOD debug\moc_view_handler.o
+SAVE

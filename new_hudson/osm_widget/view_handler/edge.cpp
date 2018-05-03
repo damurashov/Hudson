@@ -44,7 +44,7 @@ Edge::~Edge() {}
 //}
 
 QList<Edge> Edge::to_edge_list(const Osm_Way& way) {
-	return to_edge_list(to_edge_list(way.get_nodes_list()));
+	return to_edge_list(way.get_nodes_list());
 }
 
 QList<Edge> Edge::to_edge_list(const QList<Osm_Node*>& nodelist) {
@@ -53,16 +53,14 @@ QList<Edge> Edge::to_edge_list(const QList<Osm_Node*>& nodelist) {
 	QList<Osm_Node*>::iterator	it_current = nodes.begin();
 	QList<Osm_Node*>::iterator	it_next = nodes.end();
 
-	if (way.get_size() < 2) {
-		return edges;
-	} else {
+	it_next++;
+	while (it_next != nodes.end()) {
+		edges.push_back(Edge(**it_current, **it_next));
+		it_current++;
 		it_next++;
-		while (it_next != nodes.end()) {
-			edges.push_back(Edge(*it_current, *it_next));
-			it_current++;
-			it_next++;
-		}
 	}
+
+	return edges;
 }
 
 Osm_Node* Edge::first() const {
@@ -78,6 +76,6 @@ Osm_Node* Edge::second() const {
 /*================================================================*/
 
 bool operator==(const Edge& lhs, const Edge& rhs) {
-	return lhs.first() == rhs.first() && lhs.second() == rhs.second()
-	        || lhs.first() == rhs.second() && lhs.second() == rhs.first();
+	return ((lhs.first() == rhs.first() && lhs.second() == rhs.second())
+	        || (lhs.first() == rhs.second() && lhs.second() == rhs.first()));
 }

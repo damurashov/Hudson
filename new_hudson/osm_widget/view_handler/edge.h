@@ -2,7 +2,7 @@
 #define EDGE_H
 
 #include "osm_elements.h"
-#include "item_edge.h"
+//#include "item_edge.h"
 
 namespace ns_osm {
 

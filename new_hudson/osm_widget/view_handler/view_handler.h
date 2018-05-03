@@ -62,7 +62,6 @@ public:
 	                                    View_Handler			(Osm_Map&);
 										View_Handler			(const View_Handler&);
 										View_Handler			() = delete;
-										View_Handler			() = delete;
 	View_Handler&						operator=				(const View_Handler) = delete;
 	virtual								~View_Handler			();
 }; /* class */

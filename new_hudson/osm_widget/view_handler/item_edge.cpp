@@ -10,29 +10,27 @@ Item_Edge::Item_Edge(const Osm_Map& map,
                      Osm_Node& node1,
                      Osm_Node& node2,
                      Osm_Way& way,
-                     QObject* p_parent)
-                     : QObject(p_parent),
+                     QGraphicsItem* p_parent)
+                     : QGraphicsItem(p_parent),
+                       Edge(node1, node2),
                        m_map(map),
-                       m_way(way),
-                       mp_node_first(&node1),
-                       mp_node_second(&node2)
+                       m_way(way)
 {
-	subscribe(*mp_node_first);
-	subscribe(*mp_node_second);
+	subscribe(*first());
+	subscribe(*second());
 }
 
 Item_Edge::Item_Edge(const Osm_Map& map,
                      const Edge& edge,
                      Osm_Way& way,
-                     QObject *p_parent)
-                     : QObject(p_parent),
+                     QGraphicsItem *p_parent)
+                     : QGraphicsItem(p_parent),
+                       Edge(edge),
                        m_map(map),
-                       m_way(way),
-                       mp_node_first(edge.first()),
-                       mp_node_second(edge.second())
+                       m_way(way)
 {
-	subscribe(*mp_node_first);
-	subscribe(*mp_node_second);
+	subscribe(*first());
+	subscribe(*second());
 }
 
 Item_Edge::~Item_Edge() {}
@@ -58,10 +56,10 @@ int Item_Edge::type() const {
 }
 
 QRectF Item_Edge::boundingRect() const {
-	double left = std::min(m_map.get_scene_coord(&m_node1).x(), m_map.get_scene_coord(&m_node2).x());
-	double top = std::max(m_map.get_scene_coord(&m_node1).y(), m_map.get_scene_coord(&m_node2).y());
-	double right = std::max(m_map.get_scene_coord(&m_node1).x(), m_map.get_scene_coord(&m_node2).x());
-	double bottom = std::min(m_map.get_scene_coord(&m_node1).y(), m_map.get_scene_coord(&m_node2).y());
+	double left = std::min(m_map.get_scene_coord(first()).x(), m_map.get_scene_coord(second()).x());
+	double top = std::max(m_map.get_scene_coord(first()).y(), m_map.get_scene_coord(second()).y());
+	double right = std::max(m_map.get_scene_coord(first()).x(), m_map.get_scene_coord(second()).x());
+	double bottom = std::min(m_map.get_scene_coord(first()).y(), m_map.get_scene_coord(second()).y());
 
 	return QRectF(QPointF(left, top), QPointF(right, bottom));
 }
@@ -71,6 +69,6 @@ void Item_Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 	pen.setWidth(3);
 	painter->setPen(pen);
-	painter->drawLine(m_map.get_scene_coord(&m_node1), m_map.get_scene_coord(&m_node2));
+	painter->drawLine(m_map.get_scene_coord(first()), m_map.get_scene_coord(second()));
 }
 

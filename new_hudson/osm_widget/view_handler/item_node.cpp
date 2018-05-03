@@ -8,12 +8,12 @@ using namespace ns_osm;
 
 Item_Node::Item_Node(const Osm_Map& map,
                      Osm_Node& node,
-                     QObject* p_parent)
-                     : QObject(p_parent),
+                     QGraphicsItem* p_parent)
+                     : QGraphicsItem(p_parent),
                        m_map(map),
                        m_node(node)
 {
-	setPos(m_map.get_scene_coord(mp_node));
+	setPos(m_map.get_scene_coord(&m_node));
 	//setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsGeometryChanges);
 }
 
@@ -43,6 +43,10 @@ void Item_Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
+
+Osm_Node* Item_Node::get_node() const {
+	return &m_node;
+}
 
 int Item_Node::type() const {
 	return Type;
