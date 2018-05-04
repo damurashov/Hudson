@@ -26,7 +26,6 @@ private:
 	int								mn_osm_object_subscribers;
 	bool							f_is_valid;
 
-	static bool						is_locked				(long long);
 	bool							is_osm_object			(Osm_Subscriber*) const;
 	                                Osm_Object				() = delete;
 protected:
@@ -35,6 +34,7 @@ protected:
 	const Type						get_type				() const;
 	long long						get_inner_id			() const;
 	void							set_valid				(bool f_valid);
+	static bool						is_locked				(long long);
 	void							emit_delete				(Meta meta = ns_osm::NONE);
 	void							emit_update				(Meta meta = ns_osm::NONE);
 	                                Osm_Object				(const Type);

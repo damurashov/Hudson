@@ -94,6 +94,11 @@ void Osm_Map::handle_event_update(Osm_Node& node) {
 void Osm_Map::handle_event_update(Osm_Way& way) {
 	switch (get_meta()) {
 	case NODE_ADDED:
+		if (get_meta().get_subject() != nullptr) {
+			Osm_Node* p_new_node = static_cast<Osm_Node*>(get_meta().get_subject());
+			add(p_new_node);
+			break;
+		}
 		for (auto it = way.get_nodes_list().cbegin(); it != way.get_nodes_list().cend(); ++it) {
 			Osm_Node* p_node = const_cast<Osm_Node*>(*it);
 			if (!has(p_node)) {
@@ -126,6 +131,11 @@ void Osm_Map::handle_event_update(Osm_Way& way) {
 void Osm_Map::handle_event_update(Osm_Relation& relation) {
 	switch (get_meta()) {
 	case NODE_ADDED:
+		if (get_meta().get_subject() != nullptr) {
+			Osm_Node* p_new_node = static_cast<Osm_Node*>(get_meta().get_subject());
+			add(p_new_node);
+			break;
+		}
 		for (auto it = relation.get_nodes().cbegin(); it != relation.get_nodes().cend(); ++it) {
 			Osm_Node* p_node = const_cast<Osm_Node*>(*it);
 			if (!has(p_node)) {
@@ -136,6 +146,11 @@ void Osm_Map::handle_event_update(Osm_Relation& relation) {
 		}
 		break;
 	case WAY_ADDED:
+		if (get_meta().get_subject() != nullptr) {
+			Osm_Way* p_new_way = static_cast<Osm_Way*>(get_meta().get_subject());
+			add(p_new_way);
+			break;
+		}
 		for (auto it = relation.get_ways().cbegin(); it != relation.get_ways().cend(); ++it) {
 			Osm_Way* p_way = const_cast<Osm_Way*>(*it);
 			if (!has(p_way)) {
@@ -145,6 +160,11 @@ void Osm_Map::handle_event_update(Osm_Relation& relation) {
 		}
 		break;
 	case RELATION_ADDED:
+		if (get_meta().get_subject() != nullptr) {
+			Osm_Relation* p_new_relation = static_cast<Osm_Relation*>(get_meta().get_subject());
+			add(p_new_relation);
+			break;
+		}
 		for (auto it = relation.get_relations().cbegin(); it != relation.get_relations().cend(); ++it) {
 			Osm_Relation* p_rel = const_cast<Osm_Relation*>(*it);
 			if (!has(p_rel)) {

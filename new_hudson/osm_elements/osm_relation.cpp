@@ -36,31 +36,31 @@ Osm_Relation::~Osm_Relation() {
 void Osm_Relation::handle_event_delete(Osm_Node& node) {
 	mn_nodes -= m_nodes_list.removeAll(&node);
 	m_roles_hash.remove(reinterpret_cast<Osm_Relation&>(node).get_inner_id());
-	emit_update(NODE_DELETED);
+	emit_update(Meta(NODE_DELETED).set_subject(node));
 }
 
 void Osm_Relation::handle_event_delete(Osm_Way& way) {
 	mn_ways -= m_ways_list.removeAll(&way);
 	m_roles_hash.remove(reinterpret_cast<Osm_Relation&>(way).get_inner_id());
-	emit_update(WAY_DELETED);
+	emit_update(Meta(WAY_DELETED).set_subject(way));
 }
 
 void Osm_Relation::handle_event_delete(Osm_Relation& relation) {
 	mn_relations -= m_relations_list.removeAll(&relation);
 	m_roles_hash.remove(reinterpret_cast<Osm_Relation&>(relation).get_inner_id());
-	emit_update(RELATION_DELETED);
+	emit_update(Meta(RELATION_DELETED).set_subject(relation));
 }
 
-void Osm_Relation::handle_event_update(Osm_Node&) {
-	emit_update(NODE_UPDATED);
+void Osm_Relation::handle_event_update(Osm_Node& node) {
+	emit_update(Meta(NODE_UPDATED).set_subject(node));
 }
 
-void Osm_Relation::handle_event_update(Osm_Way&) {
-	emit_update(WAY_UPDATED);
+void Osm_Relation::handle_event_update(Osm_Way& way) {
+	emit_update(Meta(WAY_UPDATED).set_subject(way));
 }
 
-void Osm_Relation::handle_event_update(Osm_Relation&) {
-	emit_update(RELATION_UPDATED);
+void Osm_Relation::handle_event_update(Osm_Relation& relation) {
+	emit_update(Meta(RELATION_UPDATED).set_subject(relation));
 }
 
 /*================================================================*/
@@ -82,7 +82,7 @@ void Osm_Relation::add(Osm_Node* ptr_node, const QString &role) {
 	m_nodes_list.push_back(ptr_node);
 	mn_nodes++;
 	set_role(ptr_node, role);
-	emit_update(NODE_ADDED);
+	emit_update(Meta(NODE_ADDED).set_subject(*ptr_node));
 }
 
 
@@ -102,7 +102,7 @@ void Osm_Relation::add(Osm_Way* ptr_way, const QString &role) {
 	m_ways_list.push_back(ptr_way);
 	mn_ways++;
 	set_role(ptr_way, role);
-	emit_update(WAY_ADDED);
+	emit_update(Meta(WAY_ADDED).set_subject(*ptr_way));
 }
 
 void Osm_Relation::add(Osm_Relation* ptr_rel, const QString& role) {
@@ -120,7 +120,7 @@ void Osm_Relation::add(Osm_Relation* ptr_rel, const QString& role) {
 	m_relations_list.push_back(ptr_rel);
 	mn_relations++;
 	set_role(ptr_rel, role);
-	emit_update(RELATION_ADDED);
+	emit_update(Meta(RELATION_ADDED).set_subject(*ptr_rel));
 }
 
 void Osm_Relation::remove(Osm_Node* ptr_node) {
@@ -130,7 +130,7 @@ void Osm_Relation::remove(Osm_Node* ptr_node) {
 	mn_nodes -= m_nodes_list.removeAll(ptr_node);
 	m_roles_hash.remove(reinterpret_cast<Osm_Relation*>(ptr_node)->get_inner_id());
 	unsubscribe(*ptr_node);
-	emit_update(NODE_DELETED);
+	emit_update(Meta(NODE_DELETED).set_subject(*ptr_node));
 }
 
 void Osm_Relation::remove(Osm_Way* ptr_way) {
@@ -140,7 +140,7 @@ void Osm_Relation::remove(Osm_Way* ptr_way) {
 	mn_ways -= m_ways_list.removeAll(ptr_way);
 	m_roles_hash.remove(reinterpret_cast<Osm_Relation*>(ptr_way)->get_inner_id());
 	unsubscribe(*ptr_way);
-	emit_update(WAY_DELETED);
+	emit_update(Meta(WAY_DELETED).set_subject(*ptr_way));
 }
 
 void Osm_Relation::remove(Osm_Relation* ptr_rel) {
@@ -151,7 +151,7 @@ void Osm_Relation::remove(Osm_Relation* ptr_rel) {
 	mn_relations -= m_relations_list.removeAll(ptr_rel);
 	m_roles_hash.remove(reinterpret_cast<Osm_Relation*>(ptr_rel)->get_inner_id());
 	unsubscribe(*ptr_rel);
-	emit_update(RELATION_DELETED);
+	emit_update(Meta(RELATION_DELETED).set_subject(*ptr_rel));
 }
 
 bool Osm_Relation::has(Osm_Node* p_node) const {
@@ -180,7 +180,7 @@ void Osm_Relation::set_role(Osm_Object* ptr_object, const QString& role) {
 		return;
 	}
 	m_roles_hash[static_cast<Osm_Relation*>(ptr_object)->get_inner_id()] = role;
-	emit_update();
+	emit_update(Meta(RELATION_MEMBER_ROLE_SET).set_subject(*ptr_object));
 }
 
 unsigned Osm_Relation::get_size() const {

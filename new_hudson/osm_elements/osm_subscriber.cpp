@@ -26,6 +26,9 @@ void Osm_Subscriber::unsubscribe(Osm_Object& source) {
 }
 
 void Osm_Subscriber::subscribe(Osm_Object& object) {
+	if (m_sources.contains(&object)) {
+		return;
+	}
 	object.add_subscriber(*this);
 	m_sources.push_back(&object);
 }

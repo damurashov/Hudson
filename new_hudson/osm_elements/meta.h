@@ -1,6 +1,11 @@
 #ifndef META_H
 #define META_H
 
+#ifndef QT_CORE_H
+#define QT_CORE_H
+#include <QtCore>
+#endif /* Include guard QT_CORE_H */
+
 namespace ns_osm {
 
 /*================================================================*/
@@ -10,13 +15,19 @@ namespace ns_osm {
 enum Event {
 	NONE				= 0,
 	// Special events go here
+	RELATION_MEMBER_ROLE_SET,
+	//.
 	NODE_ADDED			= 100,
 	NODE_ADDED_FRONT,
 	NODE_ADDED_BACK,
+	NODE_ADDED_AFTER,
+	NODE_ADDED_BEFORE,
 	NODE_UPDATED		= 200,
 	NODE_DELETED		= 300,
 	NODE_DELETED_FRONT,
 	NODE_DELETED_BACK,
+	NODE_DELETED_AFTER,
+	NODE_DELETED_BEFORE,
 	WAY_ADDED			= 400,
 	WAY_UPDATED			= 500,
 	WAY_DELETED			= 600,
@@ -32,25 +43,45 @@ enum Event {
 class Osm_Object;
 
 class Meta {
-private:
-	Event		m_event;
-	Osm_Object* mp_subject;
 public:
-	Meta&		set_event	(Event);
-	Meta&		set_subject	(Osm_Object&);
-	Osm_Object*	get_subject	() const;
-	Event		get_event	() const;
-	            Meta		();
-				Meta		(Event);
-				Meta		(const Meta&);
-				Meta		(Meta&&);
-	Meta&		operator=	(const Meta&);
-	Meta&		operator=	(Meta&&);
-	Meta&		operator=	(Event);
-	Meta&		operator=	(Osm_Object& subject);
-	bool		operator==	(Event);
-	bool		operator==	(const Meta&);
-	            operator int() const;
+	enum Subject {
+		SUBJECT_PRIMARY,
+		SUBJECT_BEFORE,
+		SUBJECT_AFTER
+	};
+private:
+	struct Subj;
+	QMap<Subject, Subj>			m_additional_subjects;
+	Event						m_event;
+	Osm_Object*					mp_primary_subject;
+public:
+	Meta&						set_event	(Event);
+	Meta&						set_pos		(unsigned short subject_position, Subject);
+	Meta&						set_subject	(Osm_Object& subject, Subject = SUBJECT_PRIMARY);
+	Osm_Object*					get_subject	(Subject = SUBJECT_PRIMARY) const;
+	int							get_pos		(Subject) const;
+	Event						get_event	() const;
+	                            Meta		();
+								Meta		(Event);
+								Meta		(const Meta&);
+								Meta		(Meta&&);
+	Meta&						operator=	(const Meta&);
+	Meta&						operator=	(Meta&&);
+	Meta&						operator=	(Event);
+	Meta&						operator=	(Osm_Object& subject);
+	bool						operator==	(Event);
+	bool						operator==	(const Meta&);
+	                            operator int() const;
+};
+
+/*================================================================*/
+/*                          Meta::Subj                            */
+/*================================================================*/
+
+struct Meta::Subj {
+	Osm_Object* p_object;
+	int			object_pos;
+	            Subj();
 };
 
 } /* namespace */

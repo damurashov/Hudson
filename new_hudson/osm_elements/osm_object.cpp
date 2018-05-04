@@ -68,10 +68,6 @@ Osm_Object::~Osm_Object() {
 /*                       Private methods                          */
 /*================================================================*/
 
-bool Osm_Object::is_locked(long long id) {
-	return !s_id_to_lifestage[id];
-}
-
 bool Osm_Object::is_osm_object(Osm_Subscriber* p_subscriber) const {
 	if (dynamic_cast<Osm_Node*>(p_subscriber) != nullptr ||
 	        dynamic_cast<Osm_Way*>(p_subscriber) != nullptr ||
@@ -84,6 +80,10 @@ bool Osm_Object::is_osm_object(Osm_Subscriber* p_subscriber) const {
 /*================================================================*/
 /*                      Protected methods                         */
 /*================================================================*/
+
+bool Osm_Object::is_locked(long long id) {
+	return !s_id_to_lifestage[id];
+}
 
 const Osm_Object::Type Osm_Object::get_type() const {
 	return TYPE;

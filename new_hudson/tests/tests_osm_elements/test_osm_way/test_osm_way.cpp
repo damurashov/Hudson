@@ -74,7 +74,7 @@ private slots:
 		Osm_Way* p_way = new Osm_Way;
 		Osm_Node* p1_node = new Osm_Node(1.0, 1.0);
 		Osm_Node* p2_node = new Osm_Node(2.0, 2.0);
-		Osm_Node* p3_node; /* nullptr */
+		Osm_Node* p3_node = nullptr; /* nullptr */
 
 		QCOMPARE(false,p_way->has(p1_node));
 		QCOMPARE(false,p_way->has(p3_node));
