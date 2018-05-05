@@ -23,8 +23,8 @@ private:
 
 	bool				split_edge			(int item_edge_pos, Osm_Node* p_node_to_split_with);
 	bool				merge_edges			(int item_edge_pos_prev, int item_edge_pos_next);
-	int					seek_pos_node_first	(Osm_Node* p_first, Osm_Node* p_next = nullptr);
-	int					seek_pos_item_edge	(Osm_Node* p_first, Osm_Node* p_second);
+	int					seek_pos_node_first	(Osm_Node* p_first, Osm_Node* p_next = nullptr) const;
+	int					seek_pos_item_edge	(Osm_Node* p_first, Osm_Node* p_second) const;
 	Diff				get_diff			() const;
 	void				handle_diffs		();
 	void				handle_added_front	();

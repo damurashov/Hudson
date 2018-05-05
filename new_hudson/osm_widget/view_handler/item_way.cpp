@@ -1,4 +1,5 @@
 #include "item_way.h"
+#include "view_handler.h"
 
 using namespace ns_osm;
 
@@ -12,8 +13,15 @@ Item_Way::Item_Way(const Osm_Map& map,
                    QGraphicsItem* p_parent)
                    : QGraphicsItemGroup(p_parent)
 {
+	QList<Edge>				edges = Edge::to_edge_list(m_way);
+	QList<Edge>::iterator	it_edge;
+
+	for (it_edge = edges.begin(); it_edge != edges.end(); ++it_edge) {
+		m_edges.push_back(new Item_Edge(m_map, *it_edge, m_way));
+		reg(m_edges.back());
+	}
+
 	subscribe(osm_way);
-	handle_diff();
 }
 
 Item_Way::~Item_Way() {
@@ -28,6 +36,99 @@ Item_Way::~Item_Way() {
 /*================================================================*/
 /*                       Private methods                          */
 /*================================================================*/
+
+bool Item_Way::split_edge(int item_edge_pos, Osm_Node *p_node_mid) {
+	Osm_Node*					p_node_left;
+	Osm_Node*					p_node_right;
+	QList<Item_Edge*>::iterator it_item = m_edges.begin();
+	Item_Edge*					p_prev_item;
+	Item_Edge*					p_next_item;
+	Item_Edge*					p_old_item;
+
+	if (item_edge_pos < 0) {
+		return false;
+	}
+	for (int i = 0; i < item_edge_pos && it_item != m_edges.end(); ++i) {
+		it_item++;
+	}
+	if (it_item == m_edges.end()) {
+		return false;
+	}
+	p_old_item = *it_item;
+	p_node_left = p_old_item->first();
+	p_node_right = p_old_item->second();
+	p_prev_item = new Item_Edge(m_map, *p_node_left, *p_node_mid, m_way);
+	p_next_item = new Item_Edge(m_map, *p_node_mid, *p_node_right, m_way);
+
+	it_item = m_edges.insert(it_item, p_next_item);
+	it_item = m_edges.insert(it_item, p_prev_item);
+	m_edges.removeOne(p_old_item);
+
+	reg(p_prev_item);
+	reg(p_next_item);
+	unreg(p_old_item);
+	delete p_old_item;
+
+	return true;
+}
+
+bool Item_Way::merge_edges(int pos_prev, int pos_next) {
+	Osm_Node*					p_node_first;
+	Osm_Node*					p_node_second;
+	Item_Edge*					p_left_old_edge;
+	Item_Edge*					p_right_old_edge;
+	Item_Edge*					p_new_edge;
+	QList<Item_Edge*>::iterator it_old_edge = m_edges.begin();
+
+	if (pos_prev != pos_next - 1 || pos_prev < 0 || pos_next < 0) {
+		return false;
+	}
+	for (int i = 0; i < pos_prev && it_old_edge != m_edges.end(); ++i) {
+		p_left_old_edge = *it_old_edge;
+		p_right_old_edge = *(++it_old_edge);
+	}
+	if (it_old_edge == m_edges.end()) {
+		return false;
+	}
+
+	p_node_first = p_left_old_edge->first();
+	p_node_second = p_right_old_edge->second();
+	p_new_edge = new Item_Edge(m_map, *p_node_first, *p_node_second, m_way);
+
+	m_edges.insert(it_old_edge, p_new_edge);
+	m_edges.removeOne(p_left_old_edge);
+	m_edges.removeOne(p_right_old_edge);
+
+	reg(p_new_edge);
+	unreg(p_left_old_edge);
+	unreg(p_right_old_edge);
+	delete p_left_old_edge;
+	delete p_right_old_edge;
+
+	return true;
+}
+
+int Item_Way::seek_pos_node_first(Osm_Node* p_node_left, Osm_Node* p_node_right) const {
+	const QList<Osm_Node*>& nodes		= m_way.get_nodes_list();
+	int						pos_left	= -1;
+	int						pos_right	= -1;
+
+	if (p_node_next == nullptr) {
+		return nodes.indexOf(p_node_first);
+	}
+	while (pos_right != pos_left + 1) {
+		pos_left = nodes.indexOf(p_node_left, pos_left + 1);
+		if (pos_left < 0) {
+			return -1;
+		}
+		pos_right = nodes.indexOf(p_node_right, pos_left);
+		if (pos_right < 0) {
+			return -1;
+		}
+	}
+
+	return pos_left;
+}
 
 Item_Way::Diff Item_Way::get_diff() const {
 	QList<Edge>							actual(Edge::to_edge_list(m_way));
@@ -207,6 +308,30 @@ void Item_Way::handle_deleted_mid(const Meta& meta) {
 		handle_diffs();
 	}
 }
+
+void Item_Way::reg(Item_Edge* p_item) {
+	if (p_item == nullptr) {
+		return;
+	}
+	scene()->addItem(p_item);
+	addToGroup(p_item);
+	QObject::connect(p_item,
+	                 SIGNAL(signal_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)),
+	                 &m_view_handler,
+	                 SLOT(slot_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)));
+}
+
+void Item_Way::unreg(Item_Edge* p_item) {
+	if (p_item == nullptr) {
+		return;
+	}
+	scene()->removeItem(p_item);
+	removeFromGroup(p_item);
+}
+
+/*================================================================*/
+/*                      Protected methods                         */
+/*================================================================*/
 
 void Item_Way::handle_event_update(Osm_Way& way) {
 	Meta meta(get_meta());
