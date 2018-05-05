@@ -21,13 +21,13 @@ enum Event {
 	NODE_ADDED_FRONT,
 	NODE_ADDED_BACK,
 	NODE_ADDED_AFTER,
-	NODE_ADDED_BEFORE,
+//	NODE_ADDED_BEFORE,
 	NODE_UPDATED		= 200,
 	NODE_DELETED		= 300,
 	NODE_DELETED_FRONT,
 	NODE_DELETED_BACK,
 	NODE_DELETED_AFTER,
-	NODE_DELETED_BEFORE,
+//	NODE_DELETED_BEFORE,
 	WAY_ADDED			= 400,
 	WAY_UPDATED			= 500,
 	WAY_DELETED			= 600,
@@ -55,23 +55,24 @@ private:
 	Event						m_event;
 	Osm_Object*					mp_primary_subject;
 public:
-	Meta&						set_event	(Event);
-	Meta&						set_pos		(unsigned short subject_position, Subject);
-	Meta&						set_subject	(Osm_Object& subject, Subject = SUBJECT_PRIMARY);
-	Osm_Object*					get_subject	(Subject = SUBJECT_PRIMARY) const;
-	int							get_pos		(Subject) const;
-	Event						get_event	() const;
-	                            Meta		();
-								Meta		(Event);
-								Meta		(const Meta&);
-								Meta		(Meta&&);
-	Meta&						operator=	(const Meta&);
-	Meta&						operator=	(Meta&&);
-	Meta&						operator=	(Event);
-	Meta&						operator=	(Osm_Object& subject);
-	bool						operator==	(Event);
-	bool						operator==	(const Meta&);
-	                            operator int() const;
+	bool						is_generic_event() const; /* As opposed to a concrete event */
+	Meta&						set_event		(Event);
+	Meta&						set_pos			(unsigned short subject_position, Subject);
+	Meta&						set_subject		(Osm_Object& subject, Subject = SUBJECT_PRIMARY);
+	Osm_Object*					get_subject		(Subject = SUBJECT_PRIMARY) const;
+	int							get_pos			(Subject) const;
+	Event						get_event		() const;
+	                            Meta			();
+								Meta			(Event);
+								Meta			(const Meta&);
+								Meta			(Meta&&);
+	Meta&						operator=		(const Meta&);
+	Meta&						operator=		(Meta&&);
+	Meta&						operator=		(Event);
+	Meta&						operator=		(Osm_Object& subject);
+	bool						operator==		(Event);
+	bool						operator==		(const Meta&);
+	                            operator int	() const;
 };
 
 /*================================================================*/

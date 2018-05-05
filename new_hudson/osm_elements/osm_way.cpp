@@ -53,9 +53,11 @@ void Osm_Way::handle_event_delete(Osm_Node& node) {
 	}
 	while (it_node_curr != m_nodes.end()) {
 		if (&node == *it_node_curr) {
+			Event event;
 			it_node_curr = m_nodes.erase(it_node_curr);
+			event = (it_node_curr == m_nodes.end() ? NODE_DELETED_BACK : NODE_DELETED_AFTER);
 			m_size--;
-			emit_update(Meta(NODE_DELETED_AFTER)
+			emit_update(Meta(event)
 			            .set_subject(node)
 			            .set_subject(**it_node_prev, Meta::SUBJECT_AFTER)
 			            .set_pos(pos, Meta::SUBJECT_AFTER));

@@ -62,18 +62,6 @@ void View_Handler::add(Osm_Node* p_node) {
 	                 SLOT(slot_node_clicked(Osm_Node*,Qt::MouseButton)));
 }
 
-void View_Handler::add(Item_Edge* p_item_edge) {
-	if (p_item_edge == nullptr) {
-		return;
-	}
-	mp_scene->addItem(p_item_edge);
-	QObject::connect(p_item_edge,
-	                 SIGNAL(signal_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)),
-	                 this,
-	                 SLOT(slot_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)));
-}
-
-
 void View_Handler::add(Osm_Way* p_way) {
 	Item_Way*	p_item_way;
 	QList<Edge>	edges;
@@ -107,18 +95,6 @@ void View_Handler::remove(Osm_Node* p_node) {
 	mp_scene->removeItem(p_nodeitem);
 	m_nodeid_to_item.remove(p_node->get_id());
 	delete p_nodeitem;
-}
-
-void View_Handler::remove(Item_Edge* p_item_edge) {
-	if (p_item_edge == nullptr) {
-		return;
-	}
-
-	mp_scene->removeItem(p_item_edge);
-	QObject::disconnect(p_item_edge,
-	                    SIGNAL(signal_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)),
-	                    this,
-	                    SLOT(slot_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)));
 }
 
 void View_Handler::remove(Osm_Way* p_way) {
@@ -181,38 +157,4 @@ void View_Handler::handle_event_delete(Osm_Node& node) {
 
 void View_Handler::handle_event_delete(Osm_Way& way) {
 	remove(&way);
-}
-
-void View_Handler::handle_event_update(Osm_Way& way) {
-	QList<Edge>			edges;
-	QList<Item_Edge*>	edge_items;
-	Item_Edge*			p_item_edge;
-	Item_Way*			p_item_way = m_wayid_to_item[way.get_id()];
-
-	if (p_item_way == nullptr) {
-		return;
-	}
-
-	switch (get_meta()) {
-	case NODE_ADDED:
-		edges = p_item_way->get_added();
-		for (auto it = edges.begin(); it != edges.end(); ++it) {
-			p_item_edge = p_item_way->emplace_edgeitem(*it);
-			if (p_item_edge == nullptr) {
-				return;
-			}
-			add(p_item_edge);
-			break;
-		}
-	case NODE_DELETED:
-		edge_items = p_item_way->get_removed();
-		for (auto it = edge_items.begin(); it != edge_items.end(); ++it) {
-			p_item_edge = *it;
-			remove(p_item_edge);
-			p_item_way->remove_edgeitem(p_item_edge);
-			break;
-		}
-	}
-
-	p_item_way->update();
 }

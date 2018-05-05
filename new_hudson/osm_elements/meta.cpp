@@ -95,6 +95,10 @@ Meta::operator int() const {
 /*                        Public methods                          */
 /*================================================================*/
 
+bool Meta::is_generic_event() const {
+	return m_event == static_cast<int>(*this);
+}
+
 Meta& Meta::set_event(Event event) {
 	m_event = event;
 	return *this;

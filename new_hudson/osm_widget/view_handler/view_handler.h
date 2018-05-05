@@ -44,17 +44,13 @@ private:
 
 	void								add						(Osm_Node*);
 	void								add						(Osm_Way*);
-	void								add						(Item_Edge*);
 	void								remove					(Osm_Node*);
-	void								remove					(Item_Edge*);
 	void								remove					(Osm_Way*);
 	void								apply_layout			();
 	void								load_from_map			();
 protected:
 	void								handle_event_delete		(Osm_Node&) override;
 	void								handle_event_delete		(Osm_Way&) override;
-	void								handle_event_update		(Osm_Way&) override;
-//	void								handle_event_update		(Osm_Node&) override;
 public:
 	void								set_info_table_enabled	(bool f);
 	void								set_editable			(bool f);
