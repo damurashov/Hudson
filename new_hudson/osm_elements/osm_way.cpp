@@ -22,61 +22,89 @@ Osm_Way::~Osm_Way() {
 }
 
 /*================================================================*/
+/*                       Private methods                          */
+/*================================================================*/
+
+void Osm_Way::remove_all_entries(Osm_Node* p_node) {
+	const long long				THIS_ID = get_inner_id();
+	QList<Osm_Node*>::iterator	it = m_nodes.begin();
+	unsigned int				pos_after = -1;
+	Osm_Node*					p_after;
+
+	unsubscribe(*p_node);
+	m_set.remove(p_node);
+
+	while (it != m_nodes.end()) {
+		if ((*it) != p_node) {
+			p_after = *it;
+			pos_after++;
+			it++;
+		} else {
+			m_size--;
+			if ((*it) == m_nodes.front()) {
+				m_nodes.pop_front();
+				it = m_nodes.begin();
+				emit_update(Meta(NODE_DELETED_FRONT).set_subject(*p_node));
+				if (is_locked(THIS_ID)) {
+					return;
+				}
+			} else if ((*it) == m_nodes.back()) {
+				m_nodes.pop_back();
+				emit_update(Meta(NODE_DELETED_BACK).set_subject(*p_node));
+				return;
+			} else {
+				it = m_nodes.erase(it);
+				emit_update(Meta(NODE_DELETED_AFTER)
+				            .set_subject(*p_node)
+				            .set_subject(*p_after, Meta::SUBJECT_AFTER)
+				            .set_pos(pos_after, Meta::SUBJECT_AFTER));
+				if (is_locked(THIS_ID)) {
+					return;
+				}
+			}
+		}
+	}
+}
+
+/*================================================================*/
 /*                      Protected methods                         */
 /*================================================================*/
 
 void Osm_Way::handle_event_delete(Osm_Node& node) {
-	const long long				THIS_ID			= get_inner_id();
-	unsigned short				pos				= 0;
-	bool						f_stay_closed	= (is_closed() && (node.get_id() == m_nodes.back()->get_id()));
-	QList<Osm_Node*>::iterator	it_node_prev;
-	QList<Osm_Node*>::iterator	it_node_curr;
+	enum Situation_Type {
+		MAKE_OPENED, /* The way is a triangle */
+		SAVE_CLOSED, /* The way is not a triangle, and the deleting node is the first node of a circular way */
+		REGULAR		 /* Any other case */
+	}				type = REGULAR;
+	Event			event;
+	const long long THIS_ID = get_inner_id();
+	unsigned short	pos = 0;
 
-	if (&node == m_nodes.front()) {
-		m_nodes.pop_front();
-		m_size--;
-		emit_update(Meta(NODE_DELETED_FRONT).set_subject(node));
-		if (is_locked(THIS_ID)) {
-			return;
-		}
-		if (m_nodes.isEmpty()) {
-			return;
+	if (is_closed()) {
+		if (get_size() == 4) {
+			type = MAKE_OPENED;
+		} else if (&node == m_nodes.front()) {
+			type = SAVE_CLOSED;
 		}
 	}
 
-	it_node_prev = m_nodes.begin();
-	it_node_curr = m_nodes.begin();
-	if (it_node_curr == m_nodes.end()) {
+	remove_all_entries(&node);
+	if (is_locked(THIS_ID)) {
 		return;
-	} else {
-		it_node_curr++;
 	}
-	while (it_node_curr != m_nodes.end()) {
-		if (&node == *it_node_curr) {
-			Event event;
-			it_node_curr = m_nodes.erase(it_node_curr);
-			event = (it_node_curr == m_nodes.end() ? NODE_DELETED_BACK : NODE_DELETED_AFTER);
+	switch (type) {
+	case REGULAR:
+		break;
+	case SAVE_CLOSED:
+		push_node(m_nodes.front());
+		break;
+	case MAKE_OPENED:
+		if (is_closed()) {
+			m_nodes.push_back(m_nodes.front());
 			m_size--;
-			emit_update(Meta(event)
-			            .set_subject(node)
-			            .set_subject(**it_node_prev, Meta::SUBJECT_AFTER)
-			            .set_pos(pos, Meta::SUBJECT_AFTER));
-			if (is_locked(THIS_ID)) {
-				return;
-			}
-			if (it_node_curr == m_nodes.end()) {
-				break;
-			}
+			emit_update(Meta(NODE_ADDED_BACK).set_subject(*(m_nodes.back())));
 		}
-		it_node_prev++;
-		it_node_curr++;
-		pos++;
-	}
-	if (f_stay_closed && get_size() > 2 && !m_nodes.isEmpty()) {
-		//push_node(m_nodes.front());
-		m_nodes.push_back(m_nodes.front());
-		m_size++;
-		emit_update(Meta(NODE_ADDED_BACK).set_subject(node));
+		break;
 	}
 }
 
@@ -98,77 +126,67 @@ unsigned short Osm_Way::get_capacity() const {
 }
 
 bool Osm_Way::push_node(Osm_Node* ptr_node) {
-	if (!is_closed() && !(get_size() >= CAPACITY)) {
-		if (ptr_node == nullptr) {
-			set_valid(false);
+	const long long THIS_ID = get_inner_id();
+
+	if (is_closed() || get_size() >= CAPACITY || ptr_node == nullptr) {
+		set_valid(ptr_node == nullptr ? false : (ptr_node->is_valid() ? is_valid() : false));
+		return false;
+	} else if (has(ptr_node)) {
+		if (ptr_node != m_nodes.front() || get_size() < 3) {
 			return false;
-		} else if (!m_nodes.isEmpty()) {
-			if (m_nodes.back() == ptr_node) {
-				return false;
-			}
 		}
-		if (!(ptr_node->is_valid())) {
-			set_valid(false);
-		}
-		m_nodes.push_back(ptr_node);
-		m_size++;
-		subscribe(*ptr_node);
-		emit_update(Meta(NODE_ADDED_BACK).set_subject(*ptr_node));
-		return true;
 	}
-	return false;
+	m_set.insert(ptr_node);
+	m_nodes.push_back(ptr_node);
+	m_size++;
+	subscribe(*ptr_node);
+	emit_update(Meta(NODE_ADDED_BACK).set_subject(*ptr_node));
+	return (!is_locked(THIS_ID));
 }
 
-bool Osm_Way::insert_node_between(Osm_Node* node_ptr,
-                                  Osm_Node* target_ptr_1,
-                                  Osm_Node* target_ptr_2) {
-	const long long THIS_ID = get_inner_id();
-	unsigned short	pos		= 0;
-	Osm_Node*		p_after;
+bool Osm_Way::insert_node_between(Osm_Node* p_node,
+                                  Osm_Node* p_target_1,
+                                  Osm_Node* p_target_2) {
+	const long long				THIS_ID = get_inner_id();
+	unsigned short				pos		= 0;
+	QList<Osm_Node*>::iterator	it_node	= m_nodes.begin();
+	Osm_Node*					p_after;
 
-	if (!has(node_ptr)
-	&& node_ptr != nullptr
-	&& target_ptr_1 != nullptr
-	&& target_ptr_2 != nullptr) {
-		QList<Osm_Node*>::iterator it;
-		bool f_is_found = false;
-		for (it = m_nodes.begin(); it != m_nodes.end(); ++it) {
-			if ((*it == target_ptr_1) || (*it == target_ptr_2)) {
-				f_is_found = true;
-				break;
-			}
-			pos++;
-		}
-		if (f_is_found) {
-			p_after = *it;
-			it++;
-			if (!(node_ptr->is_valid())) {
-				set_valid(false);
-			}
-			m_nodes.insert(it, node_ptr);
-			subscribe(*node_ptr);
-			m_size++;
-			if (m_nodes.back() == node_ptr/* && !is_closed()*/) {
-				emit_update(Meta(NODE_ADDED_BACK).set_subject(*node_ptr));
-				if (is_locked(THIS_ID)) {
-					return true;
-				}
-			}
-			emit_update(Meta(NODE_ADDED_AFTER)
-			            .set_subject(*node_ptr)
-			            .set_subject(*p_after, Meta::SUBJECT_AFTER)
-			            .set_pos(pos, Meta::SUBJECT_AFTER));
-			return true;
-		}
+	if (p_node == nullptr
+	        || !has(p_target_1)
+	        || !has(p_target_2)
+	        || has(p_node)) {
+		return false;
 	}
-	return false;
+	while ((*it_node) != p_target_1 && (*it_node) != p_target_2) {
+		it_node++;
+		pos++;
+	}
+
+	p_after = *it_node;
+	it_node++;
+	if (it_node == m_nodes.end()) {
+		return false;
+	} else if ((*it_node) != p_target_1 && (*it_node) != p_target_2){
+		return false;
+	}
+	m_nodes.insert(it_node, p_node);
+	m_set.insert(p_node);
+	m_size++;
+	subscribe(*p_node);
+	emit_update(Meta(NODE_ADDED_AFTER)
+	            .set_subject(*p_node)
+	            .set_subject(*p_after, Meta::SUBJECT_AFTER)
+	            .set_pos(pos, Meta::SUBJECT_AFTER));
+	return (!is_locked(THIS_ID));
 }
 
 bool Osm_Way::has(Osm_Node* ptr_node) const {
 	if (ptr_node == nullptr) {
 		return false;
 	}
-	return m_nodes.contains(ptr_node);
+	return m_set.contains(ptr_node);
+	//return m_nodes.contains(ptr_node);
 }
 
 bool Osm_Way::is_closed() const {

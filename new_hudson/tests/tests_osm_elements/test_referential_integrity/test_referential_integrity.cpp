@@ -120,14 +120,18 @@ private slots:
 	void node_delete___way_listener() {
 		Osm_Node* p1_node = new Osm_Node(1.0, 1.0);
 		Osm_Node* p2_node = new Osm_Node(2.0, 2.0);
+		Osm_Node* p3_node = new Osm_Node(3.0, 3.0);
 		Osm_Way way;
 
+		way.push_node(p1_node);
 		way.push_node(p2_node);
-		way.insert_node_between(p1_node, p2_node, p2_node);
+		way.insert_node_between(p3_node, p1_node, p2_node);
 		Sub sub(way);
 		delete p1_node;
 		QCOMPARE(sub.last(), WAY_UPDATE);
 		delete p2_node;
+		QCOMPARE(sub.last(), WAY_UPDATE);
+		delete p3_node;
 		QCOMPARE(sub.last(), WAY_UPDATE);
 	}
 
@@ -148,18 +152,22 @@ private slots:
 	void way_update___sub_listener() {
 		Osm_Node node1(0,0);
 		Osm_Node node2(0,0);
+		Osm_Node node3(0,0);
 		Osm_Way way;
 		Sub sub(way);
 
 		way.push_node(&node1);
 		QCOMPARE(sub.last(), WAY_UPDATE);
-		way.insert_node_between(&node2, &node1, &node1);
+		way.push_node(&node2);
+		QCOMPARE(sub.last(), WAY_UPDATE);
+		way.insert_node_between(&node3, &node2, &node1);
 		QCOMPARE(sub.last(), WAY_UPDATE);
 	}
 
 	void way_update___relation_listener() {
 		Osm_Node node1(0,0);
 		Osm_Node node2(0,0);
+		Osm_Node node3(0,0);
 		Osm_Way way;
 		Osm_Relation relation;
 
@@ -167,7 +175,9 @@ private slots:
 		Sub sub(relation);
 		way.push_node(&node1);
 		QCOMPARE(sub.last(), RELATION_UPDATE);
-		way.insert_node_between(&node2, &node1, &node1);
+		way.push_node(&node3);
+		QCOMPARE(sub.last(), RELATION_UPDATE);
+		way.insert_node_between(&node2, &node3, &node1);
 		QCOMPARE(sub.last(), RELATION_UPDATE);
 	}
 

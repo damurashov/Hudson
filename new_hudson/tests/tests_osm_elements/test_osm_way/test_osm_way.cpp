@@ -51,18 +51,21 @@ private slots:
 	}
 
 	void insert_node_between() {
-		const int ARRAY_SIZE = 3;
+		const int ARRAY_SIZE = 5;
 		Osm_Way* p_way = new Osm_Way;
 		Osm_Node* ap_nodes[ARRAY_SIZE];
 		for (int i = 0; i < ARRAY_SIZE; ++i) {
 			ap_nodes[i] = new Osm_Node(i,i);
+			if (i != ARRAY_SIZE - 1) {
+				p_way->push_node(ap_nodes[i]);
+			}
 		}
 
-		QCOMPARE(false, p_way->insert_node_between(ap_nodes[0], ap_nodes[1], ap_nodes[2]));;
-		p_way->push_node(ap_nodes[0]);
-		QCOMPARE(true, p_way->insert_node_between(ap_nodes[2], ap_nodes[0], ap_nodes[1]));
-		QCOMPARE(true, p_way->insert_node_between(ap_nodes[1], ap_nodes[0], ap_nodes[2]));
-		QCOMPARE(3, p_way->get_size());
+		QCOMPARE(false, p_way->insert_node_between(ap_nodes[0], ap_nodes[1], ap_nodes[2])); // Already has inside
+		QCOMPARE(false, p_way->insert_node_between(ap_nodes[ARRAY_SIZE - 1], ap_nodes[0], ap_nodes[2])); // Not adjacent
+		QCOMPARE(false, p_way->insert_node_between(ap_nodes[ARRAY_SIZE - 1], ap_nodes[1], nullptr)); // nullptr
+		QCOMPARE(false, p_way->insert_node_between(ap_nodes[ARRAY_SIZE - 1], nullptr, ap_nodes[1])); // nullptr
+		QCOMPARE(true, p_way->insert_node_between(ap_nodes[ARRAY_SIZE - 1], ap_nodes[2], ap_nodes[3]));
 
 		delete p_way;
 		for (int i = 0; i < ARRAY_SIZE; ++i) {
