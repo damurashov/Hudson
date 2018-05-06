@@ -315,7 +315,7 @@ void Item_Way::reg(Item_Edge* p_item) {
 	}
 //	scene()->addItem(p_item);
 	if (scene()) {
-		scene->addItem(p_item);
+		scene()->addItem(p_item);
 	}
 	addToGroup(p_item);
 	QObject::connect(p_item,
