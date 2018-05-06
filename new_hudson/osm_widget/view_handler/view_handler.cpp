@@ -72,15 +72,15 @@ void View_Handler::add(Osm_Way* p_way) {
 	}
 
 	subscribe(*p_way);
-	p_item_way = new Item_Way(m_map, *p_way);
+	p_item_way = new Item_Way(m_map, *this, *p_way);
 	mp_scene->addItem(p_item_way);
 	m_wayid_to_item.insert(p_way->get_id(), p_item_way);
 
-	edges = Edge::to_edge_list(*p_way);
-	for (auto it = edges.begin(); it != edges.end(); ++it) {
-		p_item_edge = p_item_way->emplace_edge(*it);
-		add(p_item_edge);
-	}
+//	edges = Edge::to_edge_list(*p_way);
+//	for (auto it = edges.begin(); it != edges.end(); ++it) {
+//		p_item_edge = p_item_way->emplace_edge(*it);
+//		add(p_item_edge);
+//	}
 }
 
 void View_Handler::remove(Osm_Node* p_node) {
@@ -113,12 +113,12 @@ void View_Handler::remove(Osm_Way* p_way) {
 	mp_scene->removeItem(p_item_way);
 	m_wayid_to_item.remove(p_way->get_id());
 
-	edges = Edge::to_edge_list(*p_way);
-	for (auto it = edges.begin(); it != edges.end(); ++it) {
-		p_item_edge = p_item_way->get_edgeitem(*it);
-		remove(p_item_edge);
-		p_item_way->remove_edgeitem(p_item_edge);
-	}
+//	edges = Edge::to_edge_list(*p_way);
+//	for (auto it = edges.begin(); it != edges.end(); ++it) {
+//		p_item_edge = p_item_way->get_edgeitem(*it);
+//		remove(p_item_edge);
+//		p_item_way->remove_edgeitem(p_item_edge);
+//	}
 
 	delete p_item_way;
 }

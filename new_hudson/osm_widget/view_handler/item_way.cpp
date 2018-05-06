@@ -117,7 +117,7 @@ int Item_Way::seek_pos_node_first(Osm_Node* p_node_left, Osm_Node* p_node_right)
 	int						pos_right	= -1;
 
 	if (p_node_right == nullptr) {
-		return nodes.indexOf(p_node_first);
+		return nodes.indexOf(p_node_left);
 	}
 	while (pos_right != pos_left + 1) {
 		pos_left = nodes.indexOf(p_node_left, pos_left + 1);
@@ -134,21 +134,21 @@ int Item_Way::seek_pos_node_first(Osm_Node* p_node_left, Osm_Node* p_node_right)
 }
 
 Item_Way::Diff Item_Way::get_diff() const {
-	QList<Edge>							actual(Edge::to_edge_list(m_way));
-	QList<Item_Edge*>::const_iterator	it_old_item = m_edges.cbegin();
-	QList<Edge>::iterator				it_new_edge = actual.begin();
-	Diff								diff;
+	QList<Edge>					actual(Edge::to_edge_list(m_way));
+	QList<Item_Edge*>::iterator	it_old_item = m_edges.begin();
+	QList<Edge>::iterator		it_new_edge = actual.begin();
+	Diff						diff;
 
 	diff.type = Diff::NONE;
 	/* seek diff */
-	while (it_old_item != m_edges.cend() && it_new_edge != actual.end()) {
+	while (it_old_item != m_edges.end() && it_new_edge != actual.end()) {
 		it_old_item++;
 		it_new_edge++;
 	}
 	/* detect diff type */
-	if (it_old_item == m_edges.cend() && it_new_edge == actual.end()) {
+	if (it_old_item == m_edges.end() && it_new_edge == actual.end()) {
 		return diff;
-	} else if (it_old_item == m_edges.cend()) {
+	} else if (it_old_item == m_edges.end()) {
 		diff.type = Diff::ADD_BEFORE;
 	} else if (it_new_edge == actual.end()) {
 		diff.type = Diff::REMOVE;
@@ -359,6 +359,8 @@ void Item_Way::handle_event_update(Osm_Way& way) {
 			case NODE_ADDED_AFTER:
 				handle_added_mid(meta);
 				break;
+			default:
+				break;
 			}
 		}
 		break;
@@ -376,8 +378,12 @@ void Item_Way::handle_event_update(Osm_Way& way) {
 			case NODE_DELETED_AFTER:
 				handle_deleted_mid(meta);
 				break;
+			default:
+				break;
 			}
 		}
+	default:
+		break;
 	}
 
 	update();

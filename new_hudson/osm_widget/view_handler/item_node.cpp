@@ -9,7 +9,8 @@ using namespace ns_osm;
 Item_Node::Item_Node(const Osm_Map& map,
                      Osm_Node& node,
                      QGraphicsItem* p_parent)
-                     : QGraphicsItem(p_parent),
+                     :
+                       QGraphicsObject(p_parent),
                        m_map(map),
                        m_node(node)
 {
@@ -33,6 +34,9 @@ QVariant Item_Node::itemChange(GraphicsItemChange change, const QVariant &value)
 	switch (change) {
 	case QGraphicsItem::ItemPositionHasChanged:
 		m_node.set_lat_lon(pos.y(), pos.x());
+		break;
+	default:
+		break;
 	}
 	return QGraphicsItem::itemChange(change, value);
 }

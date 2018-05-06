@@ -14,11 +14,10 @@ namespace ns_osm {
 class View_Handler;
 
 class Item_Way : public QGraphicsItemGroup, public Osm_Subscriber {
-	Q_OBJECT
+	//Q_OBJECT
 private:
-	QList<Item_Edge*>	m_edges;
 	struct Diff;
-
+	mutable QList<Item_Edge*>	m_edges;
 	const Osm_Map&				m_map;
 	View_Handler&				m_view_handler;
 	Osm_Way&					m_way;

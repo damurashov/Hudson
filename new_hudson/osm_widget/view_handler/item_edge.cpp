@@ -11,7 +11,8 @@ Item_Edge::Item_Edge(const Osm_Map& map,
                      Osm_Node& node2,
                      Osm_Way& way,
                      QGraphicsItem* p_parent)
-                     : QGraphicsItem(p_parent),
+                     :
+                       QGraphicsObject(p_parent),
                        Edge(node1, node2),
                        m_map(map),
                        m_way(way)
@@ -24,7 +25,8 @@ Item_Edge::Item_Edge(const Osm_Map& map,
                      const Edge& edge,
                      Osm_Way& way,
                      QGraphicsItem *p_parent)
-                     : QGraphicsItem(p_parent),
+                     :
+                       QGraphicsObject(p_parent),
                        Edge(edge),
                        m_map(map),
                        m_way(way)

@@ -10,7 +10,7 @@
 
 namespace ns_osm {
 
-class Item_Node : public QGraphicsItem{
+class Item_Node : public QGraphicsObject {
 	Q_OBJECT
 signals:
 	void			signal_node_clicked	(Osm_Node*, Qt::MouseButton);

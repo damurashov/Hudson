@@ -58,6 +58,8 @@ void Osm_View::mouseReleaseEvent(QMouseEvent* p_event) {
 	case Qt::MouseButton::LeftButton:
 		emit signal_blank_area_clicked(mapToScene(p_event->pos()), p_event->button());
 		break;
+	default:
+		break;
 	}
 }
 

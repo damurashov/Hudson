@@ -17,7 +17,7 @@
 
 namespace ns_osm {
 
-class Item_Edge : public QGraphicsItem, public Osm_Subscriber, public Edge {
+class Item_Edge : public QGraphicsObject, public Osm_Subscriber, public Edge {
 	Q_OBJECT
 signals:
 	void			signal_edge_clicked	(QPointF,
