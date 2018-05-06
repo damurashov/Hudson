@@ -16,13 +16,13 @@ private slots:
 		QCOMPARE(0, map.count_parents());
 	}
 
-	void fit_bounding_rect() {
-		Osm_Map map;
-		const double MINLON = 170;
-		const double MAXLON = -160;
-		const double MINLAT = -15;
-		const double MAXLAT = 15;
-	}
+//	void fit_bounding_rect() {
+//		Osm_Map map;
+//		const double MINLON = 170;
+//		const double MAXLON = -160;
+//		const double MINLAT = -15;
+//		const double MAXLAT = 15;
+//	}
 
 	void get_node() {
 		Osm_Map		map;

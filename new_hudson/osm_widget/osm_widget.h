@@ -1,10 +1,10 @@
 #ifndef OSM_WIDGET_H
 #define OSM_WIDGET_H
 
-#include "xml_handler.h"
+#include "xml_handler/xml_handler.h"
+#include "view_handler/view_handler.h"
 #include "osm_elements.h"
 #include "osm_message.h"
-#include "osm_map.h"
 
 class Osm_Widget : public QWidget {
 private:
