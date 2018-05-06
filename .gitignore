@@ -1,0 +1,7 @@
+**/*.pro
+**/*.user
+/build*/*
+**/*.a
+**/*.o
+/new_hudson/intermediate_libs/*
+

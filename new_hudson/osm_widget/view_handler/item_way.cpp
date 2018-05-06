@@ -313,7 +313,10 @@ void Item_Way::reg(Item_Edge* p_item) {
 	if (p_item == nullptr) {
 		return;
 	}
-	scene()->addItem(p_item);
+//	scene()->addItem(p_item);
+	if (scene()) {
+		scene->addItem(p_item);
+	}
 	addToGroup(p_item);
 	QObject::connect(p_item,
 	                 SIGNAL(signal_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)),
@@ -325,7 +328,10 @@ void Item_Way::unreg(Item_Edge* p_item) {
 	if (p_item == nullptr) {
 		return;
 	}
-	scene()->removeItem(p_item);
+	if (scene()) {
+		scene()->removeItem(p_item);
+	}
+//	scene()->removeItem(p_item);
 	removeFromGroup(p_item);
 }
 
