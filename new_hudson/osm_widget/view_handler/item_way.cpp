@@ -11,7 +11,10 @@ Item_Way::Item_Way(const Osm_Map& map,
                    View_Handler& view_handler,
                    Osm_Way& osm_way,
                    QGraphicsItem* p_parent)
-                   : QGraphicsItemGroup(p_parent)
+                   : QGraphicsItemGroup(p_parent),
+                     m_map(map),
+                     m_view_handler(view_handler),
+                     m_way(osm_way)
 {
 	QList<Edge>				edges = Edge::to_edge_list(m_way);
 	QList<Edge>::iterator	it_edge;
@@ -113,7 +116,7 @@ int Item_Way::seek_pos_node_first(Osm_Node* p_node_left, Osm_Node* p_node_right)
 	int						pos_left	= -1;
 	int						pos_right	= -1;
 
-	if (p_node_next == nullptr) {
+	if (p_node_right == nullptr) {
 		return nodes.indexOf(p_node_first);
 	}
 	while (pos_right != pos_left + 1) {
