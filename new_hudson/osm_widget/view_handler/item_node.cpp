@@ -25,6 +25,7 @@ Item_Node::~Item_Node() {}
 
 int Item_Node::get_pen_size() const {
 	int size_px = (scale() < 2.0 ? 4 : 10);
+	return size_px;
 }
 
 QVariant Item_Node::itemChange(GraphicsItemChange change, const QVariant &value) {

@@ -1,8 +1,8 @@
-**/*.pro
-**/*.user
-/build*/*
 **/*.a
 **/*.o
-/new_hudson/intermediate_libs/*
+**/*.pro
+**/*.user
 /*.bat
-
+/build*/*
+/new_hudson/in
+/temp_docs/*
