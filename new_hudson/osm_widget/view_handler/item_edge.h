@@ -12,7 +12,6 @@
 #endif /* Include guard ALGORITHM_H */
 
 #include "osm_elements.h"
-#include "osm_subscriber.h"
 #include "edge.h"
 
 namespace ns_osm {

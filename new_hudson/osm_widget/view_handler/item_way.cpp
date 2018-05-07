@@ -133,6 +133,29 @@ int Item_Way::seek_pos_node_first(Osm_Node* p_node_left, Osm_Node* p_node_right)
 	return pos_left;
 }
 
+int Item_Way::seek_pos_item_edge(Osm_Node* p_first, Osm_Node* p_second) const {
+	QList<Item_Edge*>::const_iterator	it_edge = m_edges.cbegin();
+	Edge*								p_edge;
+	int									pos = -1;
+
+	if (p_first == nullptr || p_second == nullptr) {
+		return -1;
+	} else {
+		p_edge = new Edge(*p_first, *p_second);
+	}
+
+	while (it_edge != m_edges.cend()) {
+		if (*p_edge == **it_edge) {
+			break;
+		} else {
+			it_edge++;
+		}
+	}
+	delete p_edge;
+
+	return (it_edge != m_edges.cend() ? pos : -1);
+}
+
 Item_Way::Diff Item_Way::get_diff() const {
 	QList<Edge>					actual(Edge::to_edge_list(m_way));
 	QList<Item_Edge*>::iterator	it_old_item = m_edges.begin();
@@ -392,6 +415,10 @@ void Item_Way::handle_event_update(Osm_Way& way) {
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
+
+Osm_Way* Item_Way::get_way() const {
+	return &m_way;
+}
 
 void Item_Way::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 	/* TODO: implement drawing */

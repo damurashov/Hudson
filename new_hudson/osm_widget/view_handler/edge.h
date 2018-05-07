@@ -22,10 +22,15 @@ public:
 						Edge			(const Edge&);
 						Edge			(Edge&&);
 						Edge& operator=	(const Edge&);
-	friend bool			operator==		(const Edge&, const Edge&);
+//	friend bool			operator==		(const Edge&, const Edge&);
 	virtual				~Edge();
 	                    Edge() = delete;
 };
 
+bool operator==(const ns_osm::Edge&, const ns_osm::Edge&);
+
 }
+
+
+
 #endif // EDGE_H

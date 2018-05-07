@@ -11,7 +11,7 @@ View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
 }
 
 View_Handler::View_Handler(const View_Handler& vhandler) : m_map(vhandler.m_map) {
-	f_has_info_table = vhandler.f_has_info_table;
+//	f_has_info_table = vhandler.f_has_info_table;
 	f_editable = vhandler.f_editable;
 	load_from_map();
 }
@@ -64,8 +64,6 @@ void View_Handler::add(Osm_Node* p_node) {
 
 void View_Handler::add(Osm_Way* p_way) {
 	Item_Way*	p_item_way;
-	QList<Edge>	edges;
-	Item_Edge*	p_item_edge;
 
 	if (p_way == nullptr) {
 		return;
@@ -75,12 +73,6 @@ void View_Handler::add(Osm_Way* p_way) {
 	p_item_way = new Item_Way(m_map, *this, *p_way);
 	mp_scene->addItem(p_item_way);
 	m_wayid_to_item.insert(p_way->get_id(), p_item_way);
-
-//	edges = Edge::to_edge_list(*p_way);
-//	for (auto it = edges.begin(); it != edges.end(); ++it) {
-//		p_item_edge = p_item_way->emplace_edge(*it);
-//		add(p_item_edge);
-//	}
 }
 
 void View_Handler::remove(Osm_Node* p_node) {
@@ -99,8 +91,6 @@ void View_Handler::remove(Osm_Node* p_node) {
 
 void View_Handler::remove(Osm_Way* p_way) {
 	Item_Way*	p_item_way;
-	Item_Edge*	p_item_edge;
-	QList<Edge>	edges;
 
 	if (p_way == nullptr) {
 		return;
@@ -113,28 +103,16 @@ void View_Handler::remove(Osm_Way* p_way) {
 	mp_scene->removeItem(p_item_way);
 	m_wayid_to_item.remove(p_way->get_id());
 
-//	edges = Edge::to_edge_list(*p_way);
-//	for (auto it = edges.begin(); it != edges.end(); ++it) {
-//		p_item_edge = p_item_way->get_edgeitem(*it);
-//		remove(p_item_edge);
-//		p_item_way->remove_edgeitem(p_item_edge);
-//	}
-
 	delete p_item_way;
-}
-
-void View_Handler::apply_layout() {
-	layout()->removeWidget(mp_splitter);
-	layout()->removeWidget(mp_view);
-	layout()->addWidget(mp_view);
 }
 
 void View_Handler::load_from_map() {
 	mp_scene = new QGraphicsScene(this);
-	mp_view = new Osm_View();
+	mp_view = new Osm_View;
+	mp_scene->setSceneRect(m_map.get_scene_rect());
 	mp_view->setScene(mp_scene);
-	mp_splitter = new QSplitter(this);
 	setLayout(new QHBoxLayout(this));
+	layout()->addWidget(mp_view);
 	QObject::connect(mp_view,
 	                 SIGNAL(signal_blank_area_clicked(QPointF,Qt::MouseButton)),
 	                 this,

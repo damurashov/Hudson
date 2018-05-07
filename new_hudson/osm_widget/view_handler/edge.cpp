@@ -75,7 +75,7 @@ Osm_Node* Edge::second() const {
 /*                           Friends                              */
 /*================================================================*/
 
-bool operator==(const Edge& lhs, const Edge& rhs) {
+bool ns_osm::operator==(const ns_osm::Edge& lhs, const ns_osm::Edge& rhs) {
 	return ((lhs.first() == rhs.first() && lhs.second() == rhs.second())
 	        || (lhs.first() == rhs.second() && lhs.second() == rhs.first()));
 }
