@@ -13,7 +13,7 @@
 
 namespace ns_osm {
 
-class Osm_Map : public Osm_Subscriber {
+class Osm_Map : public Osm_Subscriber, public Osm_Object {
 private:
 	int										mn_parents;
 	QHash<long long, ns_osm::Osm_Node*>		m_nodes_hash;

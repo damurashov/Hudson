@@ -31,7 +31,12 @@ enum Event {
 	WAY_DELETED			= 600,
 	RELATION_ADDED		= 700,
 	RELATION_UPDATED	= 800,
-	RELATION_DELETED	= 900
+	RELATION_DELETED	= 900,
+	MAP_EVENT			= 1000,
+	MAP_NODE_ADDED,
+	MAP_WAY_ADDED,
+	MAP_RELATION_ADDED
+	//MAP_SCENE_SHRINKED
 };
 
 /*================================================================*/

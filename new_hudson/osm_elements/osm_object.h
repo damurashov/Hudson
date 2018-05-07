@@ -27,9 +27,9 @@ private:
 	bool							f_is_valid;
 
 	bool							is_osm_object			(Osm_Subscriber*) const;
-	                                Osm_Object				() = delete;
+//	                                Osm_Object				() = delete;
 protected:
-	enum class Type {NODE, WAY, RELATION};
+	enum class Type {NODE, WAY, RELATION, GENERIC_EMITTER};
 
 	const Type						get_type				() const;
 	long long						get_inner_id			() const;
@@ -37,7 +37,7 @@ protected:
 	static bool						is_locked				(long long);
 	void							emit_delete				(Meta meta = ns_osm::NONE);
 	void							emit_update				(Meta meta = ns_osm::NONE);
-	                                Osm_Object				(const Type);
+	                                Osm_Object				(const Type type = Type::GENERIC_EMITTER);
 									Osm_Object				(const Osm_Object&) = delete;
 	Osm_Object&						operator=				(const Osm_Object&) = delete;
 public:

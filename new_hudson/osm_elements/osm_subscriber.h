@@ -26,9 +26,11 @@ protected:
 	virtual void			handle_event_update		(Osm_Way& source);
 	virtual void			handle_event_update		(Osm_Node& source);
 	virtual void			handle_event_update		(Osm_Relation& source);
+	virtual void			handle_event_update		(Osm_Object& generic_emitter);
 	virtual void			handle_event_delete		(Osm_Node& source);
 	virtual void			handle_event_delete		(Osm_Way& source);
 	virtual void			handle_event_delete		(Osm_Relation& source);
+	virtual void			handle_event_delete		(Osm_Object& generic_emitter);
 
 	void					unsubscribe				();
 	void					subscribe				(Osm_Object&);

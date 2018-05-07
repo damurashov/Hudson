@@ -17,19 +17,6 @@ QHash<long long, bool>	Osm_Object::s_id_to_lifestage;
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
-//Osm_Object::Osm_Object() :
-//    OSM_ID(s_osm_id_bound--),
-//	INNER_ID(s_inner_id_bound++),
-//	TYPE(Osm_Object::Type::NODE)
-//{
-//	f_is_valid = true;
-//	m_attrmap[QString("id")] = QString::number(OSM_ID);
-//	mn_subscribers = 0;
-//	mn_osm_object_subscribers = 0;
-//	s_id_to_lifestage[INNER_ID] = true;
-//	//reg_osm_object(this);
-//}
-
 Osm_Object::Osm_Object(const Osm_Object::Type type) :
 	INNER_ID(s_inner_id_bound++),
 	TYPE(type)
@@ -41,21 +28,6 @@ Osm_Object::Osm_Object(const Osm_Object::Type type) :
 	s_id_to_lifestage[INNER_ID] = true;
 	//reg_osm_object(this);
 }
-
-
-//Osm_Object::Osm_Object(const Osm_Object::Type type):
-//	INNER_ID(s_inner_id_bound++),
-//	TYPE(type)
-//{
-//	f_is_valid = true;
-//	m_attrmap[QString("id")] = QString::number(OSM_ID);
-//	if (s_osm_id_bound >= OSM_ID) {
-//		s_osm_id_bound = (OSM_ID - 1);
-//	}
-//	mn_subscribers = 0;
-//	mn_osm_object_subscribers = 0;
-//	s_id_to_lifestage[INNER_ID] = true;
-//}
 
 Osm_Object::~Osm_Object() {
 	s_id_to_lifestage[INNER_ID] = false;
@@ -114,6 +86,8 @@ void Osm_Object::emit_delete(Meta meta) {
 		case Type::RELATION:
 			p_current_subscriber->handle_event_delete(*static_cast<Osm_Relation*>(this));
 			break;
+		case Type::GENERIC_EMITTER:
+			p_current_subscriber->handle_event_delete(*static_cast<Osm_Object*>(this));
 		}
 		if (is_locked(THIS_ID)) {
 			return;
@@ -144,6 +118,9 @@ void Osm_Object::emit_update(Meta meta) {
 			break;
 		case Type::RELATION:
 			p_current_subscriber->handle_event_update(*static_cast<Osm_Relation*>(this));
+			break;
+		case Type::GENERIC_EMITTER:
+			p_current_subscriber->handle_event_update(*static_cast<Osm_Object*>(this));
 			break;
 		}
 		if (is_locked(THIS_ID)) {

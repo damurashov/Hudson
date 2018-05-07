@@ -78,6 +78,7 @@ bool Meta::operator==(const Meta& meta) {
 
 #define BOUNDARY(event) if (m_event >= event) return event
 Meta::operator int() const {
+	BOUNDARY(MAP_EVENT);
 	BOUNDARY(RELATION_DELETED);
 	BOUNDARY(RELATION_UPDATED);
 	BOUNDARY(RELATION_ADDED);
@@ -87,7 +88,7 @@ Meta::operator int() const {
 	BOUNDARY(NODE_DELETED);
 	BOUNDARY(NODE_UPDATED);
 	BOUNDARY(NODE_ADDED);
-	return m_event;
+	return m_event; // Special event
 }
 #undef BOUNDARY
 
