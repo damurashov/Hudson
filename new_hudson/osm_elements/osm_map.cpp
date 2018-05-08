@@ -270,8 +270,8 @@ void Osm_Map::add(Osm_Node* p_node) {
 
 		m_nodes_hash[p_node->get_id()] = p_node;
 		subscribe(*p_node);
+		emit_update(Meta(MAP_NODE_ADDED).set_subject(*p_node));
 	}
-	emit_update(Meta(MAP_NODE_ADDED).set_subject(*p_node));
 }
 
 void Osm_Map::add(Osm_Way* p_way) {
@@ -287,8 +287,8 @@ void Osm_Map::add(Osm_Way* p_way) {
 		}
 		m_ways_hash[p_way->get_id()] = p_way;
 		subscribe(*p_way);
+		emit_update(Meta(MAP_WAY_ADDED).set_subject(*p_way));
 	}
-	emit_update(Meta(MAP_WAY_ADDED).set_subject(*p_way));
 }
 
 void Osm_Map::add(Osm_Relation* p_rel) {
@@ -310,8 +310,8 @@ void Osm_Map::add(Osm_Relation* p_rel) {
 		}
 		m_relations_hash[p_rel->get_id()] = p_rel;
 		subscribe(*p_rel);
+		emit_update(Meta(MAP_RELATION_ADDED).set_subject(*p_rel));
 	}
-	emit_update(Meta(MAP_RELATION_ADDED).set_subject(*p_rel));
 }
 
 bool Osm_Map::has(Osm_Node* p_node) const {
