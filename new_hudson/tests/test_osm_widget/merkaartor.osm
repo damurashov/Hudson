@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Merkaartor 0.18.3">
+  <node id="-6" timestamp="2018-05-09T00:34:03Z" version="0" user="" actor="0" dirtylevel="1" lon="156.1699037" lat="41.0168512"/>
+  <way id="-7" timestamp="2018-05-09T00:34:03Z" version="0" user="" actor="0" dirtylevel="6">
+    <BoundingBox>
+      <topright lon="156.1700721" lat="41.0168521"/>
+      <bottomleft lon="156.1698283" lat="41.0167502"/>
+    </BoundingBox>
+    <nd ref="-6"/>
+    <nd ref="-8"/>
+    <nd ref="-9"/>
+    <nd ref="-10"/>
+    <nd ref="-6"/>
+  </way>
+  <node id="-8" timestamp="2018-05-09T00:34:03Z" version="0" user="" actor="0" dirtylevel="1" lon="156.1700721" lat="41.0168521"/>
+  <node id="-9" timestamp="2018-05-09T00:34:05Z" version="0" user="" actor="0" dirtylevel="1" lon="156.1700717" lat="41.0167508"/>
+  <node id="-10" timestamp="2018-05-09T00:34:08Z" version="0" user="" actor="0" dirtylevel="1" lon="156.1698283" lat="41.0167502"/>
+  <bound box="41.016750,156.169828,41.016852,156.170072" origin="http://www.openstreetmap.org/api/0.6"/>
+</osm>

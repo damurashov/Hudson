@@ -7,6 +7,7 @@ using namespace ns_osm;
 /*================================================================*/
 
 View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
+	m_map.set_force_use_dynamic_bound(true);
 	load_from_map();
 	subscribe(m_map);
 }
@@ -60,6 +61,7 @@ void View_Handler::add(Osm_Node* p_node) {
 	p_nodeitem = new Item_Node(m_map, *p_node);
 	mp_scene->addItem(p_nodeitem);
 	m_nodeid_to_item.insert(p_node->get_id(), p_nodeitem);
+	mp_view->centerOn(m_nodeid_to_item[p_node->get_id()]);
 	QObject::connect(p_nodeitem,
 	                 SIGNAL(signal_node_clicked(Osm_Node*,Qt::MouseButton)),
 	                 this,
@@ -115,7 +117,7 @@ void View_Handler::remove(Osm_Way* p_way) {
 void View_Handler::load_from_map() {
 	mp_scene = new QGraphicsScene(this);
 	mp_view = new Osm_View;
-	mp_scene->setSceneRect(m_map.get_scene_rect());
+//	mp_scene->setSceneRect(m_map.get_scene_rect());
 	mp_view->setScene(mp_scene);
 	setLayout(new QHBoxLayout(this));
 	layout()->addWidget(mp_view);

@@ -15,6 +15,7 @@ namespace ns_osm {
 
 class Osm_Map : public Osm_Subscriber, public Osm_Object {
 private:
+	static const double						GEO_DEGREE_MULTIPLIER;
 	int										mn_parents;
 	QHash<long long, ns_osm::Osm_Node*>		m_nodes_hash;
 	QHash<long long, ns_osm::Osm_Way*>		m_ways_hash;
@@ -72,6 +73,8 @@ public:
 	QRectF									get_bound					() const;
 	QRectF									get_scene_rect				() const;
 	QPointF									get_scene_coord				(Osm_Node* p_node) const;
+	QPointF									get_scene_coord				(QPointF geo_coord) const;
+	QPointF									get_geo_coord				(QPointF scene_coord) const;
 	ns_osm::Osm_Node*						get_node					(long long id_node);
 	ns_osm::Osm_Way*						get_way						(long long id_way);
 	ns_osm::Osm_Relation*					get_relation				(long long id_relation);

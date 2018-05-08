@@ -35,13 +35,15 @@ void Osm_View::set_last_pos(const QPointF& point) {
 void Osm_View::wheelEvent(QWheelEvent* p_event) {
 	switch (p_event->modifiers()) {
 	case (Qt::KeyboardModifier::ControlModifier):
-		scale_view(pow(2.0, -(p_event->delta() / 240.0)));
+		scale_view(pow(2.0, (p_event->delta() / 240.0)));
 		break;
 	case (Qt::KeyboardModifier::ShiftModifier):
-		scrollContentsBy(pow(2.0, -(p_event->delta() / 240.0)), 0.0);
+//		scrollContentsBy(pow(2.0, (p_event->delta() / 20)), 0.0);
+		translate(pow(2.0, (p_event->delta() / 20)), 0.0);
 		break;
 	case (Qt::KeyboardModifier::NoModifier):
-		scrollContentsBy(0.0, pow(2.0, -(p_event->delta() / 240.0)));
+//		scrollContentsBy(0.0, pow(2.0, (p_event->delta() / 20)));
+		translate(0.0, pow(2.0, (p_event->delta() / 20)));
 		break;
 	}
 }
@@ -49,7 +51,7 @@ void Osm_View::wheelEvent(QWheelEvent* p_event) {
 void Osm_View::mouseReleaseEvent(QMouseEvent* p_event) {
 	switch (p_event->button()) {
 	case Qt::MouseButton::MiddleButton:
-		scrollContentsBy(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
+		translate(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
 		//set_last_pos(p_event->pos());
 		break;
 	case Qt::MouseButton::RightButton:
@@ -64,10 +66,10 @@ void Osm_View::mouseReleaseEvent(QMouseEvent* p_event) {
 }
 
 void Osm_View::mouseMoveEvent(QMouseEvent* p_event) {
-	if (p_event->button() != Qt::MouseButton::MiddleButton) {
-		return;
-	}
-	scrollContentsBy(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
+//	if (p_event->button() != Qt::MouseButton::MiddleButton) {
+//		return;
+//	}
+	translate(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
 	set_last_pos(p_event->pos());
 }
 

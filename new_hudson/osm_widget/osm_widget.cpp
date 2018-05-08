@@ -9,6 +9,7 @@ Osm_Widget::Osm_Widget(QWidget* p_parent) :
                        QWidget(p_parent)
 {
 	mp_map = new Osm_Map;
+//	mp_map->set_force_use_dynamic_bound(true);
 	mp_map->adopt();
 	mp_xml_handler = new Xml_Handler(*mp_map);
 	mp_view_handler = new View_Handler(*mp_map);

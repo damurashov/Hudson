@@ -8,7 +8,7 @@ class Test_Osm_Map_Bound : public QObject {
 private slots:
 	void includes_in_scene___issue180___default_rect() {
 		Osm_Map map;
-		Osm_Node node_in(10.0, 170.0);
+		Osm_Node node_in(10.123456, 170.99165);
 		Osm_Node node_in_2(-10.0, -173.1234);
 		Osm_Node node_in_3(0, -160);
 		Osm_Node node_out(-4.0, -143.76889);
@@ -69,10 +69,10 @@ private slots:
 		reference_bound.setBottom(0.0);
 		reference_bound.setRight(-160.0);
 		reference_bound.setTop(10.0);
-		reference_scene.setLeft(175.0);
-		reference_scene.setBottom(0.0);
-		reference_scene.setRight(-160.0+360.0);
-		reference_scene.setTop(10.0);
+		reference_scene.setLeft(175.0 * Osm_Map::GEO_DEGREE_MULTIPLIER);
+		reference_scene.setBottom(0.0 * Osm_Map::GEO_DEGREE_MULTIPLIER);
+		reference_scene.setRight((-160.0+360.0) * Osm_Map::GEO_DEGREE_MULTIPLIER);
+		reference_scene.setTop(10.0 * Osm_Map::GEO_DEGREE_MULTIPLIER);
 
 		QCOMPARE(reference_scene.left(), scene.left());
 		QCOMPARE(reference_scene.right(), scene.right());
@@ -98,6 +98,8 @@ private slots:
 
 		bound = map.get_bound();
 		scene = map.get_scene_rect();
+		scene.setBottomLeft(map.get_geo_coord(scene.bottomLeft()));
+		scene.setTopRight(map.get_geo_coord(scene.topRight()));
 		QCOMPARE(bound, scene);
 		QCOMPARE(-10.0, bound.left());
 		QCOMPARE(10.0, bound.right());
@@ -115,9 +117,9 @@ private slots:
 		map.set_bound(rect);
 
 		QCOMPARE(map.get_scene_coord(&node).y(), 0);
-		QCOMPARE(map.get_scene_coord(&node).x(), -170.0 + 360.0);
+		QCOMPARE(map.get_scene_coord(&node).x(), (-170.0 + 360.0) * Osm_Map::GEO_DEGREE_MULTIPLIER);
 
-		QCOMPARE(-160.0+360.0, map.get_scene_rect().right());
+		QCOMPARE((-160.0+360.0) * Osm_Map::GEO_DEGREE_MULTIPLIER, map.get_scene_rect().right());
 	}
 };
 

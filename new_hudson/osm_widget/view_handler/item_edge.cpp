@@ -69,7 +69,7 @@ QRectF Item_Edge::boundingRect() const {
 void Item_Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 	QPen pen;
 
-	pen.setWidth(3);
+	pen.setWidth(20);
 	painter->setPen(pen);
 	painter->drawLine(m_map.get_scene_coord(first()), m_map.get_scene_coord(second()));
 }

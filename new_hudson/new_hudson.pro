@@ -2,6 +2,10 @@ TEMPLATE = subdirs
 
 #CONFIG += ordered
 
+QMAKE_CXXFLAGS += \
+-Wno-unused-parameter   \
+-Wno-ignored-qualifiers
+
 SUBDIRS += \
     osm_elements    \
     osm_widget      \

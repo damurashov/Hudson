@@ -1,5 +1,9 @@
 TEMPLATE = lib
 
+QMAKE_CXXFLAGS += \
+-Wno-unused-parameter   \
+-Wno-ignored-qualifiers
+
 DESTDIR = $$PWD/../intermediate_libs
 
 TARGET = osm_widget

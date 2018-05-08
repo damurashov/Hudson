@@ -2,6 +2,10 @@ TEMPLATE = lib
 
 QT += core
 
+QMAKE_CXXFLAGS += \
+-Wno-unused-parameter   \
+-Wno-ignored-qualifiers
+
 TARGET = osm_elements
 
 CONFIG += c++11 \

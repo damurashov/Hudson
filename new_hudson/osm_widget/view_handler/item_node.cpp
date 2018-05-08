@@ -24,13 +24,14 @@ Item_Node::~Item_Node() {}
 /*                      Protected methods                         */
 /*================================================================*/
 
-int Item_Node::get_pen_size() const {
-	int size_px = (scale() < 2.0 ? 4 : 10);
-	return size_px;
-}
+//int Item_Node::get_pen_size() const {
+//	int size_px = (scale() < 2.0 ? 30 : 80);
+//	return size_px;
+//}
 
 QVariant Item_Node::itemChange(GraphicsItemChange change, const QVariant &value) {
 	QPointF pos = value.toPointF();
+	pos = m_map.get_geo_coord(pos);
 	switch (change) {
 	case QGraphicsItem::ItemPositionHasChanged:
 		m_node.set_lat_lon(pos.y(), pos.x());
@@ -59,14 +60,17 @@ int Item_Node::type() const {
 
 void Item_Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 	QPen pen;
+	QBrush brush;
 
-	pen.setWidth(get_pen_size());
+	brush.setColor(Qt::GlobalColor::yellow);
+	pen.setColor(Qt::red);
+	pen.setWidth(20);
 	pen.setCosmetic(true);
 	painter->setPen(pen);
-	painter->drawPoint(m_map.get_scene_coord(&m_node));
+	painter->setBrush(brush);
+	painter->drawEllipse(QPoint(0,0), 20, 20);
 }
 
 QRectF Item_Node::boundingRect() const {
-	int sz = get_pen_size() / 2;
-	return QRectF(-sz, sz, 2*sz, 2*sz);
+	return QRectF(-20, 20, 40, 40);
 }

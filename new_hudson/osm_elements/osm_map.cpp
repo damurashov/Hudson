@@ -1,6 +1,12 @@
 #include "osm_map.h"
 
 using namespace ns_osm;
+/*================================================================*/
+/*                        Static members                          */
+/*================================================================*/
+
+const double Osm_Map::GEO_DEGREE_MULTIPLIER = 10000000.0;
+//double Osm_Map::GEO_DEGREE_MULTIPLIER = 10000.0;
 
 /*================================================================*/
 /*                  Constructors, destructors                     */
@@ -425,9 +431,12 @@ QRectF Osm_Map::get_bound() const {
 
 QRectF Osm_Map::get_scene_rect() const {
 	QRectF rect = get_bound();
+
 	if (has_issue_180(rect)) {
 		rect.setRight(rect.right() + 360.0);
 	}
+	rect.setTopLeft(get_scene_coord(rect.topLeft()));
+	rect.setBottomRight(get_scene_coord(rect.bottomRight()));
 	return rect;
 }
 
@@ -443,6 +452,32 @@ QPointF Osm_Map::get_scene_coord(Osm_Node* p_node) const {
 	} else {
 		point.setX(p_node->get_lon() + 360.0);
 		point.setY(p_node->get_lat());
+	}
+
+	point.setX(point.x() * GEO_DEGREE_MULTIPLIER);
+	point.setY(point.y() * GEO_DEGREE_MULTIPLIER);
+
+	return point;
+}
+
+QPointF Osm_Map::get_scene_coord(QPointF point /* geo point */) const {
+	if (has_issue_180(get_bound()) && point.x() <= 0) {
+		point.setX(point.x() + 360.0);
+	}
+	point.setX(point.x() * GEO_DEGREE_MULTIPLIER);
+	point.setY(point.y() * GEO_DEGREE_MULTIPLIER);
+
+	return point;
+}
+
+QPointF Osm_Map::get_geo_coord(QPointF point /* scene point */) const {
+	point.setX(point.x() / GEO_DEGREE_MULTIPLIER);
+	point.setY(point.y() / GEO_DEGREE_MULTIPLIER);
+	while (point.x() <= -180) {
+		point.setX(point.x() + 360.0);
+	}
+	while (point.x() > 180) {
+		point.setX(point.x() - 360.0);
 	}
 
 	return point;

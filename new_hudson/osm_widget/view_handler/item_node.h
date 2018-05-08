@@ -18,7 +18,7 @@ protected:
 	const Osm_Map&	m_map;
 	Osm_Node&		m_node;
 
-	int				get_pen_size		() const;
+//	int				get_pen_size		() const;
 	QVariant		itemChange			(GraphicsItemChange change, const QVariant &value) override;
 	void			mouseReleaseEvent	(QGraphicsSceneMouseEvent *event) override;
 public:
