@@ -3,7 +3,6 @@ using namespace ns_osm;
 
 /* ===================== Constructors, destructors ===================== */
 
-
 Xml_Handler::Xml_Handler(Osm_Map& map) : m_map(map) {}
 
 /* ===================== Protected methods ===================== */

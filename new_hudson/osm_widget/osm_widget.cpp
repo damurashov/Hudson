@@ -6,29 +6,20 @@ using namespace ns_osm;
 /*================================================================*/
 
 Osm_Widget::Osm_Widget(QWidget* p_parent) :
-                       QWidget(p_parent),
-                       mp_map(new Osm_Map),
-                       m_xml_handler(*mp_map)
+                       QWidget(p_parent)
 {
-	mp_view_handler = new View_Handler(*mp_map);
+	mp_map = new Osm_Map;
 	mp_map->adopt();
-	setLayout(new QHBoxLayout(this));
-	layout()->addWidget(mp_view_handler);
-}
-
-Osm_Widget::Osm_Widget(const Osm_Widget& wgt, QWidget *p_parent) :
-                       QWidget(p_parent),
-                       mp_map(wgt.mp_map),
-                       m_xml_handler(*mp_map)
-{
+	mp_xml_handler = new Xml_Handler(*mp_map);
 	mp_view_handler = new View_Handler(*mp_map);
-	mp_map->adopt();
-	setLayout(new QHBoxLayout(this));
+	setLayout(new QHBoxLayout);
 	layout()->addWidget(mp_view_handler);
 }
 
 Osm_Widget::~Osm_Widget() {
 	mp_map->orphan();
+	delete mp_view_handler;
+	delete mp_xml_handler;
 	if (mp_map->count_parents() == 0) {
 		mp_map->clear();
 		delete mp_map;
@@ -40,5 +31,6 @@ Osm_Widget::~Osm_Widget() {
 /*================================================================*/
 
 int Osm_Widget::load_from_xml(const QString &xml_path) {
-	return m_xml_handler.load_from_xml(xml_path);
+//	return m_xml_handler.load_from_xml(xml_path);
+	return mp_xml_handler->load_from_xml(xml_path);
 }

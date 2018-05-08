@@ -9,14 +9,13 @@
 class Osm_Widget : public QWidget {
 private:
 	ns_osm::Osm_Map*		mp_map;
-	ns_osm::Xml_Handler		m_xml_handler;
-//	ns_osm::View_Handler	m_view_handler;
+	ns_osm::Xml_Handler*	mp_xml_handler;
 	ns_osm::View_Handler*	mp_view_handler;
 public:
 	int						load_from_xml			(const QString& xml_path);
-	Osm_Widget&				operator=				(const Osm_Widget&) = delete;
 	                        Osm_Widget				(QWidget* p_parent = nullptr);
-							Osm_Widget				(const Osm_Widget&, QWidget* p_parent = nullptr);
+	Osm_Widget&				operator=				(const Osm_Widget&) = delete;
+	                        Osm_Widget				(const Osm_Widget&) = delete;
 	virtual					~Osm_Widget				();
 };
 

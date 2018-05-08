@@ -51,6 +51,8 @@ private:
 protected:
 	void								handle_event_delete		(Osm_Node&) override;
 	void								handle_event_delete		(Osm_Way&) override;
+	void								handle_event_update		(Osm_Object&) override;
+	void								handle_event_delete		(Osm_Object&) override;
 public:
 //	void								set_info_table_enabled	(bool f);
 	void								set_editable			(bool f);

@@ -51,7 +51,7 @@ QList<Edge> Edge::to_edge_list(const QList<Osm_Node*>& nodelist) {
 	QList<Edge>					edges;
 	QList<Osm_Node*>			nodes(nodelist);
 	QList<Osm_Node*>::iterator	it_current = nodes.begin();
-	QList<Osm_Node*>::iterator	it_next = nodes.end();
+	QList<Osm_Node*>::iterator	it_next = nodes.begin();
 
 	it_next++;
 	while (it_next != nodes.end()) {

@@ -31,6 +31,7 @@ Osm_Map::Osm_Map() {
 
 Osm_Map::~Osm_Map() {
 	clear();
+	emit_delete(MAP_DELETED);
 }
 
 /*================================================================*/

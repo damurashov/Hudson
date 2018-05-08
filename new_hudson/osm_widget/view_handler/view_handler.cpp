@@ -8,12 +8,14 @@ using namespace ns_osm;
 
 View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
 	load_from_map();
+	subscribe(m_map);
 }
 
 View_Handler::View_Handler(const View_Handler& vhandler) : m_map(vhandler.m_map) {
 //	f_has_info_table = vhandler.f_has_info_table;
 	f_editable = vhandler.f_editable;
 	load_from_map();
+	subscribe(m_map);
 }
 
 View_Handler::~View_Handler() {
@@ -51,6 +53,8 @@ void View_Handler::add(Osm_Node* p_node) {
 
 	if (p_node == nullptr) {
 		return;
+	} else if (m_nodeid_to_item.contains(p_node->get_id())) {
+		return;
 	}
 	subscribe(*p_node);
 	p_nodeitem = new Item_Node(m_map, *p_node);
@@ -66,6 +70,8 @@ void View_Handler::add(Osm_Way* p_way) {
 	Item_Way*	p_item_way;
 
 	if (p_way == nullptr) {
+		return;
+	} else if (m_wayid_to_item.contains(p_way->get_id())) {
 		return;
 	}
 
@@ -135,4 +141,40 @@ void View_Handler::handle_event_delete(Osm_Node& node) {
 
 void View_Handler::handle_event_delete(Osm_Way& way) {
 	remove(&way);
+}
+
+void View_Handler::handle_event_update(Osm_Object&) {
+	Meta meta(get_meta());
+	switch (meta) {
+	case MAP_EVENT:
+		if (meta.get_subject() == nullptr) {
+			return;
+		}
+		switch (meta.get_event()) {
+		case MAP_NODE_ADDED:
+			add(static_cast<Osm_Node*>(meta.get_subject()));
+			break;
+		case MAP_WAY_ADDED:
+			add(static_cast<Osm_Way*>(meta.get_subject()));
+			break;
+		default:
+			break;
+		}
+	default:
+		break;
+	}
+}
+
+void View_Handler::handle_event_delete(Osm_Object&) {
+	switch (get_meta()) {
+	case MAP_DELETED:
+		while(!m_nodeid_to_item.isEmpty()) {
+			remove(m_nodeid_to_item.begin().value()->get_node());
+		}
+		while (!m_wayid_to_item.isEmpty()) {
+			remove(m_wayid_to_item.begin().value()->get_way());
+		}
+	default:
+		break;
+	}
 }
