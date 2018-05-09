@@ -61,7 +61,7 @@ void View_Handler::add(Osm_Node* p_node) {
 	p_nodeitem = new Item_Node(m_map, *p_node);
 	mp_scene->addItem(p_nodeitem);
 	m_nodeid_to_item.insert(p_node->get_id(), p_nodeitem);
-	mp_view->centerOn(m_nodeid_to_item[p_node->get_id()]);
+//	mp_view->centerOn(m_nodeid_to_item[p_node->get_id()]);
 	QObject::connect(p_nodeitem,
 	                 SIGNAL(signal_node_clicked(Osm_Node*,Qt::MouseButton)),
 	                 this,

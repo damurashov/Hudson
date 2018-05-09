@@ -15,16 +15,17 @@ signals:
 private:
 	QPointF	m_last_pos;
 
-	void	scale_view					(double scale_factor);
+//	void	scale_view					(double scale_factor);
 protected:
 	QPointF	get_last_pos				() const;
 	void	set_last_pos				(const QPointF&);
 	void	wheelEvent					(QWheelEvent *event) override;
-	void	mousePressEvent				(QMouseEvent *event) override;
-	void	mouseMoveEvent				(QMouseEvent *event) override;
+//	void	mousePressEvent				(QMouseEvent *event) override;
+//	void	mouseMoveEvent				(QMouseEvent *event) override;
 	void	mouseReleaseEvent			(QMouseEvent *event) override;
 public:
-	virtual	~Osm_View();
+	        Osm_View					();
+	virtual	~Osm_View					();
 };
 }
 

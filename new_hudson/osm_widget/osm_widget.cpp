@@ -8,6 +8,8 @@ using namespace ns_osm;
 Osm_Widget::Osm_Widget(QWidget* p_parent) :
                        QWidget(p_parent)
 {
+	setMinimumHeight(400);
+	setMinimumWidth(600);
 	mp_map = new Osm_Map;
 //	mp_map->set_force_use_dynamic_bound(true);
 	mp_map->adopt();

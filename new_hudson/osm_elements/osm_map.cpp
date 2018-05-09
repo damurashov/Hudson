@@ -455,7 +455,7 @@ QPointF Osm_Map::get_scene_coord(Osm_Node* p_node) const {
 	}
 
 	point.setX(point.x() * GEO_DEGREE_MULTIPLIER);
-	point.setY(point.y() * GEO_DEGREE_MULTIPLIER);
+	point.setY(point.y() * GEO_DEGREE_MULTIPLIER * (-1));
 
 	return point;
 }
@@ -465,14 +465,14 @@ QPointF Osm_Map::get_scene_coord(QPointF point /* geo point */) const {
 		point.setX(point.x() + 360.0);
 	}
 	point.setX(point.x() * GEO_DEGREE_MULTIPLIER);
-	point.setY(point.y() * GEO_DEGREE_MULTIPLIER);
+	point.setY(point.y() * GEO_DEGREE_MULTIPLIER * (-1));
 
 	return point;
 }
 
 QPointF Osm_Map::get_geo_coord(QPointF point /* scene point */) const {
 	point.setX(point.x() / GEO_DEGREE_MULTIPLIER);
-	point.setY(point.y() / GEO_DEGREE_MULTIPLIER);
+	point.setY(point.y() / GEO_DEGREE_MULTIPLIER * (-1));
 	while (point.x() <= -180) {
 		point.setX(point.x() + 360.0);
 	}

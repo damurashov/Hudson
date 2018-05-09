@@ -6,44 +6,54 @@ using namespace ns_osm;
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
+Osm_View::Osm_View() {
+	setDragMode(ScrollHandDrag);
+	setRenderHints(QPainter::Antialiasing);
+	setInteractive(true);
+//	setTransformationAnchor(AnchorUnderMouse);
+	scale(1.0, 2.0);
+//	setTransform(QTransform().shear(0.0,0.0).scale(1.0, 1.0));
+}
+
 Osm_View::~Osm_View() {}
 
 /*================================================================*/
 /*                       Private methods                          */
 /*================================================================*/
 
-void Osm_View::scale_view(double scale_factor) {
-	double factor = transform().scale(scale_factor, scale_factor).mapRect(QRectF(0,0,1,1)).width();
-	if (factor < 0.07 || factor > 100.0) {
-		return;
-	}
-	scale(scale_factor, scale_factor);
-}
+//void Osm_View::scale_view(double scale_factor) {
+//	scale(scale_factor, scale_factor);
+//}
 
 /*================================================================*/
 /*                      Protected methods                         */
 /*================================================================*/
 
-QPointF Osm_View::get_last_pos() const {
-	return m_last_pos;
-}
+//QPointF Osm_View::get_last_pos() const {
+//	return m_last_pos;
+//}
 
 void Osm_View::set_last_pos(const QPointF& point) {
 	m_last_pos = point;
 }
 
 void Osm_View::wheelEvent(QWheelEvent* p_event) {
+	double factor;
 	switch (p_event->modifiers()) {
-	case (Qt::KeyboardModifier::ControlModifier):
-		scale_view(pow(2.0, (p_event->delta() / 240.0)));
+	case (Qt::KeyboardModifier::NoModifier):
+		factor = pow(2.0, (p_event->delta() / 240.0));
+//		factor = p_event->delta() / 240.0;
+		scale(factor, factor);
 		break;
 	case (Qt::KeyboardModifier::ShiftModifier):
 //		scrollContentsBy(pow(2.0, (p_event->delta() / 20)), 0.0);
 		translate(pow(2.0, (p_event->delta() / 20)), 0.0);
 		break;
-	case (Qt::KeyboardModifier::NoModifier):
+	case (Qt::KeyboardModifier::ControlModifier):
 //		scrollContentsBy(0.0, pow(2.0, (p_event->delta() / 20)));
 		translate(0.0, pow(2.0, (p_event->delta() / 20)));
+		break;
+	default:
 		break;
 	}
 }
@@ -51,7 +61,7 @@ void Osm_View::wheelEvent(QWheelEvent* p_event) {
 void Osm_View::mouseReleaseEvent(QMouseEvent* p_event) {
 	switch (p_event->button()) {
 	case Qt::MouseButton::MiddleButton:
-		translate(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
+		//translate(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
 		//set_last_pos(p_event->pos());
 		break;
 	case Qt::MouseButton::RightButton:
@@ -65,16 +75,16 @@ void Osm_View::mouseReleaseEvent(QMouseEvent* p_event) {
 	}
 }
 
-void Osm_View::mouseMoveEvent(QMouseEvent* p_event) {
+//void Osm_View::mouseMoveEvent(QMouseEvent* p_event) {
 //	if (p_event->button() != Qt::MouseButton::MiddleButton) {
 //		return;
 //	}
-	translate(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
-	set_last_pos(p_event->pos());
-}
+//	translate(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
+//	set_last_pos(p_event->pos());
+//}
 
-void Osm_View::mousePressEvent(QMouseEvent* p_event) {
-	if (p_event->button() == Qt::MouseButton::MiddleButton) {
-		set_last_pos(p_event->pos());
-	}
-}
+//void Osm_View::mousePressEvent(QMouseEvent* p_event) {
+//	if (p_event->button() == Qt::MouseButton::MiddleButton) {
+//		set_last_pos(p_event->pos());
+//	}
+//}

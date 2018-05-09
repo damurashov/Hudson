@@ -35,6 +35,25 @@ int main(int argc, char* argv[]) {
 	qDebug() << "RIGHT: " << map.get_scene_rect().right();
 	qDebug() << "BOTTOM: " << map.get_scene_rect().bottom();
 
+	QRectF rect_from_map(map.get_scene_rect());
+	QRectF rect_from_scene(widget.mp_view_handler->mp_scene->sceneRect());
+
+	qDebug() << "Scene rect map: \t\t Scene rect scene";
+	qDebug() << "left: " << rect_from_map.left() << "\t\t" << rect_from_scene.left();
+	qDebug() << "top: " << rect_from_map.top() << "\t\t" << rect_from_scene.top();
+	qDebug() << "right: " << rect_from_map.right() << "\t\t" << rect_from_scene.right();
+	qDebug() << "bottom: " << rect_from_map.bottom() << "\t\t" << rect_from_scene.bottom();
+
+	for (auto it = map.nbegin(); it != map.nend(); ++it) {
+		Osm_Node* p_node = it.value();
+		QPointF pos(widget.mp_view_handler->m_nodeid_to_item[p_node->get_id()]->pos());
+		qDebug() << "Node. Lat: " << p_node->get_lat() << ". Lon: " << p_node->get_lon();
+		qDebug() << "Node on map. Pos Y: " << pos.y() << ". Pos X: " << pos.x();
+		qDebug() << "---------------------------------------------";
+	}
+	qDebug() << widget.mp_view_handler->mp_view->transform().m11();
+	qDebug() << widget.mp_view_handler->mp_view->transform().m22();
+
 	widget.show();
 	return a.exec();
 }

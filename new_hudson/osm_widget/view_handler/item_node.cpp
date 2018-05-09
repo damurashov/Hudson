@@ -62,15 +62,17 @@ void Item_Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	QPen pen;
 	QBrush brush;
 
-	brush.setColor(Qt::GlobalColor::yellow);
+	brush.setColor(Qt::GlobalColor::darkBlue);
+	brush.setStyle(Qt::BrushStyle::SolidPattern);
 	pen.setColor(Qt::red);
-	pen.setWidth(20);
+	pen.setWidth(10);
 	pen.setCosmetic(true);
 	painter->setPen(pen);
 	painter->setBrush(brush);
-	painter->drawEllipse(QPoint(0,0), 20, 20);
+	painter->drawEllipse(QPoint(0,0), 7, 7);
+
 }
 
 QRectF Item_Node::boundingRect() const {
-	return QRectF(-20, 20, 40, 40);
+	return QRectF(-7, 7, 14, 14);
 }
