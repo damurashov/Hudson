@@ -100,9 +100,9 @@ void Osm_Way::handle_event_delete(Osm_Node& node) {
 		break;
 	case MAKE_OPENED:
 		if (is_closed()) {
-			m_nodes.push_back(m_nodes.front());
+			//m_nodes.push_back(m_nodes.front());
 			m_size--;
-			emit_update(Meta(NODE_ADDED_BACK).set_subject(*(m_nodes.back())));
+			emit_update(Meta(NODE_DELETED_BACK).set_subject(*(m_nodes.takeLast())));
 		}
 		break;
 	}

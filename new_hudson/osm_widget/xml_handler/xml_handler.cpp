@@ -248,9 +248,9 @@ int Xml_Handler::load_from_xml(const QString &xml_path) {
 		//f_done = false;
 		code = OSM_ERROR_XML_FILE_NOT_EXISTS;
 	}
-	if (code == OSM_OK) {
-		m_map.fit_bounding_rect();
-	}
+//	if (code == OSM_OK) {
+//		m_map.fit_bounding_rect();
+//	}
 
 	//return f_done;
 	return code;

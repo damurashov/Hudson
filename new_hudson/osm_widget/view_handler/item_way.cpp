@@ -207,8 +207,8 @@ void Item_Way::handle_diffs() {
 			m_edges.insert(diff.it_diff, p_item_edge);
 			break;
 		case Diff::REMOVE:
-			m_edges.erase(diff.it_diff);
 			p_item_edge = *(diff.it_diff);
+			m_edges.erase(diff.it_diff);
 			unreg(p_item_edge);
 			delete p_item_edge;
 			break;

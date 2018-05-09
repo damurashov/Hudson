@@ -9,7 +9,8 @@ QMAKE_CXXFLAGS += \
 SUBDIRS += \
     osm_elements    \
     osm_widget      \
-    tests
+    tests \
+    hudson_app
 
 osm_widget.depends = osm_elements
 tests.depends = osm_elements

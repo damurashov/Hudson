@@ -35,5 +35,6 @@ Osm_Widget::~Osm_Widget() {
 
 int Osm_Widget::load_from_xml(const QString &xml_path) {
 //	return m_xml_handler.load_from_xml(xml_path);
+	mp_map->clear();
 	return mp_xml_handler->load_from_xml(xml_path);
 }
