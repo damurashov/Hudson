@@ -12,6 +12,7 @@ struct Xml_Handler::Osm_Xml {
 	static const char* ID;
 	static const char* VISIBLE;
 	static const char* VERSION;
+	static const char* GENERATOR;
 	static const char* CHANGESET;
 	static const char* TIMESTAMP;
 	static const char* USER;

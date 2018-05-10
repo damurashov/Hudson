@@ -389,19 +389,19 @@ void Osm_Map::clear() {
 	relation_iterator it_rel;
 
 	unsubscribe();
-	while ((it_node = nbegin()) != nend()) {
-		remove(*it_node);
+	while ((it_rel = rbegin()) != rend()) {
+		remove(*it_rel);
 	}
 	while ((it_way = wbegin()) != wend()) {
 		remove(*it_way);
 	}
-	while ((it_rel = rbegin()) != rend()) {
-		remove(*it_rel);
+	while ((it_node = nbegin()) != nend()) {
+		remove(*it_node);
 	}
-
 	m_nodes_hash.clear();
 	m_ways_hash.clear();
 	m_relations_hash.clear();
+	emit_update(MAP_CLEARED);
 }
 
 void Osm_Map::fit_bounding_rect() {

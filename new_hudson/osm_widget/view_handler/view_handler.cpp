@@ -176,6 +176,9 @@ void View_Handler::handle_event_delete(Osm_Object&) {
 		while (!m_wayid_to_item.isEmpty()) {
 			remove(m_wayid_to_item.begin().value()->get_way());
 		}
+	case MAP_CLEARED:
+		mp_scene->setSceneRect(0,0,0,0);
+		break;
 	default:
 		break;
 	}

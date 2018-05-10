@@ -30,8 +30,16 @@ protected:
 	void					load_nodes_from_xml		(const QDomNode& node);
 	void					load_ways_from_xml		(const QDomNode& node);
 	void					load_relations_from_xml	(const QDomNode& node);
+	void					compose_attrs_and_tags	(QDomDocument& doc,
+	                                                 QDomElement& node,
+	                                                 const Osm_Info& info);
+	void					compose_nodes			(QDomDocument& doc, QDomElement& node_osm);
+	void					compose_ways			(QDomDocument& doc, QDomElement& node_osm);
+	void					compose_relations		(QDomDocument& doc, QDomElement& node_osm);
+	void					compose_bound			(QDomDocument& doc, QDomElement& node_osm);
 public:
 	int						load_from_xml			(const QString& xml_path);
+	int						save_to_xml				(const QString& xml_path);
 	                        Xml_Handler				(Osm_Map&);
 }; /* class Xml_Handler */
 }/* namespace  */

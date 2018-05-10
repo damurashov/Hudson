@@ -1,11 +1,15 @@
 #include "xml_handler.h"
 using namespace ns_osm;
 
-/* ===================== Constructors, destructors ===================== */
+/*================================================================*/
+/*                  Constructors, destructors                     */
+/*================================================================*/
 
 Xml_Handler::Xml_Handler(Osm_Map& map) : m_map(map) {}
 
-/* ===================== Protected methods ===================== */
+/*================================================================*/
+/*                      Protected methods                         */
+/*================================================================*/
 
 void Xml_Handler::load_bound_from_xml(const QDomNode& node) {
 	QDomNode	dom_node = node.firstChild();
@@ -224,7 +228,91 @@ void Xml_Handler::load_relations_from_xml(const QDomNode &node) {
 	}
 }
 
-/* ===================== Public methods ===================== */
+void Xml_Handler::compose_attrs_and_tags(QDomDocument& doc,
+                                         QDomElement& node,
+                                         const Osm_Info& info) {
+	node.setAttribute(Osm_Xml::ID, info.get_attr_value(Osm_Xml::ID));
+	node.setAttribute(Osm_Xml::VISIBLE, info.get_attr_value(Osm_Xml::VISIBLE));
+	node.setAttribute(Osm_Xml::VERSION, info.get_attr_value(Osm_Xml::VERSION));
+	node.setAttribute(Osm_Xml::TIMESTAMP, info.get_attr_value(Osm_Xml::TIMESTAMP));
+	node.setAttribute(Osm_Xml::USER, info.get_attr_value(Osm_Xml::USER));
+	node.setAttribute(Osm_Xml::UID, info.get_attr_value(Osm_Xml::UID));
+
+	for (auto it = info.get_tag_map().cbegin(); it != info.get_tag_map().cend(); ++it) {
+		QDomElement tag = doc.createElement(Osm_Xml::TAG);
+		tag.setAttribute(Osm_Xml::K, it.key());
+		tag.setAttribute(Osm_Xml::V, it.value());
+		node.appendChild(tag);
+	}
+}
+
+void Xml_Handler::compose_bound(QDomDocument& doc, QDomElement& node_osm) {
+	QRectF bound(m_map.get_bound());
+	QDomElement bounds = doc.createElement(Osm_Xml::BOUNDS);
+
+	bounds.setAttribute(Osm_Xml::MINLON, bound.left());
+	bounds.setAttribute(Osm_Xml::MAXLON, bound.right());
+	bounds.setAttribute(Osm_Xml::MINLAT, bound.bottom());
+	bounds.setAttribute(Osm_Xml::MAXLAT, bound.top());
+	node_osm.appendChild(bounds);
+}
+
+void Xml_Handler::compose_nodes(QDomDocument &doc, QDomElement &node_osm) {
+	for (auto it = m_map.nbegin(); it != m_map.nend(); ++it) {
+		QDomElement node = doc.createElement(Osm_Xml::NODE);
+		node_osm.appendChild(node);
+		node.setAttribute(Osm_Xml::LAT, (*it)->get_attr_value(Osm_Xml::LAT));
+		node.setAttribute(Osm_Xml::LON, (*it)->get_attr_value(Osm_Xml::LON));
+		compose_attrs_and_tags(doc, node, **it);
+	}
+}
+
+void Xml_Handler::compose_ways(QDomDocument &doc, QDomElement &node_osm) {
+	for (auto it = m_map.wbegin(); it != m_map.wend(); ++it) {
+		QDomElement way = doc.createElement(Osm_Xml::WAY);
+//		node_osm.appendChild(way);
+		compose_attrs_and_tags(doc, way, **it);
+		for (auto waynode = (*it)->get_nodes_list().cbegin(); waynode != (*it)->get_nodes_list().cend(); ++waynode) {
+			QDomElement ref = doc.createElement(Osm_Xml::ND);
+			ref.setAttribute(Osm_Xml::REF, (*waynode)->get_id());
+			way.appendChild(ref);
+		}
+		node_osm.appendChild(way);
+	}
+}
+
+void Xml_Handler::compose_relations(QDomDocument &doc, QDomElement &node_osm) {
+	for (auto it = m_map.rbegin(); it != m_map.rend(); ++it) {
+		QDomElement relation = doc.createElement(Osm_Xml::RELATION);
+		compose_attrs_and_tags(doc, relation, **it);
+		for (auto node = (*it)->get_nodes().cbegin(); node != (*it)->get_nodes().cend(); ++it) {
+			QDomElement member = doc.createElement(Osm_Xml::MEMBER);
+			member.setAttribute(Osm_Xml::TYPE, Osm_Xml::NODE);
+			member.setAttribute(Osm_Xml::REF, QString(QString::number((*node)->get_id())));
+			member.setAttribute(Osm_Xml::ROLE, (*it)->get_role((*node)));
+			relation.appendChild(member);
+		}
+		for (auto way = (*it)->get_ways().cbegin(); way != (*it)->get_ways().cend(); ++way) {
+			QDomElement member = doc.createElement(Osm_Xml::MEMBER);
+			member.setAttribute(Osm_Xml::TYPE, Osm_Xml::WAY);
+			member.setAttribute(Osm_Xml::REF, QString(QString::number((*way)->get_id())));
+			member.setAttribute(Osm_Xml::ROLE, (*it)->get_role(*way));
+			relation.appendChild(member);
+		}
+		for (auto rel = (*it)->get_relations().cbegin(); rel != (*it)->get_relations().cend(); ++rel) {
+			QDomElement member = doc.createElement(Osm_Xml::MEMBER);
+			member.setAttribute(Osm_Xml::TYPE, Osm_Xml::RELATION);
+			member.setAttribute(Osm_Xml::REF, QString(QString::number((*rel)->get_id())));
+			member.setAttribute(Osm_Xml::ROLE, (*it)->get_role(*rel));
+			relation.appendChild(member);
+		}
+		node_osm.appendChild(relation);
+	}
+}
+
+/*================================================================*/
+/*                        Public methods                          */
+/*================================================================*/
 
 int Xml_Handler::load_from_xml(const QString &xml_path) {
 	QDomDocument dom_document;
@@ -254,4 +342,35 @@ int Xml_Handler::load_from_xml(const QString &xml_path) {
 
 	//return f_done;
 	return code;
+}
+
+int Xml_Handler::save_to_xml(const QString& xml_path) {
+	QDomDocument	out_xml;
+	QDomElement		node_osm = out_xml.createElement(Osm_Xml::OSM);
+	QFile			file(xml_path);
+
+	node_osm.setAttribute(Osm_Xml::VERSION, "0.6");
+	node_osm.setAttribute(Osm_Xml::GENERATOR, "Hudson");
+	out_xml.appendChild(node_osm);
+
+//	QDomElement tag_bound = out_xml.createAttribute(Osm_Xml::BOUNDS);
+//	QRectF bound(m_map.get_bound());
+//	tag_bound.setAttribute(Osm_Xml::MINLON, QString(QString::number(bound.left())));
+//	tag_bound.setAttribute(Osm_Xml::MAXLON, QString(QString::number(bound.right())));
+//	tag_bound.setAttribute(Osm_Xml::MINLAT, QString(QString::number(bound.bottom())));
+//	tag_bound.setAttribute(Osm_Xml::MAXLAT, QString(String::number(bound.top())));
+//	node_osm.appendChild(tag_bound);
+
+	compose_bound(out_xml, node_osm);
+	compose_nodes(out_xml, node_osm);
+	compose_ways(out_xml, node_osm);
+	compose_relations(out_xml, node_osm);
+
+	if (file.open(QIODevice::WriteOnly)) {
+		QTextStream(&file) << out_xml.toString();
+		file.close();
+	} else {
+		return OSM_ERROR_CANNOT_WRITE_FILE;
+	}
+	return OSM_OK;
 }

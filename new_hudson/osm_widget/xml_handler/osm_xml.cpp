@@ -9,6 +9,7 @@ const char* Xml_Handler::Osm_Xml::MAXLON	= "maxlon";
 const char* Xml_Handler::Osm_Xml::ID		= "id";
 const char* Xml_Handler::Osm_Xml::VISIBLE	= "visible";
 const char* Xml_Handler::Osm_Xml::VERSION	= "version";
+const char* Xml_Handler::Osm_Xml::GENERATOR	= "generator";
 const char* Xml_Handler::Osm_Xml::CHANGESET	= "changeset";
 const char* Xml_Handler::Osm_Xml::TIMESTAMP	= "timestamp";
 const char* Xml_Handler::Osm_Xml::USER		= "user";
