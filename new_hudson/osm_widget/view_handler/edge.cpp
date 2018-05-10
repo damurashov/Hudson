@@ -53,6 +53,10 @@ QList<Edge> Edge::to_edge_list(const QList<Osm_Node*>& nodelist) {
 	QList<Osm_Node*>::iterator	it_current = nodes.begin();
 	QList<Osm_Node*>::iterator	it_next = nodes.begin();
 
+	if (nodelist.size() <= 1) {
+		return edges;
+	}
+
 	it_next++;
 	while (it_next != nodes.end()) {
 		edges.push_back(Edge(**it_current, **it_next));

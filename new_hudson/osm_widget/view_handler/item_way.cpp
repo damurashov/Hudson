@@ -81,34 +81,53 @@ bool Item_Way::merge_edges(int pos_prev, int pos_next) {
 	Item_Edge*					p_left_old_edge;
 	Item_Edge*					p_right_old_edge;
 	Item_Edge*					p_new_edge;
-	QList<Item_Edge*>::iterator it_old_edge = m_edges.begin();
 
-	if (pos_prev != pos_next - 1 || pos_prev < 0 || pos_next < 0) {
-		return false;
-	}
-	for (int i = 0; i < pos_prev && it_old_edge != m_edges.end(); ++i) {
-		p_left_old_edge = *it_old_edge;
-		p_right_old_edge = *(++it_old_edge);
-	}
-	if (it_old_edge == m_edges.end()) {
+	if (pos_prev != pos_next - 1 || pos_prev < 0 || pos_next < 0 || m_edges.size() < pos_next + 1) {
 		return false;
 	}
 
+	p_right_old_edge = m_edges.takeAt(pos_next);
+	p_left_old_edge = m_edges.takeAt(pos_prev);
 	p_node_first = p_left_old_edge->first();
 	p_node_second = p_right_old_edge->second();
 	p_new_edge = new Item_Edge(m_map, *p_node_first, *p_node_second, m_way);
+	m_edges.insert(pos_prev, p_new_edge);
 
-	m_edges.insert(it_old_edge, p_new_edge);
-	m_edges.removeOne(p_left_old_edge);
-	m_edges.removeOne(p_right_old_edge);
-
-	reg(p_new_edge);
 	unreg(p_left_old_edge);
 	unreg(p_right_old_edge);
 	delete p_left_old_edge;
 	delete p_right_old_edge;
 
 	return true;
+
+//	for (int i = 0; i < pos_prev && it_old_edge != m_edges.end(); ++i) {
+//		p_left_old_edge = *it_old_edge;
+//		it_old_edge++;
+//	}
+//	if (it_old_edge == m_edges.end()) {
+//		return false;
+//	}
+//	it_old_edge++;
+//	if (it_old_edge == m_edges.end()) {
+//		return false;
+//	}
+//	p_right_old_edge = *it_old_edge;
+
+//	p_node_first = p_left_old_edge->first();
+//	p_node_second = p_right_old_edge->second();
+//	p_new_edge = new Item_Edge(m_map, *p_node_first, *p_node_second, m_way);
+
+//	m_edges.insert(it_old_edge, p_new_edge);
+//	m_edges.removeOne(p_left_old_edge);
+//	m_edges.removeOne(p_right_old_edge);
+
+//	reg(p_new_edge);
+//	unreg(p_left_old_edge);
+//	unreg(p_right_old_edge);
+//	delete p_left_old_edge;
+//	delete p_right_old_edge;
+
+//	return true;
 }
 
 int Item_Way::seek_pos_node_first(Osm_Node* p_node_left, Osm_Node* p_node_right) const {
@@ -136,7 +155,7 @@ int Item_Way::seek_pos_node_first(Osm_Node* p_node_left, Osm_Node* p_node_right)
 int Item_Way::seek_pos_item_edge(Osm_Node* p_first, Osm_Node* p_second) const {
 	QList<Item_Edge*>::const_iterator	it_edge = m_edges.cbegin();
 	Edge*								p_edge;
-	int									pos = -1;
+	int									pos = 0;
 
 	if (p_first == nullptr || p_second == nullptr) {
 		return -1;
@@ -149,6 +168,7 @@ int Item_Way::seek_pos_item_edge(Osm_Node* p_first, Osm_Node* p_second) const {
 			break;
 		} else {
 			it_edge++;
+			pos++;
 		}
 	}
 	delete p_edge;
@@ -234,16 +254,19 @@ void Item_Way::handle_added_front() {
 }
 
 void Item_Way::handle_added_back() {
-	Osm_Node*	p_node_first;
-	Osm_Node*	p_node_second;
-	Item_Edge*	p_item_edge;
+	Osm_Node*							p_node_first;
+	Osm_Node*							p_node_second;
+	Item_Edge*							p_item_edge;
+	QList<Osm_Node*>::const_iterator	it_node = m_way.get_nodes_list().cend();
 
 	if (m_way.get_size() < 2) {
 		return;
 	}
 
-	p_node_first = const_cast<Osm_Node*>(*(m_way.get_nodes_list().cend()--));
-	p_node_second = const_cast<Osm_Node*>(*(m_way.get_nodes_list().cend()));
+	it_node--;
+	p_node_second = const_cast<Osm_Node*>(*it_node);
+	it_node--;
+	p_node_first = const_cast<Osm_Node*>(*it_node);
 	p_item_edge = new Item_Edge(m_map, *p_node_first, *p_node_second, m_way);
 	reg(p_item_edge);
 	m_edges.push_back(p_item_edge);
@@ -317,18 +340,20 @@ void Item_Way::handle_deleted_mid(const Meta& meta) {
 	} else if ((pos_reference_node = meta.get_pos(Meta::SUBJECT_BEFORE)) != -1) {
 		pos_edge_item_next = pos_reference_node - 1;
 		pos_edge_item_prev = pos_edge_item_next - 1;
+	} else {
+		if ((p_del_node = static_cast<Osm_Node*>(meta.get_subject())) == nullptr) {
+			handle_diffs();
+			return;
+		}
+		if ((p_reference_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_AFTER))) != nullptr) {
+			pos_edge_item_prev = seek_pos_item_edge(p_reference_node, p_del_node);
+			pos_edge_item_next = pos_edge_item_prev - 1;
+		} else if ((p_reference_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_BEFORE))) != nullptr) {
+			pos_edge_item_next = seek_pos_item_edge(p_del_node, p_reference_node);
+			pos_edge_item_prev = pos_edge_item_next - 1;
+		}
 	}
-	if ((p_del_node = static_cast<Osm_Node*>(meta.get_subject())) == nullptr) {
-		handle_diffs();
-		return;
-	}
-	if ((p_reference_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_AFTER))) != nullptr) {
-		pos_edge_item_prev = seek_pos_item_edge(p_reference_node, p_del_node);
-		pos_edge_item_next = pos_edge_item_prev - 1;
-	} else if ((p_reference_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_BEFORE))) != nullptr) {
-		pos_edge_item_next = seek_pos_item_edge(p_del_node, p_reference_node);
-		pos_edge_item_prev = pos_edge_item_next - 1;
-	}
+
 	/* Merge */
 	if (!merge_edges(pos_edge_item_prev, pos_edge_item_next)) {
 		handle_diffs();
