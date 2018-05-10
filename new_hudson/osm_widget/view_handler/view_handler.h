@@ -23,6 +23,9 @@ public:
 		TOOL_WAY,
 		TOOL_CURSOR
 	};
+signals:
+	void								signal_object_selected	(Osm_Node&);
+	void								signal_object_selected	(Osm_Way&);
 private slots:
 	void								slot_blank_area_clicked	(QPointF, Qt::MouseButton);
 	void								slot_node_clicked		(Osm_Node*, Qt::MouseButton);

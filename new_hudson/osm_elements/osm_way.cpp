@@ -76,9 +76,9 @@ void Osm_Way::handle_event_delete(Osm_Node& node) {
 		SAVE_CLOSED, /* The way is not a triangle, and the deleting node is the first node of a circular way */
 		REGULAR		 /* Any other case */
 	}				type = REGULAR;
-	Event			event;
+//	Event			event;
 	const long long THIS_ID = get_inner_id();
-	unsigned short	pos = 0;
+//	unsigned short	pos = 0;
 
 	if (is_closed()) {
 		if (get_size() == 4) {

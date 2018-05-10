@@ -3,11 +3,13 @@
 
 #include "xml_handler/xml_handler.h"
 #include "view_handler/view_handler.h"
+#include "info_widget/info_widget.h"
 #include "osm_elements.h"
 #include "osm_message.h"
 
 class Osm_Widget : public QWidget {
 private:
+	ns_osm::Info_Widget*	mp_info_widget;
 	ns_osm::Osm_Map*		mp_map;
 	ns_osm::Xml_Handler*	mp_xml_handler;
 	ns_osm::View_Handler*	mp_view_handler;

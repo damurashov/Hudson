@@ -8,7 +8,7 @@
 
 namespace ns_osm {
 
-class Osm_Info {
+class Osm_Info{
 	QMap<QString, QString>			m_attrmap;
 	QMap<QString, QString>			m_tagmap;
 	const long long					OSM_ID;

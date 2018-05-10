@@ -15,8 +15,16 @@ Osm_Widget::Osm_Widget(QWidget* p_parent) :
 	mp_map->adopt();
 	mp_xml_handler = new Xml_Handler(*mp_map);
 	mp_view_handler = new View_Handler(*mp_map);
+	mp_info_widget = new Info_Widget(this);
+	mp_info_widget->setMaximumWidth(200);
 	setLayout(new QHBoxLayout);
+	layout()->addWidget(mp_info_widget);
 	layout()->addWidget(mp_view_handler);
+
+	QObject::connect(mp_view_handler, SIGNAL(signal_object_selected(Osm_Node&)),
+	                 mp_info_widget, SLOT(slot_object_selected(Osm_Node&)));
+	QObject::connect(mp_view_handler, SIGNAL(signal_object_selected(Osm_Way&)),
+	                 mp_info_widget, SLOT(slot_object_selected(Osm_Way&)));
 }
 
 Osm_Widget::~Osm_Widget() {

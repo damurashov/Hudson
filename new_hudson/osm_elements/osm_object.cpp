@@ -73,10 +73,11 @@ void Osm_Object::emit_delete(Meta meta) {
 	const long long THIS_ID = INNER_ID;
 	m_active_stack = m_subscribers;
 	Osm_Subscriber* p_current_subscriber;
+	Type type = get_type();
 	while (!m_active_stack.empty()) {
 		p_current_subscriber = m_active_stack.front();
 		p_current_subscriber->m_meta = meta;
-		switch (get_type()) {
+		switch (type) {
 		case Type::NODE:
 			p_current_subscriber->handle_event_delete(*static_cast<Osm_Node*>(this));
 			break;
@@ -106,10 +107,11 @@ void Osm_Object::emit_update(Meta meta) {
 	const long long THIS_ID = INNER_ID;
 	m_active_stack = m_subscribers;
 	Osm_Subscriber* p_current_subscriber;
+	Type type = get_type();
 	while (!m_active_stack.empty()) {
 		p_current_subscriber = m_active_stack.front();
 		p_current_subscriber->m_meta = meta;
-		switch (get_type()) {
+		switch (type) {
 		case Type::NODE:
 			p_current_subscriber->handle_event_update(*static_cast<Osm_Node*>(this));
 			break;
