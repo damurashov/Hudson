@@ -10,8 +10,9 @@ int main(int argc, char* argv[]) {
 
 	widget.show();
 
-	widget.load_from_xml(PATH_MERKAARTOR_MAP);
-	widget.load_from_xml(PATH_MERKAARTOR_MAP);
+//	widget.load_from_xml(PATH_MERKAARTOR_MAP);
+	widget.load_from_xml(PATH_GENUINE_MAP);
+	widget.save_to_xml(PATH_MAP2);
 
 	return a.exec();
 }

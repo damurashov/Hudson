@@ -285,7 +285,7 @@ void Xml_Handler::compose_relations(QDomDocument &doc, QDomElement &node_osm) {
 	for (auto it = m_map.rbegin(); it != m_map.rend(); ++it) {
 		QDomElement relation = doc.createElement(Osm_Xml::RELATION);
 		compose_attrs_and_tags(doc, relation, **it);
-		for (auto node = (*it)->get_nodes().cbegin(); node != (*it)->get_nodes().cend(); ++it) {
+		for (auto node = (*it)->get_nodes().cbegin(); node != (*it)->get_nodes().cend(); ++node) {
 			QDomElement member = doc.createElement(Osm_Xml::MEMBER);
 			member.setAttribute(Osm_Xml::TYPE, Osm_Xml::NODE);
 			member.setAttribute(Osm_Xml::REF, QString(QString::number((*node)->get_id())));

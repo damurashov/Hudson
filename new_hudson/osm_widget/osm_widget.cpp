@@ -33,6 +33,10 @@ Osm_Widget::~Osm_Widget() {
 /*                        Public methods                          */
 /*================================================================*/
 
+int Osm_Widget::save_to_xml(const QString& xml_path) {
+	return mp_xml_handler->save_to_xml(xml_path);
+}
+
 int Osm_Widget::load_from_xml(const QString &xml_path) {
 //	return m_xml_handler.load_from_xml(xml_path);
 	mp_map->clear();

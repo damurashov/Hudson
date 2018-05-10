@@ -14,6 +14,7 @@ private:
 	Osm_Widget* mp_osm_widget;
 public slots:
 	void slot_load_from_xml();
+	void slot_save_to_xml();
 public:
 	explicit Hudson_App(QWidget *parent = nullptr);
 };
