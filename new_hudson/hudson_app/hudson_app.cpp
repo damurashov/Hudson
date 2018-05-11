@@ -11,6 +11,8 @@ Hudson_App::Hudson_App(QWidget* p_parent) : QMainWindow(p_parent) {
 	QMenuBar*	p_menubar		= menuBar();
 //	QToolBar*	p_toolbar_draw	= new QToolBar("Tools");
 
+	setMinimumWidth(600);
+
 	mp_osm_widget = new Osm_Widget;
 	setCentralWidget(mp_osm_widget);
 

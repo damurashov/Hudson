@@ -14,23 +14,19 @@ class Tag_Table : public QTableWidget {
 private:
 	static const char*	KEY_HEADER;
 	static const char*	VALUE_HEADER;
-//	static const int	I_KEY;
-//	static const int	I_VALUE;
+	static const int	KEY_COL;
+	static const int	VALUE_COL;
 	Osm_Info*			mp_info;
 protected:
-//	void				handle_event_delete	(Osm_Object& generic_emitter);
-	void				apply				();
-	void				clear				();
-	void				fill				();
-private slots:
-	void				slot_cell_changed	(int row, int col);
+	//QString				get_at				(int row, int col);
+	//void				remove_at			(int row);
+	//void				set_at				(int row, int col, const QString& = "");
 public slots:
 	void				slot_push_row		();
 	void				slot_pop_row		();
 	void				slot_delete_selected();
 	void				slot_delete_all		();
-//	void				slot_fill			();
-	void				slot_update			();
+//	void				slot_update			();
 public:
 	void				set_info			(Osm_Info&);
 	void				unset_info			();

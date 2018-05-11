@@ -10,12 +10,13 @@ Info_Widget::Info_Widget(QWidget* p_parent) : QWidget(p_parent) {
 	QToolBar* p_toolbar = new QToolBar(this);
 	mp_tag_table = new Tag_Table;
 
-	p_toolbar->addAction("Update", mp_tag_table, SLOT(slot_update()));
+//	p_toolbar->addAction("Update", mp_tag_table, SLOT(slot_update()));
 	p_toolbar->addAction("Push row", mp_tag_table, SLOT(slot_push_row()));
 	p_toolbar->addAction("Pop row", mp_tag_table, SLOT(slot_pop_row()));
 	p_toolbar->addAction("Delete selected", mp_tag_table, SLOT(slot_delete_selected()));
 	p_toolbar->addAction("Clear", mp_tag_table, SLOT(slot_delete_all()));
 	p_toolbar->setMaximumHeight(50);
+	setMaximumWidth(400);
 
 	setLayout(new QVBoxLayout(this));
 	layout()->addWidget(p_toolbar);
