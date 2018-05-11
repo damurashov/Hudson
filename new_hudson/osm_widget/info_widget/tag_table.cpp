@@ -48,16 +48,12 @@ void Tag_Table::slot_delete_selected() {
 		return;
 	}
 	for (auto it = selected.begin(); it != selected.end(); ++it) {
-		if (row_min < it->topRow()) {
-			row_min = it->topRow();
-		}
-		if (row_max > it->bottomRow()) {
-			row_max = it->bottomRow();
-		}
+		row_max = std::max(row_max, std::max(it->bottomRow(), it->topRow()));
+		row_min = std::min(row_min, std::min(it->bottomRow(), it->topRow()));
 	}
 
 	for (int i = 0; i < row_max - row_min + 1; ++i) {
-		removeColumn(row_min);
+		removeRow(row_min);
 	}
 }
 
