@@ -12,18 +12,12 @@
 #include "item_way.h"
 #include "osm_view.h"
 #include "coord_handler.h"
+#include "osm_tool.h"
 
 namespace ns_osm {
 
 class View_Handler : public QWidget, public Osm_Subscriber {
 	Q_OBJECT
-public:
-	enum Tool {
-//		TOOL_HAND,
-		TOOL_NODE,
-		TOOL_WAY,
-		TOOL_CURSOR
-	};
 signals:
 	void								signal_object_selected	(Osm_Node&);
 	void								signal_object_selected	(Osm_Way&);
@@ -38,7 +32,7 @@ private slots:
 private:
 	Osm_Map&							m_map;
 	Coord_Handler						m_coord_handler;
-	Tool								m_current_tool;
+	Osm_Tool							m_current_tool;
 	QGraphicsScene*						mp_scene;
 	Osm_View*							mp_view;
 //	QSplitter*							mp_splitter;
@@ -60,8 +54,8 @@ protected:
 	void								handle_event_delete		(Osm_Object&) override;
 public:
 //	void								set_info_table_enabled	(bool f);
-	void								set_editable			(bool f);
-	void								set_tool				(Tool);
+//	void								set_editable			(bool f);
+	void								set_tool				(Osm_Tool);
 	                                    View_Handler			(Osm_Map&);
 										View_Handler			(const View_Handler&);
 										View_Handler			() = delete;

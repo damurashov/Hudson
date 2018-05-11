@@ -8,18 +8,24 @@
 #include "osm_message.h"
 
 class Osm_Widget : public QWidget {
+	Q_OBJECT
 private:
 	ns_osm::Info_Widget*	mp_info_widget;
 	ns_osm::Osm_Map*		mp_map;
 	ns_osm::Xml_Handler*	mp_xml_handler;
 	ns_osm::View_Handler*	mp_view_handler;
 public:
+	void					select_tool				(Osm_Tool);
 	int						save_to_xml				(const QString& xml_path);
 	int						load_from_xml			(const QString& xml_path);
 	                        Osm_Widget				(QWidget* p_parent = nullptr);
 	Osm_Widget&				operator=				(const Osm_Widget&) = delete;
 	                        Osm_Widget				(const Osm_Widget&) = delete;
 	virtual					~Osm_Widget				();
+public slots:
+	void					slot_select_tool_cursor	();
+	void					slot_select_tool_node	();
+	void					slot_select_tool_way	();
 };
 
 #endif // OSM_WIDGET_H

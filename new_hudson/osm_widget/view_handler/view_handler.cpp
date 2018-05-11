@@ -7,6 +7,7 @@ using namespace ns_osm;
 /*================================================================*/
 
 View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
+	m_current_tool = Osm_Tool::CURSOR;
 	m_map.set_force_use_dynamic_bound(true);
 	m_coord_handler.set_map(m_map);
 	m_coord_handler.set_scale(1.0);
@@ -190,4 +191,12 @@ void View_Handler::handle_event_delete(Osm_Object&) {
 	default:
 		break;
 	}
+}
+
+/*================================================================*/
+/*                        Public methods                          */
+/*================================================================*/
+
+void View_Handler::set_tool(Osm_Tool tool) {
+	m_current_tool = tool;
 }

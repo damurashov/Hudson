@@ -47,6 +47,10 @@ Osm_Widget::~Osm_Widget() {
 /*                        Public methods                          */
 /*================================================================*/
 
+void Osm_Widget::select_tool(Osm_Tool tool) {
+	mp_view_handler->set_tool(tool);
+}
+
 int Osm_Widget::save_to_xml(const QString& xml_path) {
 	return mp_xml_handler->save_to_xml(xml_path);
 }
@@ -55,4 +59,16 @@ int Osm_Widget::load_from_xml(const QString &xml_path) {
 //	return m_xml_handler.load_from_xml(xml_path);
 	mp_map->clear();
 	return mp_xml_handler->load_from_xml(xml_path);
+}
+
+void Osm_Widget::slot_select_tool_cursor() {
+	mp_view_handler->set_tool(Osm_Tool::CURSOR);
+}
+
+void Osm_Widget::slot_select_tool_node() {
+	mp_view_handler->set_tool(Osm_Tool::NODE);
+}
+
+void Osm_Widget::slot_select_tool_way() {
+	mp_view_handler->set_tool(Osm_Tool::WAY);
 }

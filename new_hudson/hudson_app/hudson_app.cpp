@@ -8,14 +8,29 @@ Hudson_App::Hudson_App(QWidget* p_parent) : QMainWindow(p_parent) {
 	QAction*	p_act_load_xml	= new QAction("Load from xml");
 	QAction*	p_act_save_xml	= new QAction("Save to xml");
 	QMenu*		p_menu_file		= new QMenu("File");
-	QMenuBar*	p_menubar		= menuBar();
-//	QToolBar*	p_toolbar_draw	= new QToolBar("Tools");
+//	QMenuBar*	p_menubar		= menuBar();
+	QToolBar*	p_toolbar_draw	= new QToolBar("Tools");
 
 	setMinimumWidth(600);
 
 	mp_osm_widget = new Osm_Widget;
 	setCentralWidget(mp_osm_widget);
 
+	/* Toolbar */
+	QList<QAction*> actions;
+	actions.push_front(new QAction("Cursor"));
+	connect(actions.front(), SIGNAL(triggered()),
+	        mp_osm_widget, SLOT(slot_select_tool_cursor()));
+	actions.push_front(new QAction("Node"));
+	connect(actions.front(), SIGNAL(triggered()),
+	        mp_osm_widget, SLOT(slot_select_tool_node()));
+	actions.push_front(new QAction("Way"));
+	connect(actions.front(), SIGNAL(triggered()),
+	        mp_osm_widget, SLOT(slot_select_tool_way()));
+	p_toolbar_draw->addActions(actions);
+
+
+	/* File menu */
 	p_act_load_xml->setText("Load...");
 	p_act_load_xml->setToolTip("Loads the content from OSM XML file");
 	p_act_load_xml->setWhatsThis("Loads the content from OSM XML file");
@@ -28,7 +43,8 @@ Hudson_App::Hudson_App(QWidget* p_parent) : QMainWindow(p_parent) {
 	connect(p_act_save_xml, SIGNAL(triggered()), SLOT(slot_save_to_xml()));
 	p_menu_file->addAction(p_act_save_xml);
 
-	p_menubar->addMenu(p_menu_file);
+	menuBar()->addMenu(p_menu_file);
+	addToolBar(p_toolbar_draw);
 //	addToolBar(p_toolbar);
 }
 

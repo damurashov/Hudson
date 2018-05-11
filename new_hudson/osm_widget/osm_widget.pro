@@ -50,4 +50,5 @@ xml_handler/osm_xml.h           \
 xml_handler/xml_handler.h       \
 info_widget/info_widget.h       \
 info_widget/tag_table.h         \
-    view_handler/coord_handler.h
+    view_handler/coord_handler.h \
+    view_handler/osm_tool.h
