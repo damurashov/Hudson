@@ -11,6 +11,7 @@
 #include "item_node.h"
 #include "item_way.h"
 #include "osm_view.h"
+#include "coord_handler.h"
 
 namespace ns_osm {
 
@@ -36,6 +37,7 @@ private slots:
 	                                                             Qt::MouseButton);
 private:
 	Osm_Map&							m_map;
+	Coord_Handler						m_coord_handler;
 	Tool								m_current_tool;
 	QGraphicsScene*						mp_scene;
 	Osm_View*							mp_view;

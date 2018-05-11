@@ -35,6 +35,7 @@ xml_handler/osm_xml.cpp         \
 xml_handler/xml_handler.cpp     \
 info_widget/tag_table.cpp       \
 info_widget/info_widget.cpp     \
+    view_handler/coord_handler.cpp
 
 HEADERS += \
 osm_message.h                   \
@@ -49,3 +50,4 @@ xml_handler/osm_xml.h           \
 xml_handler/xml_handler.h       \
 info_widget/info_widget.h       \
 info_widget/tag_table.h         \
+    view_handler/coord_handler.h

@@ -8,6 +8,7 @@
 
 #include "osm_elements.h"
 #include "item_edge.h"
+#include "coord_handler.h"
 
 namespace ns_osm {
 
@@ -18,7 +19,8 @@ class Item_Way : public QGraphicsItemGroup, public Osm_Subscriber {
 private:
 	struct Diff;
 	mutable QList<Item_Edge*>	m_edges;
-	const Osm_Map&				m_map;
+//	const Osm_Map&				m_map;
+	const Coord_Handler			m_coord_handler;
 	View_Handler&				m_view_handler;
 	Osm_Way&					m_way;
 
@@ -46,7 +48,7 @@ public:
 	                                                 const QStyleOptionGraphicsItem *option,
 	                                                 QWidget *widget) override;
 	int							type				() const override;
-	                            Item_Way			(const Osm_Map& map,
+	                            Item_Way			(const Coord_Handler&,
 								                     View_Handler& view_handler,
 								                     Osm_Way& way,
 								                     QGraphicsItem* p_parent = nullptr);

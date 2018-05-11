@@ -15,7 +15,7 @@ namespace ns_osm {
 
 class Osm_Map : public Osm_Subscriber, public Osm_Object {
 private:
-	static const double						GEO_DEGREE_MULTIPLIER;
+//	static const double						GEO_DEGREE_MULTIPLIER;
 	int										mn_parents;
 	QHash<long long, ns_osm::Osm_Node*>		m_nodes_hash;
 	QHash<long long, ns_osm::Osm_Way*>		m_ways_hash;
@@ -30,6 +30,7 @@ private:
 	bool									f_force_dynamic_bound;
 	//mutable bool							f_scene_has_180_issue;
 
+	void									reset_bounds				();
 	bool									is_valid_bound				(const QRectF&) const;
 	bool									has_issue_180				(const QRectF&) const;
 	void									fit_autorects				(Osm_Node&);

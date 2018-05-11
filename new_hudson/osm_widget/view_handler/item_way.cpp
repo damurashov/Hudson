@@ -7,12 +7,12 @@ using namespace ns_osm;
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
-Item_Way::Item_Way(const Osm_Map& map,
+Item_Way::Item_Way(const Coord_Handler& handler,
                    View_Handler& view_handler,
                    Osm_Way& osm_way,
                    QGraphicsItem* p_parent)
                    : QGraphicsItemGroup(p_parent),
-                     m_map(map),
+                     m_coord_handler(handler),
                      m_view_handler(view_handler),
                      m_way(osm_way)
 {
@@ -20,7 +20,7 @@ Item_Way::Item_Way(const Osm_Map& map,
 	QList<Edge>::iterator	it_edge;
 
 	for (it_edge = edges.begin(); it_edge != edges.end(); ++it_edge) {
-		m_edges.push_back(new Item_Edge(m_map, *it_edge, m_way));
+		m_edges.push_back(new Item_Edge(m_coord_handler, *it_edge, m_way));
 		reg(m_edges.back());
 	}
 
@@ -60,8 +60,8 @@ bool Item_Way::split_edge(int item_edge_pos, Osm_Node *p_node_mid) {
 	p_old_item = *it_item;
 	p_node_left = p_old_item->first();
 	p_node_right = p_old_item->second();
-	p_prev_item = new Item_Edge(m_map, *p_node_left, *p_node_mid, m_way);
-	p_next_item = new Item_Edge(m_map, *p_node_mid, *p_node_right, m_way);
+	p_prev_item = new Item_Edge(m_coord_handler, *p_node_left, *p_node_mid, m_way);
+	p_next_item = new Item_Edge(m_coord_handler, *p_node_mid, *p_node_right, m_way);
 
 	it_item = m_edges.insert(it_item, p_next_item);
 	it_item = m_edges.insert(it_item, p_prev_item);
@@ -90,7 +90,7 @@ bool Item_Way::merge_edges(int pos_prev, int pos_next) {
 	p_left_old_edge = m_edges.takeAt(pos_prev);
 	p_node_first = p_left_old_edge->first();
 	p_node_second = p_right_old_edge->second();
-	p_new_edge = new Item_Edge(m_map, *p_node_first, *p_node_second, m_way);
+	p_new_edge = new Item_Edge(m_coord_handler, *p_node_first, *p_node_second, m_way);
 	m_edges.insert(pos_prev, p_new_edge);
 
 	unreg(p_left_old_edge);
@@ -115,7 +115,7 @@ bool Item_Way::merge_edges(int pos_prev, int pos_next) {
 
 //	p_node_first = p_left_old_edge->first();
 //	p_node_second = p_right_old_edge->second();
-//	p_new_edge = new Item_Edge(m_map, *p_node_first, *p_node_second, m_way);
+//	p_new_edge = new Item_Edge(m_coord_handler, *p_node_first, *p_node_second, m_way);
 
 //	m_edges.insert(it_old_edge, p_new_edge);
 //	m_edges.removeOne(p_left_old_edge);
@@ -219,7 +219,7 @@ void Item_Way::handle_diffs() {
 	while ((diff = get_diff()).type != Diff::NONE) {
 		switch (diff.type) {
 		case Diff::ADD_BEFORE:
-			p_item_edge = new Item_Edge(m_map,
+			p_item_edge = new Item_Edge(m_coord_handler,
 			                            *(diff.p_node_first),
 			                            *(diff.p_node_second),
 			                            m_way);
@@ -248,7 +248,7 @@ void Item_Way::handle_added_front() {
 	}
 	p_node_first = const_cast<Osm_Node*>(*(m_way.get_nodes_list().cbegin()));
 	p_node_second = const_cast<Osm_Node*>(*(m_way.get_nodes_list().cbegin()++));
-	p_item_edge = new Item_Edge(m_map, *p_node_first, *p_node_second, m_way);
+	p_item_edge = new Item_Edge(m_coord_handler, *p_node_first, *p_node_second, m_way);
 	reg(p_item_edge);
 	m_edges.push_front(p_item_edge);
 }
@@ -267,7 +267,7 @@ void Item_Way::handle_added_back() {
 	p_node_second = const_cast<Osm_Node*>(*it_node);
 	it_node--;
 	p_node_first = const_cast<Osm_Node*>(*it_node);
-	p_item_edge = new Item_Edge(m_map, *p_node_first, *p_node_second, m_way);
+	p_item_edge = new Item_Edge(m_coord_handler, *p_node_first, *p_node_second, m_way);
 	reg(p_item_edge);
 	m_edges.push_back(p_item_edge);
 }

@@ -69,10 +69,10 @@ private slots:
 		reference_bound.setBottom(0.0);
 		reference_bound.setRight(-160.0);
 		reference_bound.setTop(10.0);
-		reference_scene.setLeft(175.0 * Osm_Map::GEO_DEGREE_MULTIPLIER);
-		reference_scene.setBottom(0.0 * Osm_Map::GEO_DEGREE_MULTIPLIER);
-		reference_scene.setRight((-160.0+360.0) * Osm_Map::GEO_DEGREE_MULTIPLIER);
-		reference_scene.setTop(10.0 * Osm_Map::GEO_DEGREE_MULTIPLIER);
+		reference_scene.setLeft(175.0);
+		reference_scene.setBottom(0.0);
+		reference_scene.setRight((-160.0+360.0));
+		reference_scene.setTop(10.0);
 
 		QCOMPARE(reference_scene.left(), scene.left());
 		QCOMPARE(reference_scene.right(), scene.right());
@@ -117,9 +117,9 @@ private slots:
 		map.set_bound(rect);
 
 		QCOMPARE(map.get_scene_coord(&node).y(), 0);
-		QCOMPARE(map.get_scene_coord(&node).x(), (-170.0 + 360.0) * Osm_Map::GEO_DEGREE_MULTIPLIER);
+		QCOMPARE(map.get_scene_coord(&node).x(), (-170.0 + 360.0));
 
-		QCOMPARE((-160.0+360.0) * Osm_Map::GEO_DEGREE_MULTIPLIER, map.get_scene_rect().right());
+		QCOMPARE((-160.0+360.0), map.get_scene_rect().right());
 	}
 };
 

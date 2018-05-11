@@ -1,0 +1,14 @@
+<osm version="0.6" generator="Hudson">
+ <bounds maxlon="156.1700721" minlon="156.1698283" maxlat="41.0168521" minlat="41.0167502"/>
+ <node version="0" id="-8" timestamp="2018-05-09T00:34:03Z" lon="156.1700721" uid="" visible="" user="" lat="41.0168521"/>
+ <node version="0" id="-6" timestamp="2018-05-09T00:34:03Z" lon="156.1699037" uid="" visible="" user="" lat="41.0168512"/>
+ <node version="0" id="-9" timestamp="2018-05-09T00:34:05Z" lon="156.17" uid="" visible="" user="" lat="41.0166"/>
+ <node version="0" id="-10" timestamp="2018-05-09T00:34:08Z" lon="156.1698283" uid="" visible="" user="" lat="41.0167502"/>
+ <way version="0" id="-7" timestamp="2018-05-09T00:34:03Z" uid="" visible="" user="">
+  <nd ref="-6"/>
+  <nd ref="-8"/>
+  <nd ref="-9"/>
+  <nd ref="-10"/>
+  <nd ref="-6"/>
+ </way>
+</osm>

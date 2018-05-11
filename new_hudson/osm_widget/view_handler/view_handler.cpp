@@ -8,6 +8,8 @@ using namespace ns_osm;
 
 View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
 	m_map.set_force_use_dynamic_bound(true);
+	m_coord_handler.set_map(m_map);
+	m_coord_handler.set_scale(1.0);
 	load_from_map();
 	subscribe(m_map);
 }
@@ -36,8 +38,9 @@ void View_Handler::slot_blank_area_clicked(QPointF, Qt::MouseButton) {
 	/* Drawing operations will be implemented here soon */
 }
 
-void View_Handler::slot_node_clicked(Osm_Node *, Qt::MouseButton) {
+void View_Handler::slot_node_clicked(Osm_Node* p_node, Qt::MouseButton) {
 	/* Drawing operations will be implemented here soon */
+	emit signal_object_selected(*p_node);
 }
 
 void View_Handler::slot_edge_clicked(QPointF point,
@@ -47,6 +50,7 @@ void View_Handler::slot_edge_clicked(QPointF point,
                                      Qt::MouseButton button)
 {
 	/* Drawing operations will be implemented here soon */
+	emit signal_object_selected(*p_way);
 }
 
 void View_Handler::add(Osm_Node* p_node) {
@@ -57,10 +61,14 @@ void View_Handler::add(Osm_Node* p_node) {
 	} else if (m_nodeid_to_item.contains(p_node->get_id())) {
 		return;
 	}
+	if (!m_coord_handler.is_ready()) {
+		m_coord_handler.set_start_point(*p_node);
+	}
 	subscribe(*p_node);
-	p_nodeitem = new Item_Node(m_map, *p_node);
+	p_nodeitem = new Item_Node(m_coord_handler, *p_node);
 	mp_scene->addItem(p_nodeitem);
 	m_nodeid_to_item.insert(p_node->get_id(), p_nodeitem);
+	p_nodeitem->setFlag(QGraphicsItem::ItemIsMovable);
 //	mp_view->centerOn(m_nodeid_to_item[p_node->get_id()]);
 	QObject::connect(p_nodeitem,
 	                 SIGNAL(signal_node_clicked(Osm_Node*,Qt::MouseButton)),
@@ -78,7 +86,7 @@ void View_Handler::add(Osm_Way* p_way) {
 	}
 
 	subscribe(*p_way);
-	p_item_way = new Item_Way(m_map, *this, *p_way);
+	p_item_way = new Item_Way(m_coord_handler, *this, *p_way);
 	mp_scene->addItem(p_item_way);
 	m_wayid_to_item.insert(p_way->get_id(), p_item_way);
 }

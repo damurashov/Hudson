@@ -7,6 +7,7 @@
 #endif /* Include guard QT_WIDGETS_H */
 
 #include "osm_elements.h"
+#include "coord_handler.h"
 
 namespace ns_osm {
 
@@ -15,8 +16,8 @@ class Item_Node : public QGraphicsObject {
 signals:
 	void			signal_node_clicked	(Osm_Node*, Qt::MouseButton);
 protected:
-	const Osm_Map&	m_map;
-	Osm_Node&		m_node;
+	const Coord_Handler&	m_coord_handler;
+	Osm_Node&				m_node;
 
 //	int				get_pen_size		() const;
 	QVariant		itemChange			(GraphicsItemChange change, const QVariant &value) override;
@@ -30,7 +31,7 @@ public:
 	                                     const QStyleOptionGraphicsItem *option,
 	                                     QWidget *widget) override;
 	QRectF			boundingRect		() const override;
-	                Item_Node			(const Osm_Map&,
+	                Item_Node			(const Coord_Handler&,
 					                     Osm_Node&,
 					                     QGraphicsItem* p_parent = nullptr);
 					Item_Node			() = delete;

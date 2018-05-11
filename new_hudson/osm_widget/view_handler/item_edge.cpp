@@ -6,7 +6,7 @@ using namespace ns_osm;
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
-Item_Edge::Item_Edge(const Osm_Map& map,
+Item_Edge::Item_Edge(const Coord_Handler& handler,
                      Osm_Node& node1,
                      Osm_Node& node2,
                      Osm_Way& way,
@@ -14,25 +14,27 @@ Item_Edge::Item_Edge(const Osm_Map& map,
                      :
                        QGraphicsObject(p_parent),
                        Edge(node1, node2),
-                       m_map(map),
+                       m_coord_handler(handler),
                        m_way(way)
 {
 	subscribe(*first());
 	subscribe(*second());
+	setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 }
 
-Item_Edge::Item_Edge(const Osm_Map& map,
+Item_Edge::Item_Edge(const Coord_Handler& handler,
                      const Edge& edge,
                      Osm_Way& way,
                      QGraphicsItem *p_parent)
                      :
                        QGraphicsObject(p_parent),
                        Edge(edge),
-                       m_map(map),
+                       m_coord_handler(handler),
                        m_way(way)
 {
 	subscribe(*first());
 	subscribe(*second());
+	setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 }
 
 Item_Edge::~Item_Edge() {}
@@ -46,6 +48,7 @@ void Item_Edge::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void Item_Edge::handle_event_update(Osm_Node& node) {
+	prepareGeometryChange();
 	update(boundingRect());
 }
 
@@ -58,10 +61,10 @@ int Item_Edge::type() const {
 }
 
 QRectF Item_Edge::boundingRect() const {
-	double left = std::min(m_map.get_scene_coord(first()).x(), m_map.get_scene_coord(second()).x());
-	double top = std::max(m_map.get_scene_coord(first()).y(), m_map.get_scene_coord(second()).y());
-	double right = std::max(m_map.get_scene_coord(first()).x(), m_map.get_scene_coord(second()).x());
-	double bottom = std::min(m_map.get_scene_coord(first()).y(), m_map.get_scene_coord(second()).y());
+	double left = std::min(m_coord_handler.get_pos_on_scene(*first()).x(), m_coord_handler.get_pos_on_scene(*second()).x());
+	double top = std::max(m_coord_handler.get_pos_on_scene(*first()).y(), m_coord_handler.get_pos_on_scene(*second()).y());
+	double right = std::max(m_coord_handler.get_pos_on_scene(*first()).x(), m_coord_handler.get_pos_on_scene(*second()).x());
+	double bottom = std::min(m_coord_handler.get_pos_on_scene(*first()).y(), m_coord_handler.get_pos_on_scene(*second()).y());
 
 	return QRectF(QPointF(left, top), QPointF(right, bottom));
 }
@@ -69,8 +72,8 @@ QRectF Item_Edge::boundingRect() const {
 void Item_Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 	QPen pen;
 
-	pen.setWidth(20);
+	pen.setWidth(1);
 	painter->setPen(pen);
-	painter->drawLine(m_map.get_scene_coord(first()), m_map.get_scene_coord(second()));
+	painter->drawLine(m_coord_handler.get_pos_on_scene(*first()), m_coord_handler.get_pos_on_scene(*second()));
 }
 

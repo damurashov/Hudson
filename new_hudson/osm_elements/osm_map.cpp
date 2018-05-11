@@ -5,7 +5,7 @@ using namespace ns_osm;
 /*                        Static members                          */
 /*================================================================*/
 
-const double Osm_Map::GEO_DEGREE_MULTIPLIER = 10000000.0;
+//const double Osm_Map::GEO_DEGREE_MULTIPLIER = 1000.0;
 //double Osm_Map::GEO_DEGREE_MULTIPLIER = 10000.0;
 
 /*================================================================*/
@@ -43,6 +43,19 @@ Osm_Map::~Osm_Map() {
 /*================================================================*/
 /*                       Private methods                          */
 /*================================================================*/
+
+void Osm_Map::reset_bounds() {
+	const double BIG = 300.0;
+
+	m_autorect_normal.setLeft(BIG);
+	m_autorect_normal.setRight(-BIG);
+	m_autorect_normal.setTop(-BIG);
+	m_autorect_normal.setBottom(BIG);
+	m_autorect_180.setLeft(BIG);
+	m_autorect_180.setRight(-BIG);
+	m_autorect_180.setTop(-BIG);
+	m_autorect_180.setBottom(BIG);
+}
 
 bool Osm_Map::is_valid_bound(const QRectF& rect) const {
 	if (rect.width() == 0.0 || rect.height() == 0.0) {
@@ -401,6 +414,7 @@ void Osm_Map::clear() {
 	m_nodes_hash.clear();
 	m_ways_hash.clear();
 	m_relations_hash.clear();
+	reset_bounds();
 	emit_update(MAP_CLEARED);
 }
 
@@ -453,10 +467,6 @@ QPointF Osm_Map::get_scene_coord(Osm_Node* p_node) const {
 		point.setX(p_node->get_lon() + 360.0);
 		point.setY(p_node->get_lat());
 	}
-
-	point.setX(point.x() * GEO_DEGREE_MULTIPLIER);
-	point.setY(point.y() * GEO_DEGREE_MULTIPLIER * (-1));
-
 	return point;
 }
 
@@ -464,15 +474,11 @@ QPointF Osm_Map::get_scene_coord(QPointF point /* geo point */) const {
 	if (has_issue_180(get_bound()) && point.x() <= 0) {
 		point.setX(point.x() + 360.0);
 	}
-	point.setX(point.x() * GEO_DEGREE_MULTIPLIER);
-	point.setY(point.y() * GEO_DEGREE_MULTIPLIER * (-1));
 
 	return point;
 }
 
 QPointF Osm_Map::get_geo_coord(QPointF point /* scene point */) const {
-	point.setX(point.x() / GEO_DEGREE_MULTIPLIER);
-	point.setY(point.y() / GEO_DEGREE_MULTIPLIER * (-1));
 	while (point.x() <= -180) {
 		point.setX(point.x() + 360.0);
 	}

@@ -7,12 +7,11 @@ using namespace ns_osm;
 /*================================================================*/
 
 Osm_View::Osm_View() {
-	setDragMode(ScrollHandDrag);
+//	setDragMode(ScrollHandDrag);
 	setRenderHints(QPainter::Antialiasing);
-	setInteractive(true);
-//	setTransformationAnchor(AnchorUnderMouse);
-	scale(1.0, 2.0);
-//	setTransform(QTransform().shear(0.0,0.0).scale(1.0, 1.0));
+	setTransformationAnchor(AnchorUnderMouse);
+//	setMinimumSize(600,400);
+//	setViewportUpdateMode(BoundingRectViewportUpdate);
 }
 
 Osm_View::~Osm_View() {}
@@ -73,6 +72,7 @@ void Osm_View::mouseReleaseEvent(QMouseEvent* p_event) {
 	default:
 		break;
 	}
+	QGraphicsView::mouseReleaseEvent(p_event);
 }
 
 //void Osm_View::mouseMoveEvent(QMouseEvent* p_event) {
