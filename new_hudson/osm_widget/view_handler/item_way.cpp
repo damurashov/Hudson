@@ -33,11 +33,12 @@ Item_Way::Item_Way(const Coord_Handler& handler,
 }
 
 Item_Way::~Item_Way() {
-	QList<Item_Edge*>::iterator it;
-
-	for (it = m_edges.begin(); it != m_edges.end(); ++it) {
+	for (auto it = m_edges.begin(); it != m_edges.end(); ++it) {
 		unreg(*it);
-		delete *it;
+		//delete *it;
+	}
+	for (auto it = m_garbage.begin(); it != m_garbage.end(); ++it) {
+		//delete *it;
 	}
 }
 
@@ -75,7 +76,7 @@ bool Item_Way::split_edge(int item_edge_pos, Osm_Node *p_node_mid) {
 	reg(p_prev_item);
 	reg(p_next_item);
 	unreg(p_old_item);
-	delete p_old_item;
+	//delete p_old_item;
 
 	return true;
 }
@@ -100,8 +101,8 @@ bool Item_Way::merge_edges(int pos_prev, int pos_next) {
 
 	unreg(p_left_old_edge);
 	unreg(p_right_old_edge);
-	delete p_left_old_edge;
-	delete p_right_old_edge;
+	//delete p_left_old_edge;
+	//delete p_right_old_edge;
 
 	return true;
 
@@ -176,7 +177,7 @@ int Item_Way::seek_pos_item_edge(Osm_Node* p_first, Osm_Node* p_second) const {
 			pos++;
 		}
 	}
-	delete p_edge;
+	//delete p_edge;
 
 	return (it_edge != m_edges.cend() ? pos : -1);
 }
@@ -235,7 +236,7 @@ void Item_Way::handle_diffs() {
 			p_item_edge = *(diff.it_diff);
 			m_edges.erase(diff.it_diff);
 			unreg(p_item_edge);
-			delete p_item_edge;
+			//delete p_item_edge;
 			break;
 		}
 	}
@@ -315,7 +316,7 @@ void Item_Way::handle_deleted_front() {
 	p_item_edge = m_edges.front();
 	unreg(p_item_edge);
 	m_edges.pop_front();
-	delete p_item_edge;
+	//delete p_item_edge;
 }
 
 void Item_Way::handle_deleted_back() {
@@ -328,7 +329,7 @@ void Item_Way::handle_deleted_back() {
 	p_item_edge = m_edges.back();
 	unreg(p_item_edge);
 	m_edges.pop_back();
-	delete p_item_edge;
+	//delete p_item_edge;
 }
 
 void Item_Way::handle_deleted_mid(const Meta& meta) {
@@ -388,6 +389,8 @@ void Item_Way::unreg(Item_Edge* p_item) {
 	if (scene()) {
 		scene()->removeItem(p_item);
 	}
+	p_item->setEnabled(false);
+	m_garbage.insert(p_item);
 //	scene()->removeItem(p_item);
 //	removeFromGroup(p_item);
 }

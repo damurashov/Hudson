@@ -19,6 +19,7 @@ class Item_Way : public QGraphicsItem, public Osm_Subscriber {
 private:
 	struct Diff;
 	mutable QList<Item_Edge*>	m_edges;
+	QSet<Item_Edge*>			m_garbage;
 //	const Osm_Map&				m_map;
 	const Coord_Handler			m_coord_handler;
 	View_Handler&				m_view_handler;
