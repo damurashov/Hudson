@@ -284,21 +284,21 @@ void Item_Way::handle_added_mid(const Meta& meta) {
 	Osm_Node*					p_node;
 	Osm_Node*					p_new_node;
 
+	if ((p_new_node = static_cast<Osm_Node*>(meta.get_subject())) == nullptr) {
+		handle_diffs();
+		return;
+	}
 	/* Seek edge pos */
 	if ((pos_node = meta.get_pos(Meta::SUBJECT_AFTER)) >= 0) {
 		pos_edge_to_split = pos_node;
 	} else if ((pos_node = meta.get_pos(Meta::SUBJECT_BEFORE)) >= 0) {
 		pos_edge_to_split = pos_node - 1;
-	}
-	if ((p_new_node = static_cast<Osm_Node*>(meta.get_subject())) == nullptr) {
-		handle_diffs();
-		return;
-	}
-	if ((p_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_AFTER))) != nullptr) {
+	} else if ((p_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_AFTER))) != nullptr) {
 		pos_edge_to_split = seek_pos_node_first(p_node, p_new_node);
 	} else if ((p_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_BEFORE))) != nullptr) {
 		pos_edge_to_split = seek_pos_node_first(p_new_node, p_node) - 1;
 	}
+
 	/* Split */
 	if (!split_edge(pos_edge_to_split, p_new_node)) {
 		handle_diffs();

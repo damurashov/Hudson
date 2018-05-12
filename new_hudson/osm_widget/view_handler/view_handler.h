@@ -30,6 +30,8 @@ private slots:
 	                                                             Osm_Node*,
 	                                                             Qt::MouseButton);
 private:
+	union Subject {Osm_Node* p_node;
+		           Osm_Way* p_way;}		m_current_subject;
 	Osm_Map&							m_map;
 	Coord_Handler						m_coord_handler;
 	Osm_Tool							m_current_tool;

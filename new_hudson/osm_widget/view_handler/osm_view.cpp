@@ -9,7 +9,9 @@ using namespace ns_osm;
 Osm_View::Osm_View() {
 //	setDragMode(ScrollHandDrag);
 	setRenderHints(QPainter::Antialiasing);
+	setRenderHint(QPainter::SmoothPixmapTransform, true);
 	setTransformationAnchor(AnchorUnderMouse);
+	setViewportUpdateMode(FullViewportUpdate);
 //	setMinimumSize(600,400);
 //	setViewportUpdateMode(BoundingRectViewportUpdate);
 }
@@ -64,10 +66,14 @@ void Osm_View::mouseReleaseEvent(QMouseEvent* p_event) {
 		//set_last_pos(p_event->pos());
 		break;
 	case Qt::MouseButton::RightButton:
-		emit signal_blank_area_clicked(p_event->pos(), p_event->button());
+		if (items(p_event->pos()).empty()) {
+			emit signal_blank_area_clicked(p_event->pos(), p_event->button());
+		}
 		break;
 	case Qt::MouseButton::LeftButton:
-		emit signal_blank_area_clicked(mapToScene(p_event->pos()), p_event->button());
+		if (items(p_event->pos()).empty()) {
+			emit signal_blank_area_clicked(mapToScene(p_event->pos()), p_event->button());
+		}
 		break;
 	default:
 		break;
