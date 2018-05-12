@@ -11,7 +11,7 @@ Item_Way::Item_Way(const Coord_Handler& handler,
                    View_Handler& view_handler,
                    Osm_Way& osm_way,
                    QGraphicsItem* p_parent)
-                   : QGraphicsItemGroup(p_parent),
+                   : QGraphicsItem(p_parent),
                      m_coord_handler(handler),
                      m_view_handler(view_handler),
                      m_way(osm_way)
@@ -25,6 +25,11 @@ Item_Way::Item_Way(const Coord_Handler& handler,
 	}
 
 	subscribe(osm_way);
+
+	setFlags(ItemIsSelectable);
+	setFlag(ItemSendsGeometryChanges);
+	setActive(true);
+	setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
 }
 
 Item_Way::~Item_Way() {
@@ -368,7 +373,8 @@ void Item_Way::reg(Item_Edge* p_item) {
 	if (scene()) {
 		scene()->addItem(p_item);
 	}
-	addToGroup(p_item);
+//	addToGroup(p_item);
+	p_item->setParentItem(this);
 	QObject::connect(p_item,
 	                 SIGNAL(signal_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)),
 	                 &m_view_handler,
@@ -383,7 +389,7 @@ void Item_Way::unreg(Item_Edge* p_item) {
 		scene()->removeItem(p_item);
 	}
 //	scene()->removeItem(p_item);
-	removeFromGroup(p_item);
+//	removeFromGroup(p_item);
 }
 
 /*================================================================*/
@@ -434,12 +440,21 @@ void Item_Way::handle_event_update(Osm_Way& way) {
 		break;
 	}
 
+	prepareGeometryChange();
 	update();
 }
+
+//void Item_Way::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+//	QGraphicsItem::mouseReleaseEvent(event);
+//}
 
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
+
+QRectF Item_Way::boundingRect() const {
+	return QRectF(0,0,0,0);
+}
 
 Osm_Way* Item_Way::get_way() const {
 	return &m_way;
