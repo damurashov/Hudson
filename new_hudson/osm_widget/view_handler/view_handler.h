@@ -13,6 +13,7 @@
 #include "osm_view.h"
 #include "coord_handler.h"
 #include "osm_tool.h"
+#include <math.h>
 
 namespace ns_osm {
 
