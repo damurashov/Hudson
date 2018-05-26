@@ -19,7 +19,10 @@ Item_Edge::Item_Edge(const Coord_Handler& handler,
 {
 	subscribe(*first());
 	subscribe(*second());
-	setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
+	setFlags(ItemIsSelectable);
+	setFlag(ItemSendsGeometryChanges);
+	setActive(true);
+	setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
 }
 
 Item_Edge::Item_Edge(const Coord_Handler& handler,
@@ -34,7 +37,10 @@ Item_Edge::Item_Edge(const Coord_Handler& handler,
 {
 	subscribe(*first());
 	subscribe(*second());
-	setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
+	setFlags(ItemIsSelectable);
+	setFlag(ItemSendsGeometryChanges);
+	setActive(true);
+	setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
 }
 
 Item_Edge::~Item_Edge() {}
@@ -76,4 +82,3 @@ void Item_Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	painter->setPen(pen);
 	painter->drawLine(m_coord_handler.get_pos_on_scene(*first()), m_coord_handler.get_pos_on_scene(*second()));
 }
-

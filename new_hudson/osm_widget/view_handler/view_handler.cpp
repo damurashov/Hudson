@@ -8,9 +8,7 @@ using namespace ns_osm;
 
 View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
 	m_current_tool = Osm_Tool::CURSOR;
-	m_map.set_force_use_dynamic_bound(true);
 	m_coord_handler.set_map(m_map);
-	m_coord_handler.set_scale(1.0);
 	load_from_map();
 	subscribe(m_map);
 }
@@ -35,13 +33,12 @@ View_Handler::~View_Handler() {
 /*                       Private methods                          */
 /*================================================================*/
 
-void View_Handler::slot_blank_area_clicked(QPointF, Qt::MouseButton) {
-	/* Drawing operations will be implemented here soon */
+void View_Handler::slot_blank_area_clicked(QPointF point, Qt::MouseButton button) {
+	/* Implement handlers */
 }
 
 void View_Handler::slot_node_clicked(Osm_Node* p_node, Qt::MouseButton) {
-	/* Drawing operations will be implemented here soon */
-	emit signal_object_selected(*p_node);
+	/* Implement handlers */
 }
 
 void View_Handler::slot_edge_clicked(QPointF point,
@@ -50,8 +47,7 @@ void View_Handler::slot_edge_clicked(QPointF point,
                                      Osm_Node* p_node2,
                                      Qt::MouseButton button)
 {
-	/* Drawing operations will be implemented here soon */
-	emit signal_object_selected(*p_way);
+	/* Implement handlers */
 }
 
 void View_Handler::add(Osm_Node* p_node) {
@@ -62,15 +58,11 @@ void View_Handler::add(Osm_Node* p_node) {
 	} else if (m_nodeid_to_item.contains(p_node->get_id())) {
 		return;
 	}
-	if (!m_coord_handler.is_ready()) {
-		m_coord_handler.set_start_point(*p_node);
-	}
 	subscribe(*p_node);
 	p_nodeitem = new Item_Node(m_coord_handler, *p_node);
 	mp_scene->addItem(p_nodeitem);
 	m_nodeid_to_item.insert(p_node->get_id(), p_nodeitem);
 	p_nodeitem->setFlag(QGraphicsItem::ItemIsMovable);
-//	mp_view->centerOn(m_nodeid_to_item[p_node->get_id()]);
 	QObject::connect(p_nodeitem,
 	                 SIGNAL(signal_node_clicked(Osm_Node*,Qt::MouseButton)),
 	                 this,
@@ -126,7 +118,6 @@ void View_Handler::remove(Osm_Way* p_way) {
 void View_Handler::load_from_map() {
 	mp_scene = new QGraphicsScene(this);
 	mp_view = new Osm_View;
-//	mp_scene->setSceneRect(m_map.get_scene_rect());
 	mp_view->setScene(mp_scene);
 	setLayout(new QHBoxLayout(this));
 	layout()->addWidget(mp_view);
@@ -148,6 +139,10 @@ void View_Handler::load_from_map() {
 
 void View_Handler::handle_event_delete(Osm_Node& node) {
 	remove(&node);
+}
+
+void View_Handler::handle_event_update(Osm_Node& node) {
+	mp_view->centerOn(m_nodeid_to_item[node.get_id()]);
 }
 
 void View_Handler::handle_event_delete(Osm_Way& way) {

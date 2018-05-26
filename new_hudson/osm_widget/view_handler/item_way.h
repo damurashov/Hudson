@@ -14,11 +14,12 @@ namespace ns_osm {
 
 class View_Handler;
 
-class Item_Way : public QGraphicsItemGroup, public Osm_Subscriber {
+class Item_Way : public QGraphicsItem, public Osm_Subscriber {
 	//Q_OBJECT
 private:
 	struct Diff;
 	mutable QList<Item_Edge*>	m_edges;
+	QSet<Item_Edge*>			m_garbage;
 //	const Osm_Map&				m_map;
 	const Coord_Handler			m_coord_handler;
 	View_Handler&				m_view_handler;
@@ -40,9 +41,11 @@ private:
 	void						unreg				(Item_Edge*);
 protected:
 	void						handle_event_update	(Osm_Way&) override;
+//	void						mouseReleaseEvent	(QGraphicsSceneMouseEvent *event) override;
 public:
 	enum						{Type = UserType + 3};
 
+	QRectF						boundingRect		() const override;
 	Osm_Way*					get_way				() const;
 	void						paint				(QPainter *painter,
 	                                                 const QStyleOptionGraphicsItem *option,

@@ -36,6 +36,7 @@ enum Event {
 	MAP_CLEARED,
 	MAP_DELETED,
 	MAP_NODE_ADDED,
+	MAP_NODE_UPDATED,
 	MAP_WAY_ADDED,
 	MAP_RELATION_ADDED
 	//MAP_SCENE_SHRINKED
@@ -67,6 +68,7 @@ public:
 	Osm_Object*					get_subject		(Subject = SUBJECT_PRIMARY) const;
 	int							get_pos			(Subject) const;
 	Event						get_event		() const;
+	Event						get_event_group	() const;
 	                            Meta			();
 								Meta			(Event);
 								Meta			(const Meta&);

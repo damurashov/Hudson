@@ -1,0 +1,13 @@
+<osm version="0.6" generator="CGImap 0.6.0 (3303 thorn-01.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+<node id="1" lon="0" lat="0"/>
+<node id="2" lon="1" lat="0"/>
+<node id="3" lon="1" lat="1"/>
+<node id="4" lon="0" lat="1"/>
+<way id="13">
+<nd ref="1"/>
+<nd ref="2"/>
+<nd ref="3"/>
+<nd ref="4"/>
+<nd ref="1"/>
+</way>
+</osm>

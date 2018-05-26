@@ -11,7 +11,7 @@ Item_Way::Item_Way(const Coord_Handler& handler,
                    View_Handler& view_handler,
                    Osm_Way& osm_way,
                    QGraphicsItem* p_parent)
-                   : QGraphicsItemGroup(p_parent),
+                   : QGraphicsItem(p_parent),
                      m_coord_handler(handler),
                      m_view_handler(view_handler),
                      m_way(osm_way)
@@ -25,14 +25,20 @@ Item_Way::Item_Way(const Coord_Handler& handler,
 	}
 
 	subscribe(osm_way);
+
+	setFlags(ItemIsSelectable);
+	setFlag(ItemSendsGeometryChanges);
+	setActive(true);
+	setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
 }
 
 Item_Way::~Item_Way() {
-	QList<Item_Edge*>::iterator it;
-
-	for (it = m_edges.begin(); it != m_edges.end(); ++it) {
+	for (auto it = m_edges.begin(); it != m_edges.end(); ++it) {
 		unreg(*it);
-		delete *it;
+		//delete *it;
+	}
+	for (auto it = m_garbage.begin(); it != m_garbage.end(); ++it) {
+		//delete *it;
 	}
 }
 
@@ -70,7 +76,7 @@ bool Item_Way::split_edge(int item_edge_pos, Osm_Node *p_node_mid) {
 	reg(p_prev_item);
 	reg(p_next_item);
 	unreg(p_old_item);
-	delete p_old_item;
+	//delete p_old_item;
 
 	return true;
 }
@@ -95,8 +101,8 @@ bool Item_Way::merge_edges(int pos_prev, int pos_next) {
 
 	unreg(p_left_old_edge);
 	unreg(p_right_old_edge);
-	delete p_left_old_edge;
-	delete p_right_old_edge;
+	//delete p_left_old_edge;
+	//delete p_right_old_edge;
 
 	return true;
 
@@ -171,7 +177,7 @@ int Item_Way::seek_pos_item_edge(Osm_Node* p_first, Osm_Node* p_second) const {
 			pos++;
 		}
 	}
-	delete p_edge;
+	//delete p_edge;
 
 	return (it_edge != m_edges.cend() ? pos : -1);
 }
@@ -230,7 +236,7 @@ void Item_Way::handle_diffs() {
 			p_item_edge = *(diff.it_diff);
 			m_edges.erase(diff.it_diff);
 			unreg(p_item_edge);
-			delete p_item_edge;
+			//delete p_item_edge;
 			break;
 		}
 	}
@@ -279,21 +285,21 @@ void Item_Way::handle_added_mid(const Meta& meta) {
 	Osm_Node*					p_node;
 	Osm_Node*					p_new_node;
 
+	if ((p_new_node = static_cast<Osm_Node*>(meta.get_subject())) == nullptr) {
+		handle_diffs();
+		return;
+	}
 	/* Seek edge pos */
 	if ((pos_node = meta.get_pos(Meta::SUBJECT_AFTER)) >= 0) {
 		pos_edge_to_split = pos_node;
 	} else if ((pos_node = meta.get_pos(Meta::SUBJECT_BEFORE)) >= 0) {
 		pos_edge_to_split = pos_node - 1;
-	}
-	if ((p_new_node = static_cast<Osm_Node*>(meta.get_subject())) == nullptr) {
-		handle_diffs();
-		return;
-	}
-	if ((p_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_AFTER))) != nullptr) {
+	} else if ((p_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_AFTER))) != nullptr) {
 		pos_edge_to_split = seek_pos_node_first(p_node, p_new_node);
 	} else if ((p_node = static_cast<Osm_Node*>(meta.get_subject(Meta::SUBJECT_BEFORE))) != nullptr) {
 		pos_edge_to_split = seek_pos_node_first(p_new_node, p_node) - 1;
 	}
+
 	/* Split */
 	if (!split_edge(pos_edge_to_split, p_new_node)) {
 		handle_diffs();
@@ -310,7 +316,7 @@ void Item_Way::handle_deleted_front() {
 	p_item_edge = m_edges.front();
 	unreg(p_item_edge);
 	m_edges.pop_front();
-	delete p_item_edge;
+	//delete p_item_edge;
 }
 
 void Item_Way::handle_deleted_back() {
@@ -323,7 +329,7 @@ void Item_Way::handle_deleted_back() {
 	p_item_edge = m_edges.back();
 	unreg(p_item_edge);
 	m_edges.pop_back();
-	delete p_item_edge;
+	//delete p_item_edge;
 }
 
 void Item_Way::handle_deleted_mid(const Meta& meta) {
@@ -368,7 +374,8 @@ void Item_Way::reg(Item_Edge* p_item) {
 	if (scene()) {
 		scene()->addItem(p_item);
 	}
-	addToGroup(p_item);
+//	addToGroup(p_item);
+	p_item->setParentItem(this);
 	QObject::connect(p_item,
 	                 SIGNAL(signal_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)),
 	                 &m_view_handler,
@@ -382,8 +389,10 @@ void Item_Way::unreg(Item_Edge* p_item) {
 	if (scene()) {
 		scene()->removeItem(p_item);
 	}
+	p_item->setEnabled(false);
+	m_garbage.insert(p_item);
 //	scene()->removeItem(p_item);
-	removeFromGroup(p_item);
+//	removeFromGroup(p_item);
 }
 
 /*================================================================*/
@@ -434,12 +443,21 @@ void Item_Way::handle_event_update(Osm_Way& way) {
 		break;
 	}
 
+	prepareGeometryChange();
 	update();
 }
+
+//void Item_Way::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+//	QGraphicsItem::mouseReleaseEvent(event);
+//}
 
 /*================================================================*/
 /*                        Public methods                          */
 /*================================================================*/
+
+QRectF Item_Way::boundingRect() const {
+	return QRectF(0,0,0,0);
+}
 
 Osm_Way* Item_Way::get_way() const {
 	return &m_way;
