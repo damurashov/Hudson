@@ -7,7 +7,6 @@ SUBDIRS += \
     test_referential_integrity \
     test_osm_object \
     test_osm_map \
-    test_osm_map_bound
 
 test_osm_node.subdirs = test_osm_node
 test_osm_way.subdirs = test_osm_way

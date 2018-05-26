@@ -127,6 +127,10 @@ Event Meta::get_event() const {
 	return m_event;
 }
 
+Event Meta::get_event_group() const {
+	return static_cast<Event>(static_cast<int>(m_event));
+}
+
 Osm_Object* Meta::get_subject(Subject sub) const {
 	if (sub == SUBJECT_PRIMARY) {
 		return mp_primary_subject;

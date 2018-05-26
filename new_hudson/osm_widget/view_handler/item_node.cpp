@@ -14,15 +14,12 @@ Item_Node::Item_Node(const Coord_Handler& handler,
                        m_coord_handler(handler),
                        m_node(node)
 {
-	//setPos(m_map.get_scene_coord(&m_node));
 	setPos(m_coord_handler.get_pos_on_scene(node));
 	setZValue(10);
 	setFlag(ItemIsMovable);
 	setFlag(ItemSendsGeometryChanges);
 	setActive(true);
 	setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
-//	setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsGeometryChanges);
-	//setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemSendsGeometryChanges);
 }
 
 Item_Node::~Item_Node() {}
@@ -31,15 +28,8 @@ Item_Node::~Item_Node() {}
 /*                      Protected methods                         */
 /*================================================================*/
 
-//int Item_Node::get_pen_size() const {
-//	int size_px = (scale() < 2.0 ? 30 : 80);
-//	return size_px;
-//}
-
 QVariant Item_Node::itemChange(GraphicsItemChange change, const QVariant &value) {
 	QPointF pos = value.toPointF();
-//	pos = mapToScene(pos);
-	//pos = m_map.get_geo_coord(pos);
 	pos = m_coord_handler.get_geo_coords(pos);
 	prepareGeometryChange();
 	switch (change) {
@@ -84,7 +74,6 @@ void Item_Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	painter->setPen(pen);
 	painter->setBrush(brush);
 	painter->drawEllipse(QPoint(0,0), 2, 2);
-
 }
 
 QRectF Item_Node::boundingRect() const {

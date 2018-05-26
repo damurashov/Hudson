@@ -8,7 +8,7 @@ using namespace ns_osm;
 
 Osm_View::Osm_View() {
 //	setDragMode(ScrollHandDrag);
-	setRenderHints(QPainter::Antialiasing);
+	setRenderHint(QPainter::Antialiasing, true);
 	setRenderHint(QPainter::SmoothPixmapTransform, true);
 	setTransformationAnchor(AnchorUnderMouse);
 	setViewportUpdateMode(FullViewportUpdate);
@@ -19,24 +19,8 @@ Osm_View::Osm_View() {
 Osm_View::~Osm_View() {}
 
 /*================================================================*/
-/*                       Private methods                          */
-/*================================================================*/
-
-//void Osm_View::scale_view(double scale_factor) {
-//	scale(scale_factor, scale_factor);
-//}
-
-/*================================================================*/
 /*                      Protected methods                         */
 /*================================================================*/
-
-//QPointF Osm_View::get_last_pos() const {
-//	return m_last_pos;
-//}
-
-void Osm_View::set_last_pos(const QPointF& point) {
-	m_last_pos = point;
-}
 
 void Osm_View::wheelEvent(QWheelEvent* p_event) {
 	double factor;
@@ -62,8 +46,6 @@ void Osm_View::wheelEvent(QWheelEvent* p_event) {
 void Osm_View::mouseReleaseEvent(QMouseEvent* p_event) {
 	switch (p_event->button()) {
 	case Qt::MouseButton::MiddleButton:
-		//translate(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
-		//set_last_pos(p_event->pos());
 		break;
 	case Qt::MouseButton::RightButton:
 		if (items(p_event->pos()).empty()) {
@@ -80,17 +62,3 @@ void Osm_View::mouseReleaseEvent(QMouseEvent* p_event) {
 	}
 	QGraphicsView::mouseReleaseEvent(p_event);
 }
-
-//void Osm_View::mouseMoveEvent(QMouseEvent* p_event) {
-//	if (p_event->button() != Qt::MouseButton::MiddleButton) {
-//		return;
-//	}
-//	translate(p_event->pos().x() - get_last_pos().x(), p_event->pos().y() - get_last_pos().y());
-//	set_last_pos(p_event->pos());
-//}
-
-//void Osm_View::mousePressEvent(QMouseEvent* p_event) {
-//	if (p_event->button() == Qt::MouseButton::MiddleButton) {
-//		set_last_pos(p_event->pos());
-//	}
-//}

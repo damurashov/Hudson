@@ -8,12 +8,8 @@ using namespace ns_osm;
 
 View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
 	m_current_tool = Osm_Tool::CURSOR;
-	m_map.set_force_use_dynamic_bound(true);
 	m_coord_handler.set_map(m_map);
-	m_coord_handler.set_scale(1.0);
 	load_from_map();
-	m_current_subject.p_way = nullptr;
-	m_current_subject.p_node = nullptr;
 	subscribe(m_map);
 }
 
@@ -38,49 +34,11 @@ View_Handler::~View_Handler() {
 /*================================================================*/
 
 void View_Handler::slot_blank_area_clicked(QPointF point, Qt::MouseButton button) {
-	point = m_coord_handler.get_geo_coords(point);
-	if (button != Qt::LeftButton) {
-		return;
-	}
-	switch (m_current_tool) {
-	case Osm_Tool::CURSOR:
-		break;
-	case Osm_Tool::NODE:
-		m_map.add(new Osm_Node(point.y(), point.x()));
-		break;
-	case Osm_Tool::WAY:
-		if (m_current_subject.p_way == nullptr) {
-			m_current_subject.p_way = new Osm_Way;
-			m_map.add(m_current_subject.p_way);
-		}
-		if (m_current_subject.p_way->push_node(new Osm_Node(point.y(), point.x())) == false) {
-			if (m_current_subject.p_way->get_size() == 0) {
-				m_map.remove(m_current_subject.p_way);
-			}
-			m_current_subject.p_way = nullptr;
-		}
-	}
+	/* Implement handlers */
 }
 
 void View_Handler::slot_node_clicked(Osm_Node* p_node, Qt::MouseButton) {
-	switch (m_current_tool) {
-	case Osm_Tool::CURSOR:
-		emit signal_object_selected(*p_node);
-		break;
-	case Osm_Tool::NODE:
-		break;
-	case Osm_Tool::WAY:
-		if (m_current_subject.p_way == nullptr) {
-			m_current_subject.p_way = new Osm_Way;
-			m_map.add(m_current_subject.p_way);
-		}
-		if (m_current_subject.p_way->push_node(p_node) == false) {
-			if (m_current_subject.p_way->get_size() == 0) {
-				m_map.remove(m_current_subject.p_way);
-			}
-			m_current_subject.p_way = nullptr;
-		}
-	}
+	/* Implement handlers */
 }
 
 void View_Handler::slot_edge_clicked(QPointF point,
@@ -89,32 +47,7 @@ void View_Handler::slot_edge_clicked(QPointF point,
                                      Osm_Node* p_node2,
                                      Qt::MouseButton button)
 {
-	QPointF geo(m_coord_handler.get_geo_coords(point));
-	/* Drawing operations will be implemented here soon */
-	emit signal_object_selected(*p_way);
-	switch (m_current_tool) {
-	case Osm_Tool::CURSOR:
-		break;
-	case Osm_Tool::NODE:
-		if (button == Qt::LeftButton) {
-			p_way->insert_node_between(new Osm_Node(geo.y(), geo.x()), p_node1, p_node2);
-		}
-		break;
-	case Osm_Tool::WAY:
-		if (m_current_subject.p_way == nullptr) {
-			m_current_subject.p_way = new Osm_Way;
-			m_map.add(m_current_subject.p_way);
-		}
-		Osm_Node* p_node = new Osm_Node(geo.y(), geo.x());
-//		p_way->insert_node_between(p_node, p_node1, p_node2);
-		if (m_current_subject.p_way->insert_node_between(p_node, p_node1, p_node2) == false) {
-			if (m_current_subject.p_way->get_size() == 0) {
-				m_map.remove(m_current_subject.p_way);
-			}
-			m_current_subject.p_way = nullptr;
-		}
-		break;
-	}
+	/* Implement handlers */
 }
 
 void View_Handler::add(Osm_Node* p_node) {
@@ -125,15 +58,11 @@ void View_Handler::add(Osm_Node* p_node) {
 	} else if (m_nodeid_to_item.contains(p_node->get_id())) {
 		return;
 	}
-	if (!m_coord_handler.is_ready()) {
-		m_coord_handler.set_start_point(*p_node);
-	}
 	subscribe(*p_node);
 	p_nodeitem = new Item_Node(m_coord_handler, *p_node);
 	mp_scene->addItem(p_nodeitem);
 	m_nodeid_to_item.insert(p_node->get_id(), p_nodeitem);
 	p_nodeitem->setFlag(QGraphicsItem::ItemIsMovable);
-//	mp_view->centerOn(m_nodeid_to_item[p_node->get_id()]);
 	QObject::connect(p_nodeitem,
 	                 SIGNAL(signal_node_clicked(Osm_Node*,Qt::MouseButton)),
 	                 this,
@@ -189,7 +118,6 @@ void View_Handler::remove(Osm_Way* p_way) {
 void View_Handler::load_from_map() {
 	mp_scene = new QGraphicsScene(this);
 	mp_view = new Osm_View;
-//	mp_scene->setSceneRect(m_map.get_scene_rect());
 	mp_view->setScene(mp_scene);
 	setLayout(new QHBoxLayout(this));
 	layout()->addWidget(mp_view);
@@ -211,6 +139,10 @@ void View_Handler::load_from_map() {
 
 void View_Handler::handle_event_delete(Osm_Node& node) {
 	remove(&node);
+}
+
+void View_Handler::handle_event_update(Osm_Node& node) {
+	mp_view->centerOn(m_nodeid_to_item[node.get_id()]);
 }
 
 void View_Handler::handle_event_delete(Osm_Way& way) {

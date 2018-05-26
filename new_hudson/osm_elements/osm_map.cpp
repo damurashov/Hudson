@@ -2,37 +2,14 @@
 
 using namespace ns_osm;
 /*================================================================*/
-/*                        Static members                          */
-/*================================================================*/
-
-//const double Osm_Map::GEO_DEGREE_MULTIPLIER = 1000.0;
-//double Osm_Map::GEO_DEGREE_MULTIPLIER = 10000.0;
-
-/*================================================================*/
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
 Osm_Map::Osm_Map() {
-	const double BIG = 300.0;
 	mn_parents = 0;
 	f_destruct_physically = true;
 	f_remove_orphaned_nodes = true;
 	f_remove_one_node_ways = true;
-	f_is_valid = true;
-	f_force_dynamic_bound = false;
-
-	m_bounding_rect.setLeft(0.0);
-	m_bounding_rect.setRight(0.0);
-	m_bounding_rect.setTop(0.0);
-	m_bounding_rect.setBottom(0.0);
-	m_autorect_normal.setLeft(BIG);
-	m_autorect_normal.setRight(-BIG);
-	m_autorect_normal.setTop(-BIG);
-	m_autorect_normal.setBottom(BIG);
-	m_autorect_180.setLeft(BIG);
-	m_autorect_180.setRight(-BIG);
-	m_autorect_180.setTop(-BIG);
-	m_autorect_180.setBottom(BIG);
 }
 
 Osm_Map::~Osm_Map() {
@@ -44,69 +21,11 @@ Osm_Map::~Osm_Map() {
 /*                       Private methods                          */
 /*================================================================*/
 
-void Osm_Map::reset_bounds() {
-	const double BIG = 300.0;
-
-	m_autorect_normal.setLeft(BIG);
-	m_autorect_normal.setRight(-BIG);
-	m_autorect_normal.setTop(-BIG);
-	m_autorect_normal.setBottom(BIG);
-	m_autorect_180.setLeft(BIG);
-	m_autorect_180.setRight(-BIG);
-	m_autorect_180.setTop(-BIG);
-	m_autorect_180.setBottom(BIG);
-}
-
-bool Osm_Map::is_valid_bound(const QRectF& rect) const {
-	if (rect.width() == 0.0 || rect.height() == 0.0) {
-		return false;
-	}
-	if (std::abs(rect.bottom()) > 90 || std::abs(rect.top()) > 90 || rect.bottom() > rect.top()) {
-		return false;
-	}
-	if (std::abs(rect.left()) >= 180 || std::abs(rect.right()) > 180) {
-		return false;
-	}
-	return true;
-}
-
-bool Osm_Map::has_issue_180(const QRectF& rect) const {
-	return rect.right() < rect.left();
-}
-
-void Osm_Map::fit_autorects(Osm_Node& node) {
-	double lat = node.get_lat();
-	double lon = node.get_lon();
-
-	/* Mutual vertical bounds, ... */
-	if (lat > m_autorect_normal.top()) {
-		m_autorect_normal.setTop(lat);
-		m_autorect_180.setTop(lat);
-	}
-	if (lat < m_autorect_normal.bottom()) {
-		m_autorect_normal.setBottom(lat);
-		m_autorect_180.setBottom(lat);
-	}
-	/* ... but different horisontal ones */
-	if (lon < m_autorect_normal.left()) {
-		m_autorect_normal.setLeft(lon);
-	}
-	if (lon > m_autorect_normal.right()) {
-		m_autorect_normal.setRight(lon);
-	}
-	if (lon < m_autorect_180.left() && lon > 0) {
-		m_autorect_180.setLeft(lon);
-	}
-	if (lon > m_autorect_180.right() && lon <= 0) {
-		m_autorect_180.setRight(lon);
-	}
-}
-
 
 void Osm_Map::handle_event_update(Osm_Node& node) {
 	switch (get_meta()) {
 	case NODE_UPDATED:
-		fit_autorects(node);
+		emit_update(Meta().set_event(MAP_NODE_UPDATED).set_subject(node));
 		break;
 	}
 }
@@ -229,18 +148,6 @@ void Osm_Map::handle_event_delete(Osm_Relation& rel) {
 /*                        Public methods                          */
 /*================================================================*/
 
-bool Osm_Map::is_valid() const {
-	return f_is_valid;
-}
-
-bool Osm_Map::includes_in_scene(Osm_Node* p_node) const {
-	if (p_node == nullptr) {
-		return false;
-	}
-
-	return get_scene_rect().contains(get_scene_coord(p_node));
-}
-
 void Osm_Map::set_remove_physically(bool f) {
 	f_destruct_physically = f;
 }
@@ -251,10 +158,6 @@ void Osm_Map::set_remove_orphaned_nodes(bool f) {
 
 void Osm_Map::set_remove_one_node_ways(bool f) {
 	f_remove_one_node_ways = f;
-}
-
-void Osm_Map::set_force_use_dynamic_bound(bool f) {
-	f_force_dynamic_bound = f;
 }
 
 void Osm_Map::set_bound(const QRectF& bound) {
@@ -274,19 +177,13 @@ void Osm_Map::orphan() {
 }
 
 void Osm_Map::add(Osm_Node* p_node) {
-//	double lon;
-//	double lat;
-
 	if (p_node != nullptr) {
 		if (has(p_node)) {
 			return;
 		}
-//		lon = p_node->get_lon();
-//		lat = p_node->get_lat();
 		if (!(p_node->is_valid())) {
-			f_is_valid = false;
+			set_valid(false);
 		}
-		fit_autorects(*p_node);
 
 		m_nodes_hash[p_node->get_id()] = p_node;
 		subscribe(*p_node);
@@ -300,7 +197,7 @@ void Osm_Map::add(Osm_Way* p_way) {
 			return;
 		}
 		if (!(p_way->is_valid())) {
-			f_is_valid = false;
+			set_valid(false);
 		}
 		for (auto it = p_way->get_nodes_list().cbegin(); it != p_way->get_nodes_list().cend(); ++it) {
 			add(const_cast<Osm_Node*>(*it));
@@ -317,7 +214,7 @@ void Osm_Map::add(Osm_Relation* p_rel) {
 			return;
 		}
 		if (!(p_rel->is_valid())) {
-			f_is_valid = false;
+			set_valid(false);
 		}
 		for (auto it = p_rel->get_nodes().cbegin(); it != p_rel->get_nodes().cend(); ++it) {
 			add(const_cast<Osm_Node*>(*it));
@@ -414,79 +311,11 @@ void Osm_Map::clear() {
 	m_nodes_hash.clear();
 	m_ways_hash.clear();
 	m_relations_hash.clear();
-	reset_bounds();
 	emit_update(MAP_CLEARED);
 }
 
-void Osm_Map::fit_bounding_rect() {
-//	long long longitude;
-
-//	if (m_bounding_rect.width()!=0 && m_bounding_rect.height()!=0) {
-//		return;
-//	}
-}
-
 QRectF Osm_Map::get_bound() const {
-	double width_normal;
-	double width_180;
-
-	if (!is_valid_bound(m_bounding_rect) || f_force_dynamic_bound) {
-		width_normal = m_autorect_normal.right() - m_autorect_normal.left();
-		width_180 = m_autorect_180.left() - m_autorect_180.right();
-
-		if (width_180 < width_normal) {
-			return m_autorect_180;
-		} else {
-			return m_autorect_normal;
-		}
-	}
 	return m_bounding_rect;
-}
-
-QRectF Osm_Map::get_scene_rect() const {
-	QRectF rect = get_bound();
-
-	if (has_issue_180(rect)) {
-		rect.setRight(rect.right() + 360.0);
-	}
-	rect.setTopLeft(get_scene_coord(rect.topLeft()));
-	rect.setBottomRight(get_scene_coord(rect.bottomRight()));
-	return rect;
-}
-
-QPointF Osm_Map::get_scene_coord(Osm_Node* p_node) const {
-	QPointF point;
-
-	if (p_node == nullptr) {
-		return point;
-	}
-	if (!has_issue_180(get_bound()) || p_node->get_lon() > 0) {
-		point.setX(p_node->get_lon());
-		point.setY(p_node->get_lat());
-	} else {
-		point.setX(p_node->get_lon() + 360.0);
-		point.setY(p_node->get_lat());
-	}
-	return point;
-}
-
-QPointF Osm_Map::get_scene_coord(QPointF point /* geo point */) const {
-	if (has_issue_180(get_bound()) && point.x() <= 0) {
-		point.setX(point.x() + 360.0);
-	}
-
-	return point;
-}
-
-QPointF Osm_Map::get_geo_coord(QPointF point /* scene point */) const {
-	while (point.x() <= -180) {
-		point.setX(point.x() + 360.0);
-	}
-	while (point.x() > 180) {
-		point.setX(point.x() - 360.0);
-	}
-
-	return point;
 }
 
 Osm_Node* Osm_Map::get_node(long long id) {
