@@ -47,7 +47,7 @@ private:
 	void								load_from_map			();
 protected:
 	void								handle_event_delete		(Osm_Node&) override;
-	void								handle_event_update		(Osm_Node&) override;
+//	void								handle_event_update		(Osm_Node&) override;
 	void								handle_event_delete		(Osm_Way&) override;
 	void								handle_event_update		(Osm_Object&) override;
 	void								handle_event_delete		(Osm_Object&) override;

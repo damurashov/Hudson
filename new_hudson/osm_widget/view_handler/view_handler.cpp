@@ -141,10 +141,6 @@ void View_Handler::handle_event_delete(Osm_Node& node) {
 	remove(&node);
 }
 
-void View_Handler::handle_event_update(Osm_Node& node) {
-	mp_view->centerOn(m_nodeid_to_item[node.get_id()]);
-}
-
 void View_Handler::handle_event_delete(Osm_Way& way) {
 	remove(&way);
 }
