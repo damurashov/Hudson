@@ -2,7 +2,8 @@ TEMPLATE = lib
 
 QMAKE_CXXFLAGS += \
 -Wno-unused-parameter   \
--Wno-ignored-qualifiers
+-Wno-ignored-qualifiers \
+-Wno-switch
 
 DESTDIR = $$PWD/../intermediate_libs
 

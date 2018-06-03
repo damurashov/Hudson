@@ -35,10 +35,6 @@ Item_Way::Item_Way(const Coord_Handler& handler,
 Item_Way::~Item_Way() {
 	for (auto it = m_edges.begin(); it != m_edges.end(); ++it) {
 		unreg(*it);
-		//delete *it;
-	}
-	for (auto it = m_garbage.begin(); it != m_garbage.end(); ++it) {
-		//delete *it;
 	}
 }
 
@@ -76,7 +72,6 @@ bool Item_Way::split_edge(int item_edge_pos, Osm_Node *p_node_mid) {
 	reg(p_prev_item);
 	reg(p_next_item);
 	unreg(p_old_item);
-	//delete p_old_item;
 
 	return true;
 }
@@ -101,39 +96,8 @@ bool Item_Way::merge_edges(int pos_prev, int pos_next) {
 
 	unreg(p_left_old_edge);
 	unreg(p_right_old_edge);
-	//delete p_left_old_edge;
-	//delete p_right_old_edge;
 
 	return true;
-
-//	for (int i = 0; i < pos_prev && it_old_edge != m_edges.end(); ++i) {
-//		p_left_old_edge = *it_old_edge;
-//		it_old_edge++;
-//	}
-//	if (it_old_edge == m_edges.end()) {
-//		return false;
-//	}
-//	it_old_edge++;
-//	if (it_old_edge == m_edges.end()) {
-//		return false;
-//	}
-//	p_right_old_edge = *it_old_edge;
-
-//	p_node_first = p_left_old_edge->first();
-//	p_node_second = p_right_old_edge->second();
-//	p_new_edge = new Item_Edge(m_coord_handler, *p_node_first, *p_node_second, m_way);
-
-//	m_edges.insert(it_old_edge, p_new_edge);
-//	m_edges.removeOne(p_left_old_edge);
-//	m_edges.removeOne(p_right_old_edge);
-
-//	reg(p_new_edge);
-//	unreg(p_left_old_edge);
-//	unreg(p_right_old_edge);
-//	delete p_left_old_edge;
-//	delete p_right_old_edge;
-
-//	return true;
 }
 
 int Item_Way::seek_pos_node_first(Osm_Node* p_node_left, Osm_Node* p_node_right) const {
@@ -370,11 +334,9 @@ void Item_Way::reg(Item_Edge* p_item) {
 	if (p_item == nullptr) {
 		return;
 	}
-//	scene()->addItem(p_item);
 	if (scene()) {
 		scene()->addItem(p_item);
 	}
-//	addToGroup(p_item);
 	p_item->setParentItem(this);
 	QObject::connect(p_item,
 	                 SIGNAL(signal_edge_clicked(QPointF,Osm_Way*,Osm_Node*,Osm_Node*,Qt::MouseButton)),
@@ -386,13 +348,8 @@ void Item_Way::unreg(Item_Edge* p_item) {
 	if (p_item == nullptr) {
 		return;
 	}
-	if (scene()) {
-		scene()->removeItem(p_item);
-	}
 	p_item->setEnabled(false);
-	m_garbage.insert(p_item);
-//	scene()->removeItem(p_item);
-//	removeFromGroup(p_item);
+	p_item->hide();
 }
 
 /*================================================================*/
@@ -446,10 +403,6 @@ void Item_Way::handle_event_update(Osm_Way& way) {
 	prepareGeometryChange();
 	update();
 }
-
-//void Item_Way::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-//	QGraphicsItem::mouseReleaseEvent(event);
-//}
 
 /*================================================================*/
 /*                        Public methods                          */

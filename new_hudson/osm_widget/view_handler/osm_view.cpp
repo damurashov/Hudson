@@ -6,7 +6,7 @@ using namespace ns_osm;
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
-Osm_View::Osm_View() {
+Osm_View::Osm_View(QWidget* p_parent) : QGraphicsView(p_parent) {
 //	setDragMode(ScrollHandDrag);
 	setRenderHint(QPainter::Antialiasing, true);
 	setRenderHint(QPainter::SmoothPixmapTransform, true);

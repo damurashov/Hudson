@@ -16,7 +16,7 @@ protected:
 	void	wheelEvent					(QWheelEvent *event) override;
 	void	mouseReleaseEvent			(QMouseEvent *event) override;
 public:
-	        Osm_View					();
+	        Osm_View					(QWidget* p_parent = nullptr);
 	virtual	~Osm_View					();
 };
 }

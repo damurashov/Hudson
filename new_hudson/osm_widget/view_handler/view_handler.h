@@ -31,9 +31,11 @@ private slots:
 	                                                             Osm_Node*,
 	                                                             Qt::MouseButton);
 private:
+	struct Drawing {
+		Osm_Way*	p_last_way;
+		Osm_Tool	current_tool;}		m_drawing;
 	Osm_Map&							m_map;
 	Coord_Handler						m_coord_handler;
-	Osm_Tool							m_current_tool;
 	QGraphicsScene*						mp_scene;
 	Osm_View*							mp_view;
 	QHash<long long, Item_Node*>		m_nodeid_to_item;
