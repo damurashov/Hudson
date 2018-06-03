@@ -31,9 +31,11 @@ private slots:
 	                                                             Osm_Node*,
 	                                                             Qt::MouseButton);
 private:
+	static const char*					MENU_DELETE;
 	struct Drawing {
 		Osm_Way*	p_last_way;
-		Osm_Tool	current_tool;}		m_drawing;
+		Osm_Tool	current_tool;
+		QMenu*		p_menu;}			m_drawing;
 	Osm_Map&							m_map;
 	Coord_Handler						m_coord_handler;
 	QGraphicsScene*						mp_scene;

@@ -3,12 +3,20 @@
 using namespace ns_osm;
 
 /*================================================================*/
+/*                        Static members                          */
+/*================================================================*/
+
+const char* View_Handler::MENU_DELETE = "delete";
+
+/*================================================================*/
 /*                  Constructors, destructors                     */
 /*================================================================*/
 
 View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
 	m_drawing.current_tool = Osm_Tool::CURSOR;
 	m_coord_handler.set_map(m_map);
+	m_drawing.p_menu = new QMenu;
+	m_drawing.p_menu->addAction(MENU_DELETE);
 	load_from_map();
 	subscribe(m_map);
 }
@@ -16,7 +24,10 @@ View_Handler::View_Handler(Osm_Map& map) : m_map(map) {
 /*----------------------------------------------------------------*/
 
 View_Handler::View_Handler(const View_Handler& vhandler) : m_map(vhandler.m_map) {
+	delete m_drawing.p_menu;
 	f_editable = vhandler.f_editable;
+	m_drawing.p_menu = new QMenu(this);
+	m_drawing.p_menu->addAction(MENU_DELETE);
 	load_from_map();
 	subscribe(m_map);
 }
@@ -62,8 +73,19 @@ void View_Handler::slot_blank_area_clicked(QPointF point, Qt::MouseButton button
 /*----------------------------------------------------------------*/
 
 void View_Handler::slot_node_clicked(Osm_Node* p_node, Qt::MouseButton button) {
+	QAction* p_action;
+
 	emit signal_object_selected(*p_node);
 	switch (button) {
+	case Qt::RightButton:
+		m_drawing.p_menu->hide();
+		if (!(p_action = m_drawing.p_menu->exec(mapToGlobal(mp_view->mapFromScene(m_nodeid_to_item[p_node->get_id()]->pos()))))) {
+			break;
+		}
+		if (p_action->text() == MENU_DELETE) {
+			m_map.remove(p_node);
+		}
+		break;
 	case Qt::LeftButton:
 		switch (m_drawing.current_tool) {
 		case Osm_Tool::WAY:
@@ -95,9 +117,19 @@ void View_Handler::slot_edge_clicked(QPointF point,
                                      Qt::MouseButton button)
 {
 	Osm_Node* p_node;
+	QAction* p_action;
 
 	emit signal_object_selected(*p_way);
 	switch (button) {
+	case Qt::RightButton:
+		m_drawing.p_menu->hide();
+		if (!(p_action = m_drawing.p_menu->exec(mp_view->mapToParent(point.toPoint())))) {
+			break;
+		}
+		if (p_action->text() == MENU_DELETE) {
+			m_map.remove(p_way);
+		}
+		break;
 	case Qt::LeftButton:
 		point = m_coord_handler.get_geo_coords(point);
 		switch (m_drawing.current_tool) {
